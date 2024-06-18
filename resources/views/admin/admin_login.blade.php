@@ -62,7 +62,7 @@
                                 <div class="col-md-8 ps-md-0">
                                     <div class="auth-form-wrapper px-4 py-5">
                                         <a href="#" class="noble-ui-logo logo-light d-block mb-2">APP<span>
-                                                INV</span></a>
+                                                TIMW</span></a>
                                         <h5 class="text-muted fw-normal mb-4">Welcome back! Log in to your account.</h5>
                                         <form class="forms-sample" method="POST" action="{{ route('login') }}">
                                             @csrf

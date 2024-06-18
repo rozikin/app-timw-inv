@@ -116,17 +116,7 @@ class EmployeeController extends Controller
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+   
     public function StoreEmployee(Request $request)
     {
         if( $request->employee_id == ""){
@@ -218,36 +208,14 @@ class EmployeeController extends Controller
         return redirect()->route('all.employee')->with($notification);
     } //end method
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show(Employee $employee)
-    // {
-    //     //
-    // }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
+ 
     public function EditEmployee($id)
     {
         $employees = Employee::find($id);
         return response()->json($employees);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Employee $employee)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-
-
+   
      public function DeleteEmployee($id)
      {
          Employee::findOrFail($id)->delete();
@@ -259,19 +227,11 @@ class EmployeeController extends Controller
 
 
 
-    public function destroy(Employee $employee)
-    {
-        //
-    }
-
     public function ExportEmployee(){
         
             return Excel::download(new EmployeesExport, 'employees.xlsx');
     
     }
-
-
-
 
 
     public function exportPDF(Request $request)

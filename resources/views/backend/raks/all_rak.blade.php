@@ -15,7 +15,7 @@
                               
 
                                 <div class="col">
-                                    <h6 class="card-title text-center">employee All</h6>
+                                    <h6 class="card-title text-center">Rak All</h6>
                                 </div>
                               
                             </div>
@@ -24,13 +24,12 @@
 
                         <div class="row">
                             <div class="col">
-                            
+                               
 
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                    <a href="javascript:void(0)" class="btn btn-primary" id="btn-create-employee"><i class="feather-10" data-feather="plus"></i>  &nbsp;Add</a>
-                                    <a href="{{ route('print.employee') }}" class="btn btn-primary"><i class="feather-10" data-feather="printer"></i>  &nbsp;Print</a>  
-                                    <a href="{{ route('import.employees') }}"  class="btn btn-primary"><i class="feather-10" data-feather="upload"></i>  &nbsp;Import</a>
-                                    <a href="{{ route('export.employee') }}"  class="btn btn-primary"><i class="feather-10" data-feather="download"></i>  &nbsp;Export</a>
+                                    <a href="javascript:void(0)" class="btn btn-primary" id="btn-create-rak"><i class="feather-10" data-feather="plus"></i>  &nbsp;Add</a>
+                                    <a href="{{ route('print.rak') }}" class="btn btn-primary"><i class="feather-10" data-feather="printer"></i>  &nbsp;Print</a>  
+                                  
                                   </div>
                             </div>
                         </div>
@@ -38,15 +37,13 @@
 
                         <div class="table-responsive">
 
-                            <table id="employeeTable" class="table table-sm">
+                            <table id="rakTable" class="table table-sm">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>NIK</th>
-                                        <th>Name</th>
-                                        <th>Department</th>
-                                        <th>Posisi</th>
-                                        {{-- <th>QR</th> --}}
+                                        <th>Rak Code</th>
+                                        <th>Rak Name</th>
+                                      
                                         <th>Action</th>
 
                                     </tr>
@@ -80,7 +77,7 @@
                 </div>
                 <div class="modal-body">
 
-                    <form id="employeeForm" name="employeeForm">
+                    <form id="rakForm" name="rakForm">
 
                         <div class="alert alert-danger print-error-msg" style="display:none">
 
@@ -88,31 +85,17 @@
 
                         </div>
 
-                        <input type="hidden" name="employee_id" id="employee_id">
+                        <input type="hidden" name="rak_id" id="rak_id">
                         <div class="mb-3">
-                            <label for="nik" class="form-label">NIK:</label>
-                            <input type="text" class="form-control" id="nik" name="nik" autofocus>
+                            <label for="rak_code" class="form-label">Code:</label>
+                            <input type="text" class="form-control" id="rak_code" name="rak_code" autofocus>
 
                         </div>
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name:</label>
-                            <input type="text" class="form-control" id="name" name="name">
+                            <label for="rak_name" class="form-label">Name:</label>
+                            <input type="text" class="form-control" id="rak_name" name="rak_name">
                         </div>
-                        <div class="mb-3">
-                            <label for="department" class="form-label">Department:</label>
-                            <input type="text" class="form-control" id="department" name="department">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="posisi" class="form-label">Posisi:</label>
-                            <input type="text" class="form-control" id="posisi" name="posisi">
-                        </div>
-
-
-
-
-
-
+                       
                     </form>
 
                 </div>
@@ -147,38 +130,24 @@
 
 
 
-
-            var table = $('#employeeTable').DataTable({
+            var table = $('#rakTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('get.employee') }}",
+                ajax: "{{ route('get.rak') }}",
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex'
 
                     },
                     {
-                        data: 'nik',
-                        name: 'nik'
+                        data: 'rak_code',
+                        name: 'rak_code'
                     },
                     {
-                        data: 'name',
-                        name: 'name'
+                        data: 'rak_name',
+                        name: 'rak_name'
                     },
-                    {
-                        data: 'department',
-                        name: 'department'
-                    },
-                    {
-                        data: 'posisi',
-                        name: 'posisi'
-                    },
-
-
-                    // {
-                    //     data: 'qr_code',
-                    //     name: 'qr_code'
-                    // },
+                   
 
                     {
                         data: 'action',
@@ -203,19 +172,19 @@
 
             --------------------------------------------*/
 
-            $('#btn-create-employee').click(function() {
+            $('#btn-create-rak').click(function() {
 
                 $('#saveBtn').html("save");
                 $(this).find('form').trigger('reset');
-                $('#employeeForm').find(".print-error-msg").find("ul").find("li").remove();
-                $('#employeeForm').find(".print-error-msg").css('display', 'none');
+                $('#rakForm').find(".print-error-msg").find("ul").find("li").remove();
+                $('#rakForm').find(".print-error-msg").css('display', 'none');
 
-                $('#saveBtn').val("create-employee");
-                $('#employeeForm').trigger("reset");
-                $('#exampleModalLabel').html("Create New employee");
-                $('#employee_id').val('');
+                $('#saveBtn').val("create-rak");
+                $('#rakForm').trigger("reset");
+                $('#exampleModalLabel').html("Create New rak");
+                $('#rak_id').val('');
                 $('#modal-create').modal('show');
-                $('#nik').attr("readonly", false)
+                $('#rak_code').attr("readonly", false)
                 $(this).find('[autofocus]').focus();
 
             });
@@ -241,9 +210,9 @@
 
                 $.ajax({
 
-                    data: $('#employeeForm').serialize(),
+                    data: $('#rakForm').serialize(),
 
-                    url: "{{ route('store.employee') }}",
+                    url: "{{ route('store.rak') }}",
 
                     type: "POST",
 
@@ -251,7 +220,7 @@
 
                     success: function(data) {
 
-                        $('#employeeForm').trigger("reset");
+                        $('#rakForm').trigger("reset");
                         $('#modal-create').modal('hide');
                         table.ajax.reload(null, false);
                         $('#saveBtn').html('SIMPAN');
@@ -272,10 +241,10 @@
 
                     error: function(data) {
 
-                        $('#employeeForm').find(".print-error-msg").find("ul").html('');
-                        $('#employeeForm').find(".print-error-msg").css('display', 'block');
+                        $('#rakForm').find(".print-error-msg").find("ul").html('');
+                        $('#rakForm').find(".print-error-msg").css('display', 'block');
                         $.each(data.responseJSON.errors, function(key, value) {
-                            $('#employeeForm').find(".print-error-msg").find("ul")
+                            $('#rakForm').find(".print-error-msg").find("ul")
                                 .append(
                                     '<li>' + value + '</li>');
                         });
@@ -302,27 +271,25 @@
             --------------------------------------------*/
 
 
-            $('body').on('click', '.editEmployee', function() {
+            $('body').on('click', '.editRak', function() {
 
-                var employee_id = $(this).data('id');
-                console.log(employee_id);
+                var rak_id = $(this).data('id');
+                console.log(rak_id);
 
 
-                $.get("/edit/employee/" + employee_id, function(
+                $.get("/edit/rak/" + rak_id, function(
                     data) {
-                    $('#exampleModalLabel').html("Edit employee");
+                    $('#exampleModalLabel').html("Edit rak");
                     $('#saveBtn').html("edit");
                     $('#modal-create').modal('show');
-                    $('#employee_id').val(data.id);
-                    $('#nik').val(data.nik);
-                    $('#name').val(data.name);
-                    $('#department').val(data.department);
-                    $('#posisi').val(data.posisi);
+                    $('#rak_id').val(data.id);
+                    $('#rak_code').val(data.rak_code);
+                    $('#rak_name').val(data.rak_name);
 
-                    $('#nik').attr("readonly", true)
+                    $('#rak_code').attr("readonly", true)
 
-                    $('#employeeForm').find(".print-error-msg").find("ul").find("li").remove();
-                    $('#employeeForm').find(".print-error-msg").css('display', 'none');
+                    $('#rakForm').find(".print-error-msg").find("ul").find("li").remove();
+                    $('#rakForm').find(".print-error-msg").css('display', 'none');
 
                 })
 
@@ -339,11 +306,11 @@
             --------------------------------------------*/
 
 
-            $('body').on('click', '.deleteEmployee', function() {
+            $('body').on('click', '.deleteRak', function() {
 
 
 
-                var employee_id = $(this).data("id");
+                var rak_id = $(this).data("id");
 
                 const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
@@ -366,7 +333,7 @@
 
                         $.ajax({
                             type: "GET",
-                            url: "/delete/employee/" + employee_id,
+                            url: "/delete/rak/" + rak_id,
                             success: function(data) {
                                 table.ajax.reload(null, false);
 

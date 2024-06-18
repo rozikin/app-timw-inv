@@ -12,40 +12,36 @@
 
                         <div>
                             <div class="row">
-                              
+                                <div class="col">
+                                    <nav class="page-breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-primary mx-1"
+                                                id="btn-create-size"><i class="feather-16" data-feather="file-plus"></i>
+                                                &nbsp;Add Data</a>
+                                            {{-- <a href="{{ route('add.size') }}" class="btn btn-primary mx-1"><i class="feather-16" data-feather="file-plus"></i> &nbsp;Add size</a> --}}
+                                        </ol>
+                                    </nav>
+                                </div>
 
                                 <div class="col">
-                                    <h6 class="card-title text-center">employee All</h6>
+                                    <h6 class="card-title text-center">Size All</h6>
                                 </div>
-                              
+                                <div class="col">
+                                    <h6 class="card-title text-center"></h6>
+                                </div>
                             </div>
 
-                        </div>
-
-                        <div class="row">
-                            <div class="col">
-                            
-
-                                <div class="btn-group" role="group" aria-label="Basic example">
-                                    <a href="javascript:void(0)" class="btn btn-primary" id="btn-create-employee"><i class="feather-10" data-feather="plus"></i>  &nbsp;Add</a>
-                                    <a href="{{ route('print.employee') }}" class="btn btn-primary"><i class="feather-10" data-feather="printer"></i>  &nbsp;Print</a>  
-                                    <a href="{{ route('import.employees') }}"  class="btn btn-primary"><i class="feather-10" data-feather="upload"></i>  &nbsp;Import</a>
-                                    <a href="{{ route('export.employee') }}"  class="btn btn-primary"><i class="feather-10" data-feather="download"></i>  &nbsp;Export</a>
-                                  </div>
-                            </div>
                         </div>
 
 
                         <div class="table-responsive">
 
-                            <table id="employeeTable" class="table table-sm">
+                            <table id="sizeTable" class="table table-sm">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>NIK</th>
+                                        <th>Code</th>
                                         <th>Name</th>
-                                        <th>Department</th>
-                                        <th>Posisi</th>
                                         {{-- <th>QR</th> --}}
                                         <th>Action</th>
 
@@ -80,7 +76,7 @@
                 </div>
                 <div class="modal-body">
 
-                    <form id="employeeForm" name="employeeForm">
+                    <form id="sizeForm" name="sizeForm">
 
                         <div class="alert alert-danger print-error-msg" style="display:none">
 
@@ -88,38 +84,23 @@
 
                         </div>
 
-                        <input type="hidden" name="employee_id" id="employee_id">
+                        <input type="hidden" name="size_id" id="size_id">
                         <div class="mb-3">
-                            <label for="nik" class="form-label">NIK:</label>
-                            <input type="text" class="form-control" id="nik" name="nik" autofocus>
+                            <label for="size_code" class="form-label">Size Code:</label>
+                            <input type="text" class="form-control" id="size_code" name="size_code" autofocus>
 
                         </div>
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name:</label>
-                            <input type="text" class="form-control" id="name" name="name">
+                            <label for="size_name" class="form-label">Size Name:</label>
+                            <input type="text" class="form-control" id="size_name" name="size_name">
                         </div>
-                        <div class="mb-3">
-                            <label for="department" class="form-label">Department:</label>
-                            <input type="text" class="form-control" id="department" name="department">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="posisi" class="form-label">Posisi:</label>
-                            <input type="text" class="form-control" id="posisi" name="posisi">
-                        </div>
-
-
-
-
-
-
                     </form>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
-                    <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn" value="create">SIMPAN</button>
                 </div>
             </div>
         </div>
@@ -148,46 +129,32 @@
 
 
 
-            var table = $('#employeeTable').DataTable({
+            var table = $('#sizeTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('get.employee') }}",
+                destroy: true,
+                ajax: "{{ route('get.size') }}",
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex'
 
                     },
                     {
-                        data: 'nik',
-                        name: 'nik'
+                        data: 'size_code',
+                        name: 'size_code'
                     },
                     {
-                        data: 'name',
-                        name: 'name'
+                        data: 'size_name',
+                        name: 'size_name'
                     },
-                    {
-                        data: 'department',
-                        name: 'department'
-                    },
-                    {
-                        data: 'posisi',
-                        name: 'posisi'
-                    },
-
-
-                    // {
-                    //     data: 'qr_code',
-                    //     name: 'qr_code'
-                    // },
-
+        
                     {
                         data: 'action',
                         name: 'action',
                         orderable: true,
                         searchable: true
                     },
-                ],
-                
+                ]
             });
 
 
@@ -203,19 +170,19 @@
 
             --------------------------------------------*/
 
-            $('#btn-create-employee').click(function() {
+            $('#btn-create-size').click(function() {
 
                 $('#saveBtn').html("save");
                 $(this).find('form').trigger('reset');
-                $('#employeeForm').find(".print-error-msg").find("ul").find("li").remove();
-                $('#employeeForm').find(".print-error-msg").css('display', 'none');
+                $('#sizeForm').find(".print-error-msg").find("ul").find("li").remove();
+                $('#sizeForm').find(".print-error-msg").css('display', 'none');
 
-                $('#saveBtn').val("create-employee");
-                $('#employeeForm').trigger("reset");
-                $('#exampleModalLabel').html("Create New employee");
-                $('#employee_id').val('');
+                $('#saveBtn').val("create-size");
+                $('#sizeForm').trigger("reset");
+                $('#exampleModalLabel').html("Create New size");
+                $('#size_id').val('');
                 $('#modal-create').modal('show');
-                $('#nik').attr("readonly", false)
+                $('#size_code').attr("readonly", false)
                 $(this).find('[autofocus]').focus();
 
             });
@@ -241,9 +208,9 @@
 
                 $.ajax({
 
-                    data: $('#employeeForm').serialize(),
+                    data: $('#sizeForm').serialize(),
 
-                    url: "{{ route('store.employee') }}",
+                    url: "{{ route('store.size') }}",
 
                     type: "POST",
 
@@ -251,7 +218,7 @@
 
                     success: function(data) {
 
-                        $('#employeeForm').trigger("reset");
+                        $('#sizeForm').trigger("reset");
                         $('#modal-create').modal('hide');
                         table.ajax.reload(null, false);
                         $('#saveBtn').html('SIMPAN');
@@ -272,12 +239,11 @@
 
                     error: function(data) {
 
-                        $('#employeeForm').find(".print-error-msg").find("ul").html('');
-                        $('#employeeForm').find(".print-error-msg").css('display', 'block');
+                        $('#sizeForm').find(".print-error-msg").find("ul").html('');
+                        $('#sizeForm').find(".print-error-msg").css('display', 'block');
                         $.each(data.responseJSON.errors, function(key, value) {
-                            $('#employeeForm').find(".print-error-msg").find("ul")
-                                .append(
-                                    '<li>' + value + '</li>');
+                            $('#sizeForm').find(".print-error-msg").find("ul").append(
+                                '<li>' + value + '</li>');
                         });
                         $('#saveBtn').html('SIMPAN');
                     }
@@ -302,27 +268,25 @@
             --------------------------------------------*/
 
 
-            $('body').on('click', '.editEmployee', function() {
+            $('body').on('click', '.editsize', function() {
 
-                var employee_id = $(this).data('id');
-                console.log(employee_id);
+                var size_id = $(this).data('id');
+                console.log(size_id);
 
 
-                $.get("/edit/employee/" + employee_id, function(
+                $.get("/edit/size/" + size_id, function(
                     data) {
-                    $('#exampleModalLabel').html("Edit employee");
+                    $('#exampleModalLabel').html("Edit size");
                     $('#saveBtn').html("edit");
                     $('#modal-create').modal('show');
-                    $('#employee_id').val(data.id);
-                    $('#nik').val(data.nik);
-                    $('#name').val(data.name);
-                    $('#department').val(data.department);
-                    $('#posisi').val(data.posisi);
+                    $('#size_id').val(data.id);
+                    $('#size_code').val(data.size_code);
+                    $('#size_name').val(data.size_name);
 
-                    $('#nik').attr("readonly", true)
+                    $('#size_code').attr("readonly", true)
 
-                    $('#employeeForm').find(".print-error-msg").find("ul").find("li").remove();
-                    $('#employeeForm').find(".print-error-msg").css('display', 'none');
+                    $('#sizeForm').find(".print-error-msg").find("ul").find("li").remove();
+                    $('#sizeForm').find(".print-error-msg").css('display', 'none');
 
                 })
 
@@ -339,11 +303,11 @@
             --------------------------------------------*/
 
 
-            $('body').on('click', '.deleteEmployee', function() {
+            $('body').on('click', '.deletesize', function() {
 
 
 
-                var employee_id = $(this).data("id");
+                var size_id = $(this).data("id");
 
                 const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
@@ -366,35 +330,24 @@
 
                         $.ajax({
                             type: "GET",
-                            url: "/delete/employee/" + employee_id,
+                            url: "/delete/size/" + size_id,
                             success: function(data) {
                                 table.ajax.reload(null, false);
 
-                                swalWithBootstrapButtons.fire({
-                                    title: 'Deleted!',
-                                    text: 'Your file has been deleted.',
-                                    icon: 'success',
-                                    timer: 2000,
-                                    timerProgressBar: true,
-                                    willClose: () => {
-                                        // Optional: Add any additional actions you want to perform after the alert closes
-                                    }
-                                })
+                                swalWithBootstrapButtons.fire(
+                                    'Deleted!',
+                                    'Your file has been deleted.',
+                                    'success',
+                                )
                             },
                             error: function(data) {
                                 console.log('Error:', data);
 
-                                swalWithBootstrapButtons.fire({
-                                    title: 'Cancelled!',
-                                    text: `'There is relation data'.${data.responseJSON.message}`,
-                                    icon: 'error',
-                                    timer: 2000,
-                                    timerProgressBar: true,
-                                    willClose: () => {
-                                        // Optional: Add any additional actions you want to perform after the alert closes
-                                    }
-                                })
-
+                                swalWithBootstrapButtons.fire(
+                                    'Cancelled',
+                                    `'There is relation data'.${data.responseJSON.message}`,
+                                    'error'
+                                )
 
 
                             }
@@ -405,16 +358,11 @@
                         // Read more about handling dismissals
                         result.dismiss === Swal.DismissReason.cancel
                     ) {
-                        swalWithBootstrapButtons.fire({
-                            title: 'Cancelled!',
-                            text: 'Your file is safe :)',
-                            icon: 'error',
-                            timer: 2000,
-                            timerProgressBar: true,
-                            willClose: () => {
-                                // Optional: Add any additional actions you want to perform after the alert closes
-                            }
-                        })
+                        swalWithBootstrapButtons.fire(
+                            'Cancelled',
+                            'Your file is safe :)',
+                            'error'
+                        )
                     }
                 })
 

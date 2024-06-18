@@ -14,12 +14,6 @@ class Employee extends Model
     protected $fillable = ['nik', 'name','department','posisi'];
 
 
-    public function transaction(): HasMany
-    {
-        return $this->hasMany(Transaction::class);
-    }
-    public function peminjaman(): HasMany
-    {
-        return $this->hasMany(Peminjaman::class);
-    }
+   
+  
 }

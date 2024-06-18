@@ -3,8 +3,6 @@
 @section('admin')
     <div class="page-content mt-5">
 
-
-
         <div class="row">
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
@@ -12,7 +10,6 @@
 
                         <div>
                             <div class="row">
-
 
                                 <div class="col">
                                     <h6 class="card-title text-center">Item All</h6>
@@ -26,15 +23,17 @@
                             <div class="col">
                                 <div class="btn-group" role="group" aria-label="Basic example">
                                     <a href="javascript:void(0)" class="btn btn-primary" id="btn-create-item"><i class="feather-10" data-feather="plus"></i>  &nbsp;Add</a>
-                                    <a href="{{ route('print.item') }}" class="btn btn-primary"><i class="feather-10" data-feather="printer"></i>  &nbsp;Print</a>  
-                                    <a href="{{ route('import.items') }}"  class="btn btn-primary"><i class="feather-10" data-feather="upload"></i>  &nbsp;Import</a>
-                                    <a href="{{ route('export.item') }}"  class="btn btn-primary"><i class="feather-10" data-feather="download"></i>  &nbsp;Export</a>
-                                  </div>
+                                    {{-- <a href="{{ route('print.item') }}" class="btn btn-primary"><i class="feather-10"
+                                            data-feather="printer"></i> &nbsp;Print</a> --}}
+                                    <a href="{{ route('import.items') }}" class="btn btn-primary"><i class="feather-10"
+                                            data-feather="upload"></i> &nbsp;Import</a>
+                                    <a href="{{ route('export.item') }}" class="btn btn-primary"><i class="feather-10"
+                                            data-feather="download"></i> &nbsp;Export</a>
+                                </div>
                             </div>
                         </div>
 
-
-                        <div class="table-responsive">  
+                        <div class="table-responsive">
 
                             <table id="itemTable" class="table table-sm">
                                 <thead>
@@ -42,10 +41,10 @@
                                         <th>No</th>
                                         <th>SKU</th>
                                         <th>Name</th>
-                                        <th>Posisi</th>
+                                        <th>Description</th>
                                         <th>Category</th>
                                         <th>Unit</th>
-                                        <th>Status</th>
+                                        <th>Remark</th>
                                         <th>Action</th>
 
                                     </tr>
@@ -63,14 +62,9 @@
 
     </div>
 
-
-
-
-
-
     <!-- Modal -->
     <div class="modal fade" id="modal-create" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Add Data</h5>
@@ -80,47 +74,53 @@
                 <div class="modal-body">
 
                     <form id="itemForm" name="itemForm">
-
                         <div class="alert alert-danger print-error-msg" style="display:none">
-
                             <ul></ul>
-
                         </div>
+                        <input type="hidden" name="item_idx" id="item_idx">
 
-                        <input type="hidden" name="item_id" id="item_id">
-                        <div class="mb-3">
-                            <label for="code" class="form-label">code:</label>
-                            <input type="text" class="form-control" id="code" name="code" autofocus>
+                        <div class="row">
+                            <!-- Kolom Pertama -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="item_code" class="form-label">Item Code:</label>
+                                    <input type="text" class="form-control" id="item_code" name="item_code" autofocus>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="item_name" class="form-label">Name:</label>
+                                    <input type="text" class="form-control" id="item_name" name="item_name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description:</label>
+                                    <input type="text" class="form-control" id="description" name="description">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Category</label>
+                                    <select id="category_id" name="category_id" class="js-example-basic-single form-select"
+                                        style="width: 100%">
+                                        <!-- Options will be added dynamically -->
+                                    </select>
+                                </div>
+                            </div>
 
-                        </div>
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name:</label>
-                            <input type="text" class="form-control" id="name" name="name">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="posisi" class="form-label">Posisi:</label>
-                            <input type="text" class="form-control" id="posisi" name="posisi">
-                        </div>
-
-
-                        <div class="mb-3">
-                            <label class="form-label">Category</label>
-                            <select id="category" name="category" class="js-example-basic-single form-select" style="width: 100%">
                             
+                            <!-- Kolom Kedua -->
+                            <div class="col-md-6">
 
-                            </select>
+                                <div class="mb-3">
+                                    <label class="form-label">Unit</label>
+                                    <select id="unit_id" name="unit_id" class="js-example-basic-single form-select"
+                                        style="width: 100%">
+                                        <!-- Options will be added dynamically -->
+                                    </select>
+                                </div>
+                               
+                                <div class="mb-3">
+                                    <label for="remark" class="form-label">Remark:</label>
+                                    <input type="text" class="form-control" id="remark" name="remark">
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="unit" class="form-label">Unit:</label>
-                            <input type="text" class="form-control" id="unit" name="unit">
-                        </div>
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Status: isikan 0 (ready)</label>
-                            <input type="text" class="form-control" id="status" name="status">
-                        </div>
-
-                    </form>
 
                 </div>
                 <div class="modal-footer">
@@ -128,14 +128,80 @@
 
                     <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save</button>
                 </div>
+
+                </form>
             </div>
         </div>
     </div>
 
-
-
-
     <script>
+        $(document).ready(function() {
+
+            input_number();
+            get_category();
+            get_unit();
+
+        });
+
+        function input_number() {
+
+            $('#quantity_on_hand, #reorder_level').on('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
+            $('#itemForm').on('submit', function(e) {
+                var quantityOnHand = $('#quantity_on_hand').val();
+                var reorderLevel = $('#reorder_level').val();
+
+                if (quantityOnHand === '' || reorderLevel === '' || parseInt(quantityOnHand) < 0 ||
+                    parseInt(reorderLevel) < 0) {
+                    alert('Quantity on Hand and Reorder Level must be non-negative integers.');
+                    e.preventDefault(); // prevent form from submitting
+                }
+            });
+
+        }
+
+        function get_category() {
+
+            $.ajax({
+                url: "{{ route('get.categoryglobal') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var select = $('#category_id');
+                    select.empty(); // Clear existing options
+                    data.forEach(function(category) {
+                        select.append($('<option>', {
+                            value: category.id,
+                            text: category.name
+                        }));
+                    });
+                }
+            });
+
+        }
+
+        function get_unit() {
+            $.ajax({
+                url: "{{ route('get.unitglobal') }}",
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var select = $('#unit_id');
+                    select.empty(); // Clear existing options
+                    data.forEach(function(unit) {
+                        select.append($('<option>', {
+                            value: unit.id,
+                            text: unit.unit_code
+                        }));
+                    });
+                }
+            });
+
+        }
+
+
         $(function() {
 
             $.ajaxSetup({
@@ -152,7 +218,7 @@
                 $(this).find('[autofocus]').focus();
             });
 
-            $('#status').val('0');
+            $('#remark').val('0');
 
 
 
@@ -160,6 +226,7 @@
             var table = $('#itemTable').DataTable({
                 processing: true,
                 serverSide: true,
+                destroy: true,
                 ajax: "{{ route('get.item') }}",
                 columns: [{
                         data: 'DT_RowIndex',
@@ -167,16 +234,16 @@
 
                     },
                     {
-                        data: 'code',
-                        name: 'code'
+                        data: 'item_code',
+                        name: 'item_code'
                     },
                     {
-                        data: 'name',
-                        name: 'name'
+                        data: 'item_name',
+                        name: 'item_name'
                     },
                     {
-                        data: 'posisi',
-                        name: 'posisi'
+                        data: 'description',
+                        name: 'description'
                     },
                     {
                         data: 'category',
@@ -188,9 +255,11 @@
                         data: 'unit',
                         name: 'unit'
                     },
+                  
+                
                     {
-                        data: 'status',
-                        name: 'status'
+                        data: 'remark',
+                        name: 'remark'
                     },
 
                     {
@@ -225,9 +294,9 @@
                 $('#saveBtn').val("create-item");
                 $('#itemForm').trigger("reset");
                 $('#exampleModalLabel').html("Create New item");
-                $('#item_id').val('');
+                $('#item_idx').val('');
                 $('#modal-create').modal('show');
-                $('#code').attr("readonly", false)
+                $('#item_code').attr("readonly", false)
                 $(this).find('[autofocus]').focus();
 
             });
@@ -237,7 +306,7 @@
 
             --------------------------------------------
 
-            Create Product Code
+            Create Product item_id
 
             --------------------------------------------
 
@@ -316,26 +385,27 @@
 
             $('body').on('click', '.editItem', function() {
 
-                var item_id = $(this).data('id');
-                console.log(item_id);
+                var item_idx = $(this).data('id');
+               
 
-
-                $.get("/edit/item/" + item_id, function(
+                $.get("/edit/item/" + item_idx, function(
                     data) {
                     $('#exampleModalLabel').html("Edit item");
                     $('#saveBtn').html("edit");
                     $('#modal-create').modal('show');
-                    $('#item_id').val(data.id);
-                    $('#code').val(data.code);
-                    $('#name').val(data.name);
+                    $('#item_idx').val(data.id);
+                    $('#item_code').val(data.item_code);
+                    $('#item_name').val(data.item_name);
+                    $('#description').val(data.description);
                     $('#category').val(data.category);
-                    $('#posisi').val(data.posisi);
                     $('#unit').val(data.unit);
-                    $('#status').val(data.status);
+                    $('#quantity_on_hand').val(data.quantity_on_hand);
+                    $('#reorder_level').val(data.reorder_level);
+                    $('#remark').val(data.remark);
 
                     // $('#category').val(data.category_id).trigger('change');
 
-                    $('#code').attr("readonly", true)
+                    $('#item_code').attr("readonly", true)
 
                     $('#itemForm').find(".print-error-msg").find("ul").find("li").remove();
                     $('#itemForm').find(".print-error-msg").css('display', 'none');
@@ -348,7 +418,7 @@
 
             --------------------------------------------
 
-            Delete Product Code
+            Delete Product item_id
 
             --------------------------------------------
 
@@ -438,26 +508,6 @@
 
 
 
-        });
-
-
-        $(document).ready(function() {
-            // Fetch categories and update the dropdown
-            $.ajax({
-                url: "{{ route('get.categoryglobal') }}",
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    var select = $('#category');
-                    select.empty(); // Clear existing options
-                    data.forEach(function(category) {
-                        select.append($('<option>', {
-                            value: category.name,
-                            text: category.name
-                        }));
-                    });
-                }
-            });
         });
     </script>
 @endsection

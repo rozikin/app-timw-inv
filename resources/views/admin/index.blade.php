@@ -149,7 +149,7 @@
 
     </div>
 
-    <script>
+    {{-- <script>
         //   Pusher.logToConsole = true;
         // var pusher = new Pusher('fb483b4646ebb3e3a5a7', {
         //     cluster: 'ap1'
@@ -273,5 +273,5 @@
         }
         //panggil ulang otomatis fungsi 
         setInterval(refreshTime, 1000);
-    </script>
+    </script> --}}
 @endsection

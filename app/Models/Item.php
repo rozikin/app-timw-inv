@@ -11,13 +11,23 @@ class Item extends Model
 
     protected $guarded = [];
 
-    protected $fillable = ['code', 'name','category','posisi','unit','status'];
+    protected $fillable = ['item_code', 'item_name','description','category_id','unit_id','remark'];
 
-
-    public function peminjaman(): HasMany
+    public function category()
     {
-        return $this->hasMany(Peminjaman::class);
+        return $this->belongsTo(Categorie::class, 'category_id');
     }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class, 'unit_id');
+    }
+
+    public function purchaseRequestDetails()
+    {
+        return $this->hasMany(PurchaseRequestDetail::class);
+    }
+
 
     
 }

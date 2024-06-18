@@ -19,7 +19,6 @@ class ColorController extends Controller
         return view('backend.color.all_color');
 
       
-
     }
 
     public function GetColor(Request $request){
@@ -68,8 +67,16 @@ class ColorController extends Controller
 
     }
 
+    public function GetColorGlobal(){
 
-    public function GetColorGlobal(Request $request){
+        $colors = Color::all();
+        return response()->json($colors);
+
+    }
+
+
+
+    public function GetColorGlobalx(Request $request){
 
         if ($request->ajax()) {
             $data = Color::latest()->get();

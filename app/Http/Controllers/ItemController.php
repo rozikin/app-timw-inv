@@ -23,20 +23,26 @@ class ItemController extends Controller
     {
         return view('backend.item.all_item');
     }
+    public function Additem()
+    {
+        return view('backend.item.add_item');
+    }
+
 
 
     public function Getitem(Request $request){
 
         if ($request->ajax()) {     
-            $data = Item::latest()->get();
-            return Datatables::of($data)
+            $items = Item::with(['category', 'unit'])->latest()->get();
+            return Datatables::of($items)
                     ->addIndexColumn()
-                    ->addColumn('status', function($row) {
-                        $status = $row->status;
-                        $class = $status == '0' ? 'badge bg-success' : 'badge bg-danger';
-                        $statusok = $status == '0' ? 'READY' : 'DIPINJAM';
-                        return '<span class="'.$class.'">'.$statusok.'</span>';
+                    ->addColumn('category', function($row) {
+                        return $row->category->name;
                     })
+                    ->addColumn('unit', function($row) {
+                        return $row->unit->unit_code;
+                    })
+
                     ->addColumn('action', function($row){
 
 
@@ -68,7 +74,7 @@ class ItemController extends Controller
 
                     // ->addColumn('qr_code', function($row){ return QrCode::size(30)->generate($row->code);})
 
-                    ->rawColumns(['status','action'])
+                    ->rawColumns(['action'])
 
                     ->make(true);
                  
@@ -76,6 +82,7 @@ class ItemController extends Controller
         }
 
     }
+
 
 
     public function GetItemCount()
@@ -111,50 +118,42 @@ class ItemController extends Controller
 
     }
 
-
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function Getitemglobal(){
+        $items = Item::with(['category', 'unit'])->get();
+        return response()->json($items);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+
+
+
 
     public function StoreItem(Request $request)
     {
-        if( $request->item_id == ""){
+        if( $request->item_idx == ""){
 
             $request->validate([
-                'code' => 'required|unique:items',
-                'name' => 'required',
-                'category' => 'required',
-                'posisi' => 'required',
-                'unit' => 'required',
+                'item_code' => 'required|string|max:50',
+                'item_name' => 'required|string|max:100',
+                'description' => 'nullable|string',
+                'category_id' => 'required|exists:categories,id',
+                'unit_id' => 'required|exists:units,id',
+                'remark' => 'nullable|string',
+           
     
             ]);
 
-            $post = item::updateOrCreate([
+            $post = Item::updateOrCreate([
 
    
-                'id' => $request->item_id
+                'id' => $request->item_idx
         
                  ],[
-                    'code' => $request->code,
-                    'name' => $request->name,
-                    'category' => $request->category, 
-                    'posisi' => $request->posisi,
-                    'unit' => $request->unit,
-                    'status' => $request->status,
+                    'item_code' => $request->item_code,
+                    'item_name' => $request->item_name,
+                    'description' => $request->description,
+                    'category_id' => $request->category_id,
+                    'unit_id' => $request->unit_id,
+                    'remark' => $request->remark,
         
                 ]);
         
@@ -171,26 +170,27 @@ class ItemController extends Controller
         }
         else{
             $request->validate([
-                'code' => 'required',
-                'name' => 'required',
-                'category' => 'required',
-                'posisi' => 'required',
-                'unit' => 'required',
+                'item_code' => 'required|string|max:50',
+                'item_name' => 'required|string|max:100',
+                'description' => 'nullable|string',
+                'category_id' => 'required|exists:categories,id',
+                'unit_id' => 'required|exists:units,id',
+                'remark' => 'nullable|string',
     
             ]);
 
-            $post = item::updateOrCreate([
+            $post = Item::updateOrCreate([
 
    
-                'id' => $request->item_id
+                'id' => $request->item_idx
         
                  ],[
-                    'code' => $request->code,
-                    'name' => $request->name,
-                    'category' => $request->category,
-                    'posisi' => $request->posisi,
-                    'unit' => $request->unit,
-                    'status' => $request->status,
+                    'item_code' => $request->item_code,
+                    'item_name' => $request->item_name,
+                    'description' => $request->description,
+                    'category_id' => $request->category_id,
+                    'unit_id' => $request->unit_id,
+                    'remark' => $request->remark,
         
                 ]);
         
@@ -207,21 +207,8 @@ class ItemController extends Controller
       
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Item $item)
-    {
-        //
-    }
+  
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Item $item)
-    {
-        //
-    }
 
     public function Edititem($id)
     {
@@ -229,21 +216,7 @@ class ItemController extends Controller
         return response()->json($items);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Item $item)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Item $item)
-    {
-        //
-    }
+   
 
     public function DeleteItem($id)
     {
@@ -280,7 +253,7 @@ class ItemController extends Controller
 
            // Validate the input
            $request->validate([
-            'posisi' => 'required|string'
+            'unit' => 'required|string'
         ]);
 
          // Get the position from the request

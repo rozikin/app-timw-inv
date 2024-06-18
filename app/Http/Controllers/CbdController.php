@@ -1,0 +1,154 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Cbd;
+use Illuminate\Http\Request;
+use App\Imports\CbdsImport;
+use Maatwebsite\Excel\Facades\Excel;
+use DataTables;
+
+
+class CbdController extends Controller
+{
+
+    public function Allcbd()
+    {
+        return view('cbd.all_cbd');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx'
+        ]);
+
+        Excel::import(new CbdsImport, $request->file('file'));
+
+        return redirect()->route('cbds.index')->with('success', 'CBDs imported successfully.');
+    }
+
+    public function Getcbd(Request $request){
+
+        if ($request->ajax()) {
+            $data = Cbd::with('details')->get();
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+
+
+                      return   '<div class="d-flex align-items-center justify-content-between flex-wrap">
+                      <div class="d-flex align-items-center">
+                        
+                          <div class="d-flex align-items-center">
+                              <div class="actions dropdown">
+                                  <a href="#" data-bs-toggle="dropdown"> ••• </a>
+                                  <div class="dropdown-menu" role="menu">
+                                     <a href="/add/purchaserequestid/'.$row->id.'" class="dropdown-item text-primary"> &nbsp; Add Purchase Request</a>
+                    
+                                    <a href="javascript:void(0)"class="dropdown-item text-danger deleteCbd" data-id="'.$row->id.'"> &nbsp; Delete</a>
+
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>';
+
+                    })
+
+                    ->addColumn('color_code', function($row){
+                        $details = '<ul>';
+                        foreach ($row->details as $detail) {
+                            $details .= '<li>' . $detail->color_code . '</li>';
+                        }
+                        $details .= '</ul>';
+                        return $details;
+                    })
+                    ->addColumn('color', function($row){
+                        $details = '<ul>';
+                        foreach ($row->details as $detail) {
+                            $details .= '<li>' . $detail->color . '</li>';
+                        }
+                        $details .= '</ul>';
+                        return $details;
+                    })
+                    ->addColumn('size_code', function($row){
+                        $details = '<ul>';
+                        foreach ($row->details as $detail) {
+                            $details .= '<li>' . $detail->size_code . '</li>';
+                        }
+                        $details .= '</ul>';
+                        return $details;
+                    })
+                    ->addColumn('size', function($row){
+                        $details = '<ul>';
+                        foreach ($row->details as $detail) {
+                            $details .= '<li>' . $detail->size . '</li>';
+                        }
+                        $details .= '</ul>';
+                        return $details;
+                    })
+                    ->addColumn('qty', function($row){
+                        $details = '<ul>';
+                        foreach ($row->details as $detail) {
+                            $details .= '<li>' . $detail->qty . '</li>';
+                        }
+                        $details .= '</ul>';
+                        return $details;
+                    })
+                
+
+                    ->rawColumns(['action', 'color_code', 'color', 'size_code', 'size', 'qty'])
+
+                    ->make(true);
+                 
+
+        }
+
+    }
+
+    public function Importcbds()
+    {
+        return view('cbd.import_cbd');
+    }
+
+    public function Importcbd(Request $request)
+    {
+
+        $request->validate([
+            'import_file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+    
+        try {
+            Excel::import(new CbdsImport, $request->file('import_file'));
+
+            $notification = array(
+                'message' => 'Import Successfully',
+                'alert-type' => 'success'
+            );
+
+        } catch (\Exception $e) {
+            $notification = array(
+                'message' => 'Import failed: ' . $e->getMessage(),
+                'alert-type' => 'error'
+            );
+        }
+    
+        return redirect()->route('all.cbd')->with($notification);
+    } //end method
+
+    public function Deletecbd($id)
+    {
+        $cbd = Cbd::findOrFail($id);
+            $cbd->details()->delete(); // Delete associated details
+            $cbd->delete(); // Delete the Cbd record
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Post Berhasil Dihapus!.',
+        ]);
+    }
+
+
+
+}

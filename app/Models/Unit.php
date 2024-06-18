@@ -4,14 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Color extends Model
+class Unit extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
 
-    protected $fillable = ['color_code', 'color_name'];
+    protected $fillable = ['unit_code', 'unit_name'];
 
-   
+    public function items()
+    {
+        return $this->hasMany(Item::class, 'category_id');
+    }
 }

@@ -9,15 +9,18 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\ColorController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UnitController;
+use App\Http\Controllers\SizeController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\PeminjamanController;
-use App\Http\Controllers\PhotoReturnController;
-use App\Http\Controllers\SerahTerimaController;
+use App\Http\Controllers\RakController;
+use App\Http\Controllers\PurchaseRequestController;
+use App\Http\Controllers\CbdController;
+use App\Http\Controllers\ItemVariantController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Exports\PeminjamanExport;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +30,7 @@ use App\Exports\PeminjamanExport;
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
-|
+|                                       
 */
 
 
@@ -73,7 +76,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::controller(RoleController::class)->group(function () {
         Route::get('/all/permission', 'AllPermission')->name('all.permission')->middleware('can:add.permission');
         Route::get('/add/permission', 'AddPermission')->name('add.permission')->middleware('can:add.permission');
-        Route::post('/store/permission', 'StorePermission')->name('store.permission');
+        Route::post('/store/permission', 'StorePermission')->name('store.permission')->middleware('can:add.permission');
         Route::get('/edit/permission/{id}', 'EditPermission')->name('edit.permission')->middleware('can:add.permission');
         Route::post('/update/permission', 'UpdatePermission')->name('update.permission');
         Route::get('/delete/permission/{id}', 'DeletePermission')->name('delete.permission')->middleware('can:delete.permission');
@@ -86,7 +89,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::controller(RoleController::class)->group(function () {
         Route::get('/all/roles', 'AllRoles')->name('all.roles')->middleware('can:all.roles');
         Route::get('/add/roles', 'AddRoles')->name('add.roles')->middleware('can:add.roles');
-        Route::post('/store/roles', 'StoreRoles')->name('store.roles');
+        Route::post('/store/roles', 'StoreRoles')->name('store.roles')->middleware('can:add.roles');
         Route::get('/edit/roles/{id}', 'EditRoles')->name('edit.roles')->middleware('can:edit.roles');
         Route::post('/update/roles', 'UpdateRoles')->name('update.roles');
         Route::get('/delete/roles/{id}', 'DeleteRoles')->name('delete.roles')->middleware('can:delete.roles');
@@ -117,17 +120,30 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
       Route::controller(ColorController::class)->group(function () {
         Route::get('/all/color', 'AllColor')->name('all.color')->middleware('can:all.color');
         Route::get('/get/color', 'GetColor')->name('get.color')->middleware('can:all.color');
-        Route::get('/get/colorglobal', 'GetColorGlobal')->name('get.colorGlobal');
+        Route::get('/get/colorglobal', 'GetColorGlobal')->name('get.colorglobal');
         Route::get('/add/color', 'AddColor')->name('add.color')->middleware('can:add.color');
       
         Route::post('/store/color', 'StoreColor')->name('store.color');
         Route::get('/edit/color/{id}', 'EditColor')->name('edit.color')->middleware('can:edit.color');
         Route::post('/update/color/{id}', 'UpdateColor')->name('update.color');
-        Route::get('/delete/color/{id}', 'DeleteColor')->name('delete.color');
+        Route::get('/delete/color/{id}', 'DeleteColor')->name('delete.color')->middleware('can:delete.color');;
         Route::get('/export/color', 'ExportColor')->name('export.color');
     });
+      Route::controller(UnitController::class)->group(function () {
+        Route::get('/all/unit', 'Allunit')->name('all.unit')->middleware('can:all.unit');
+        Route::get('/get/unit', 'Getunit')->name('get.unit')->middleware('can:all.unit');
+        Route::get('/get/unitglobal', 'GetunitGlobal')->name('get.unitglobal');
+        Route::get('/add/unit', 'Addunit')->name('add.unit')->middleware('can:add.unit');
+      
+        Route::post('/store/unit', 'Storeunit')->name('store.unit')->middleware('can:add.unit');
+        Route::get('/edit/unit/{id}', 'Editunit')->name('edit.unit')->middleware('can:edit.unit');
+        Route::post('/update/unit/{id}', 'Updateunit')->name('update.unit');
+        Route::get('/delete/unit/{id}', 'Deleteunit')->name('delete.unit')->middleware('can:delete.unit');
+        Route::get('/export/unit', 'Exportunit')->name('export.unit');
 
-    Route::controller(CategoryController::class)->group(function () {
+    });
+
+    Route::controller(CategorieController::class)->group(function () {
         Route::get('/all/category', 'Allcategory')->name('all.category')->middleware('can:all.category');
         Route::get('/get/category', 'Getcategory')->name('get.category')->middleware('can:get.category');
         Route::get('/get/categoryglobal', 'GetCategoryGlobal')->name('get.categoryglobal');
@@ -138,6 +154,31 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::post('/update/category/{id}', 'Updatecategory')->name('update.category')->middleware('can:edit.category');
         Route::get('/delete/category/{id}', 'Deletecategory')->name('delete.category')->middleware('can:delete.category');
         Route::get('/export/category', 'Exportcategory')->name('export.category');
+    });
+
+    Route::controller(SizeController::class)->group(function () {
+        Route::get('/all/size', 'Allsize')->name('all.size')->middleware('can:all.size');
+        Route::get('/get/size', 'Getsize')->name('get.size')->middleware('can:all.size');
+        Route::get('/get/sizeglobal', 'GetsizeGlobal')->name('get.sizeglobal');
+        Route::get('/add/size', 'Addsize')->name('add.size')->middleware('can:add.size');
+      
+        Route::post('/store/size', 'Storesize')->name('store.size');
+        Route::get('/edit/size/{id}', 'Editsize')->name('edit.size')->middleware('can:edit.size');
+        Route::post('/update/size/{id}', 'Updatesize')->name('update.size');
+        Route::get('/delete/size/{id}', 'Deletesize')->name('delete.size')->middleware('can:delete.size');
+        Route::get('/export/size', 'Exportsize')->name('export.size');
+    });
+    Route::controller(SupplierController::class)->group(function () {
+        Route::get('/all/supplier', 'Allsupplier')->name('all.supplier')->middleware('can:all.supplier');
+        Route::get('/get/supplier', 'Getsupplier')->name('get.supplier')->middleware('can:all.supplier');
+        Route::get('/get/supplierglobal', 'GetsupplierGlobal')->name('get.supplierGlobal');
+        Route::get('/add/supplier', 'Addsupplier')->name('add.supplier')->middleware('can:add.supplier');
+      
+        Route::post('/store/supplier', 'Storesupplier')->name('store.supplier')->middleware('can:add.supplier');
+        Route::get('/edit/supplier/{id}', 'Editsupplier')->name('edit.supplier')->middleware('can:edit.supplier');
+        Route::post('/update/supplier/{id}', 'Updatesupplier')->name('update.supplier');
+        Route::get('/delete/supplier/{id}', 'Deletesupplier')->name('delete.supplier');
+        Route::get('/export/supplier', 'Exportsupplier')->name('export.supplier');
     });
 
 
@@ -163,7 +204,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     });
 
 
-
     
     Route::controller(ItemController::class)->group(function () {
         Route::get('/all/item', 'Allitem')->name('all.item')->middleware('can:all.item');
@@ -174,6 +214,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/delete/item/{id}', 'DeleteItem')->name('delete.item')->middleware('can:delete.item');
         Route::get('/export/item', 'Exportitem')->name('export.item')->middleware('can:export.item');
         Route::get('/get/item', 'Getitem')->name('get.item')->middleware('can:all.item');
+        Route::get('/get/itemglobal', 'Getitemglobal')->name('get.itemglobal')->middleware('can:get.itemglobal');
         Route::get('/get/itemcount', 'GetitemCount')->name('get.itemcount');
         Route::get('/get/posisi', 'GetPosisi')->name('get.posisi');
         Route::post('/check/item', 'Checkitem')->name('check.item');
@@ -184,82 +225,68 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
       
     });
 
-
-
-
-
-
-
-
-    Route::controller(TransactionController::class)->group(function () {
-       
-        Route::get('/all/transaction', 'Alltransaction')->name('all.transaction')->middleware('can:all.transaction');
-        Route::get('/add/transaction', 'Addtransaction')->name('add.transaction')->middleware('can:add.transaction');
-        Route::get('/add/transactionout', 'Addtransactionout')->name('add.transactionout')->middleware('can:add.transactionout');
-        Route::post('/store/transaction', 'Storetransaction')->name('store.transaction');
-        Route::get('/edit/transaction/{id}', 'Edittransaction')->name('edit.transaction')->middleware('can:edit.transaction');
-        Route::post('/update/transaction/{id}', 'Updatetransaction')->name('update.transaction');
-        Route::get('/delete/transaction/{id}', 'Deletetransaction')->name('delete.transaction');
-        Route::get('/export/transaction', 'Exporttransaction')->name('export.transaction');
-        Route::get('/get/transaction', 'Gettransaction')->name('get.transaction')->middleware('can:all.transaction');
-        Route::get('/get/transactionin', 'GettransactionIN')->name('get.transactionin');
-        Route::get('/get/transactionout', 'GettransactionOUT')->name('get.transactionout');
-        Route::get('/get/transactionstay', 'GettransactionSTAY')->name('get.transactionstay');
-        Route::get('/pdf/transaction', 'exportPdf')->name('pdf.transaction');
+   
+    Route::controller(RakController::class)->group(function () {
+        Route::get('/all/rak', 'Allrak')->name('all.rak')->middleware('can:all.rak');
+        Route::get('/add/rak', 'Addrak')->name('add.rak')->middleware('can:add.rak');
+        Route::post('/store/rak', 'Storerak')->name('store.rak')->middleware('can:add.rak');
+        Route::get('/edit/rak/{id}', 'Editrak')->name('edit.rak')->middleware('can:edit.rak');
+        Route::post('/update/rak/{id}', 'Updaterak')->name('update.rak')->middleware('can:edit.rak');
+        Route::get('/delete/rak/{id}', 'Deleterak')->name('delete.rak')->middleware('can:delete.rak');
+        Route::get('/export/rak', 'Exportrak')->name('export.rak')->middleware('can:export.rak');;
+        Route::get('/get/rak', 'Getrak')->name('get.rak')->middleware('can:all.rak');
+        Route::get('/get/rakcount', 'GetrakCount')->name('get.rakcount');
+        Route::get('/get/posisirak', 'GetPosisi')->name('get.posisirak');
+        Route::post('/check/rak', 'Checkrak')->name('check.rak');
+        Route::get('/print/rak', 'Printrak')->name('print.rak')->middleware('can:export.rak');
+        Route::post('/pdf/rak', 'exportPDF')->name('pdf.rak')->middleware('can:export.rak');
+        Route::post('/import/rak', 'Importrak')->name('import.rak')->middleware('can:import.rak');
+        Route::get('/import/raks', 'Importraks')->name('import.raks')->middleware('can:import.rak');
       
     });
 
     
-    Route::controller(PeminjamanController::class)->group(function () {
-       
-        Route::get('/all/peminjaman', 'Allpeminjaman')->name('all.peminjaman')->middleware('can:all.peminjaman');
-        Route::get('/get/peminjaman', 'getpeminjaman')->name('get.peminjaman')->middleware('can:get.peminjaman');
-        Route::get('/get/peminjaman_today', 'getpeminjaman_today')->name('get.peminjaman_today');
-        Route::get('/get/peminjaman_department', 'GetPeminjamanHariIni')->name('get.peminjaman_department');
-        Route::get('/get/peminjaman_employee', 'getpeminjaman_employee')->name('get.peminjaman_employee');
-        Route::get('/add/peminjaman', 'Addpeminjaman')->name('add.peminjaman')->middleware('can:add.peminjaman');
-        Route::get('/add/peminjamanrt', 'Addpeminjamanrt')->name('add.peminjamanrt')->middleware('can:add.peminjaman');
-        Route::post('/store/peminjaman', 'StorePeminjaman')->name('store.peminjaman');
-        Route::get('/edit/peminjaman/{id}', 'Editpeminjaman')->name('edit.peminjaman')->middleware('can:edit.peminjaman');
-        Route::post('/update/peminjaman/{id}', 'Updatepeminjaman')->name('update.peminjaman');
-        Route::get('/delete/peminjaman/{id}', 'Deletepeminjaman')->name('delete.peminjaman')->middleware('can:delete.peminjaman');                  
-        Route::get('/export/peminjaman', 'export')->name('export.peminjaman')->middleware('can:export.peminjaman');;
-        Route::get('/get/peminjamanlimit', 'Getpeminjamanlimit')->name('get.peminjamanlimit')->middleware('can:all.peminjaman');
-        Route::get('/get/peminjamanrtlimit', 'Getpeminjamanrtlimit')->name('get.peminjamanrtlimit')->middleware('can:all.peminjaman');
-        Route::get('/get/peminjamanin', 'GetpeminjamanIN')->name('get.peminjamanin');
-        Route::get('/get/peminjamanrt', 'Getpeminjamanrt')->name('get.peminjamanrt');
-        Route::get('/get/peminjamanstay', 'GetpeminjamanSTAY')->name('get.peminjamanstay');
-        Route::get('/pdf/peminjaman', 'exportPdf')->name('pdf.peminjaman');
+    Route::controller(CbdController::class)->group(function () {
+        Route::get('/all/cbd', 'Allcbd')->name('all.cbd')->middleware('can:all.cbd');
+        Route::get('/add/cbd', 'Addcbd')->name('add.cbd')->middleware('can:add.cbd');
+        Route::post('/store/cbd', 'Storecbd')->name('store.cbd');
+        Route::get('/edit/cbd/{id}', 'Editcbd')->name('edit.cbd')->middleware('can:edit.cbd');
+        Route::post('/update/cbd/{id}', 'Updatecbd')->name('update.cbd')->middleware('can:edit.cbd');
+        Route::get('/delete/cbd/{id}', 'Deletecbd')->name('delete.cbd')->middleware('can:delete.cbd');
+        Route::get('/export/cbd', 'Exportcbd')->name('export.cbd')->middleware('can:export.cbd');;
+        Route::get('/get/cbd', 'Getcbd')->name('get.cbd')->middleware('can:all.cbd');
+        Route::get('/get/cbdcount', 'GetcbdCount')->name('get.cbdcount');
+        Route::get('/get/posisicbd', 'GetPosisi')->name('get.posisicbd');
+        Route::post('/check/cbd', 'Checkcbd')->name('check.cbd');
+        Route::get('/print/cbd', 'Printcbd')->name('print.cbd')->middleware('can:export.cbd');
+        Route::post('/pdf/cbd', 'exportPDF')->name('pdf.cbd')->middleware('can:export.cbd');
+        Route::post('/import/cbd', 'Importcbd')->name('import.cbd')->middleware('can:import.cbd');
+        Route::get('/import/cbds', 'Importcbds')->name('import.cbds')->middleware('can:import.cbd');
+      
+    });
+    
+
+    Route::controller(PurchaseRequestController::class)->group(function () {
+        Route::get('/all/purchaserequest', 'Allpurchaserequest')->name('all.purchaserequest')->middleware('can:all.purchaserequest');
+        Route::get('/add/purchaserequest', 'Addpurchaserequest')->name('add.purchaserequest')->middleware('can:add.purchaserequest');
+        Route::get('/add/purchaserequestid/{id}', 'Addpurchaserequestid')->name('add.purchaserequestid')->middleware('can:add.purchaserequest');
+        Route::post('/store/purchaserequest', 'Storepurchaserequest')->name('store.purchaserequest');
+        Route::get('/edit/purchaserequest/{id}', 'Editpurchaserequest')->name('edit.purchaserequest')->middleware('can:edit.purchaserequest');
+        Route::post('/update/purchaserequest/{id}', 'Updatepurchaserequest')->name('update.purchaserequest')->middleware('can:edit.purchaserequest');
+        Route::get('/delete/purchaserequest/{id}', 'Deletepurchaserequest')->name('delete.purchaserequest')->middleware('can:delete.purchaserequest');
+        Route::get('/export/purchaserequest', 'Exportpurchaserequest')->name('export.purchaserequest')->middleware('can:export.purchaserequest');;
+        Route::get('/get/purchaserequest', 'Getpurchaserequest')->name('get.purchaserequest')->middleware('can:all.purchaserequest');
+        Route::get('/get/purchaserequestcount', 'GetpurchaserequestCount')->name('get.purchaserequestcount');
+        Route::get('/get/posisipurchaserequest', 'GetPosisi')->name('get.posisipurchaserequest');
+        Route::post('/check/purchaserequest', 'Checkpurchaserequest')->name('check.purchaserequest');
+        Route::get('/print/purchaserequest', 'Printpurchaserequest')->name('print.purchaserequest')->middleware('can:export.purchaserequest');
+        Route::post('/pdf/purchaserequest', 'exportPDF')->name('pdf.purchaserequest')->middleware('can:export.purchaserequest');
+        Route::post('/import/purchaserequest', 'Importpurchaserequest')->name('import.purchaserequest')->middleware('can:import.purchaserequest');
+        Route::get('/import/purchaserequests', 'Importpurchaserequests')->name('import.purchaserequests')->middleware('can:import.purchaserequest');
       
     });
 
-      //color User All Color
-      Route::controller(PhotoReturnController::class)->group(function () {
-        Route::get('/all/photoreturn', 'Allphotoreturn')->name('all.photoreturn')->middleware('can:all.photoreturn');
-        Route::get('/get/photoreturn', 'Getphotoreturn')->name('get.photoreturn')->middleware('can:all.photoreturn');
-        Route::get('/get/photoreturnglobal', 'GetphotoreturnGlobal')->name('get.photoreturnGlobal');
-        Route::get('/add/photoreturn', 'Addphotoreturn')->name('add.photoreturn')->middleware('can:add.photoreturn');
-      
-        Route::post('/store/photoreturn', 'Storephotoreturn')->name('store.photoreturn');
-        Route::get('/edit/photoreturn/{id}', 'Editphotoreturn')->name('edit.photoreturn')->middleware('can:edit.photoreturn');
-        Route::post('/update/photoreturn/{id}', 'Updatephotoreturn')->name('update.photoreturn');
-        Route::get('/delete/photoreturn/{id}', 'Deletephotoreturn')->name('delete.photoreturn')->middleware('can:delete.photoreturn');;
-        Route::get('/export/photoreturn', 'Exportphotoreturn')->name('export.photoreturn');
-    });
-      Route::controller(SerahTerimaController::class)->group(function () {
-        Route::get('/all/serahterima', 'Allserahterima')->name('all.serahterima')->middleware('can:all.serahterima');
-        Route::get('/get/serahterima', 'Getserahterima')->name('get.serahterima')->middleware('can:all.serahterima');
-        Route::get('/get/serahterimaglobal', 'GetserahterimaGlobal')->name('get.serahterimaGlobal');
-        Route::get('/add/serahterima', 'Addserahterima')->name('add.serahterima')->middleware('can:add.serahterima');
-      
-        Route::post('/store/serahterima', 'Storeserahterima')->name('store.serahterima')->middleware('can:add.serahterima');
-        Route::get('/edit/serahterima/{id}', 'Editserahterima')->name('edit.serahterima')->middleware('can:edit.serahterima');
-        Route::post('/update/serahterima/{id}', 'Updateserahterima')->name('update.serahterima');
-        Route::get('/delete/serahterima/{id}', 'Deleteserahterima')->name('delete.serahterima')->middleware('can:delete.serahterima');;
-        Route::get('/export/serahterima', 'Exportserahterima')->name('export.serahterima');
-        Route::post('/import/serahterima', 'Importserahterima')->name('import.serahterima')->middleware('can:import.serahterima');
-        Route::get('/import/serahterimas', 'Importserahterimas')->name('import.serahterimas')->middleware('can:import.serahterima');
-    });
+
 
     
    

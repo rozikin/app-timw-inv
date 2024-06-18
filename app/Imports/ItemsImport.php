@@ -17,23 +17,22 @@ class ItemsImport implements ToModel, WithValidation,WithHeadingRow
     public function model(array $row)
     {
         return new Item([
-            'code' => $row['code'],
-            'name' => $row['name'],
-            'posisi' => $row['posisi'],
-            'category' => $row['category'],
-            'unit' => $row['unit']
+            'item_code' => $row['item_code'],
+            'item_name' => $row['item_name'],
+            'description' => $row['description'],
+            'category_id' => $row['category_id'],
+            'unit_id' => $row['unit_id']
         ]);
     }
 
     public function rules(): array
     {
         return [
-            'code' => ['required','unique:items' ],
-            'name' => [ 'required'],
-            'posisi' => [ 'required'],
-            'category' => [ 'required'],
-            'unit' => [ 'required'],
-           
+            'item_code' => 'required|unique:items',
+            'item_name' => 'required',
+            'description' => 'required',
+            'category_id' => 'required|exists:categories,id',
+            'unit_id' => 'required|exists:units,id',
         ];
     }
 }
