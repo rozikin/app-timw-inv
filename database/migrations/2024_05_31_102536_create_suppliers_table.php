@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('supplier_code');
             $table->string('supplier_name');
             $table->string('supplier_npwp')->nullable();
+            $table->string('supplier_fax')->nullable();
             $table->string('supplier_address');
             $table->string('supplier_city');
             $table->string('supplier_nation');

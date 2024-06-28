@@ -13,9 +13,14 @@ class CbdDetail extends Model
         'order_no',
         'color_code',
         'color',
+        'pattern_dimension_code',
         'size_code',
         'size',
-        'qty'
+        'qty',
+        'arrangment_by',
+        'trim_description',
+        'trim_item_no',
+        'trim_supplier',
     ];
 
 

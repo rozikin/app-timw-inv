@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('purchase_requests', function (Blueprint $table) {
             $table->id();
             $table->string('purchase_request_no');
-            $table->unsignedBigInteger('cbd_id')->nullable();;
+            $table->unsignedBigInteger('cbd_id')->nullable();
              $table->string('tipe');
              $table->string('mo')->nullable();
              $table->string('style')->nullable();
@@ -25,6 +25,7 @@ return new class extends Migration
              $table->string('remark')->nullable();
              $table->string('status')->nullable();
              $table->string('user_id');
+             $table->unsignedInteger('revision_no')->default(0);
 
             $table->timestamps();
 

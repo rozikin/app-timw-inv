@@ -3,13 +3,10 @@
 @section('admin')
     <div class="page-content mt-5">
 
-
-
         <div class="row">
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-
 
                         <div>
                             <div class="row">
@@ -34,11 +31,6 @@
 
                         </div>
 
-
-
-
-
-
                         <div class="table-responsive">
 
                             <table id="supplierTable" class="table table-sm">
@@ -48,6 +40,7 @@
                                         <th>Code</th>
                                         <th>Name</th>
                                         <th>NPWP</th>
+                                        <th>FAX</th>
                                         <th>Address</th>
                                         <th>City</th>
                                         <th>Nation</th>
@@ -71,11 +64,6 @@
         </div>
 
     </div>
-
-
-
-
-
 
     <!-- Modal -->
     <div class="modal fade" id="modal-create" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -116,6 +104,10 @@
                                     <input type="text" class="form-control" id="supplier_npwp" name="supplier_npwp">
                                 </div>
                                 <div class="mb-3">
+                                    <label for="supplier_fax" class="form-label">FAX:</label>
+                                    <input type="text" class="form-control" id="supplier_fax" name="supplier_fax">
+                                </div>
+                                <div class="mb-3">
                                     <label for="supplier_address" class="form-label">Address:</label>
                                     <input type="text" class="form-control" id="supplier_address"
                                         name="supplier_address">
@@ -128,22 +120,24 @@
 
                             <div class="col">
 
-                               
                                 <div class="mb-3">
                                     <label for="supplier_nation" class="form-label">National:</label>
                                     <input type="text" class="form-control" id="supplier_nation" name="supplier_nation">
                                 </div>
                                 <div class="mb-3">
                                     <label for="supplier_person" class="form-label">Person:</label>
-                                    <input type="text" class="form-control" id="supplier_person" name="supplier_person">
+                                    <input type="text" class="form-control" id="supplier_person"
+                                        name="supplier_person">
                                 </div>
                                 <div class="mb-3">
                                     <label for="supplier_phone" class="form-label">Phone:</label>
-                                    <input type="text" class="form-control" id="supplier_phone" name="supplier_phone">
+                                    <input type="text" class="form-control" id="supplier_phone"
+                                        name="supplier_phone">
                                 </div>
                                 <div class="mb-3">
                                     <label for="supplier_email" class="form-label">Email:</label>
-                                    <input type="email" class="form-control" id="supplier_email" name="supplier_email">
+                                    <input type="email" class="form-control" id="supplier_email"
+                                        name="supplier_email">
                                 </div>
                                 <div class="mb-3">
                                     <label for="remark" class="form-label">Remark:</label>
@@ -156,9 +150,6 @@
                             </div>
                         </div>
 
-
-
-
                     </form>
 
                 </div>
@@ -166,14 +157,10 @@
                     <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
-
                 </div>
             </div>
         </div>
     </div>
-
-
-
 
     <script>
         $(function() {
@@ -205,22 +192,42 @@
                         name: 'DT_RowIndex'
 
                     },
-                   
+
                     {
                         data: 'supplier_code',
                         name: 'supplier_code'
                     },
                     {
-                        data: 'supplier_name',
-                        name: 'supplier_name'
+                        title: "supplier_name",
+                        data: "supplier_name",
+                        render: function(data, type, row) {
+                            // Batasi item_name menjadi maksimal 25 karakter
+                            if (type === 'display' && data.length > 30) {
+                                return data.substring(0, 30) + '...';
+                            } else {
+                                return data;
+                            }
+                        }
                     },
                     {
                         data: 'supplier_npwp',
                         name: 'supplier_npwp'
                     },
                     {
-                        data: 'supplier_address',
-                        name: 'supplier_address'
+                        data: 'supplier_fax',
+                        name: 'supplier_fax'
+                    },
+                    {
+                        title: "supplier_address",
+                        data: "supplier_address",
+                        render: function(data, type, row) {
+                            // Batasi item_name menjadi maksimal 25 karakter
+                            if (type === 'display' && data.length > 30) {
+                                return data.substring(0, 30) + '...';
+                            } else {
+                                return data;
+                            }
+                        }
                     },
                     {
                         data: 'supplier_city',
@@ -246,8 +253,8 @@
                         data: 'remark',
                         name: 'remark'
                     },
-                   
-                   
+
+
                     {
                         data: 'action',
                         name: 'action',
@@ -349,7 +356,7 @@
                         $('#saveBtn').html('SIMPAN');
                     }
 
-                    
+
 
                 });
 
@@ -369,7 +376,7 @@
             $('body').on('click', '.editsupplier', function() {
 
                 var supplier_id = $(this).data('id');
-        
+
                 $.get("/edit/supplier/" + supplier_id, function(
                     data) {
                     $('#exampleModalLabel').html("Edit supplier");
@@ -379,6 +386,7 @@
                     $('#supplier_code').val(data.supplier_code);
                     $('#supplier_name').val(data.supplier_name);
                     $('#supplier_npwp').val(data.supplier_npwp);
+                    $('#supplier_npwp').val(data.supplier_fax);
                     $('#supplier_address').val(data.supplier_address);
                     $('#supplier_city').val(data.supplier_city);
                     $('#supplier_nation').val(data.supplier_nation);

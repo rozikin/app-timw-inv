@@ -9,7 +9,6 @@
                     <div class="card-body">
 
                         <div class="row">
-
                             <div class="container">
 
                                 <form action="{{ route('store.purchaserequest') }}" method="POST">
@@ -21,7 +20,9 @@
                                     </div>
                                     <hr>
 
-                                  <p class="text-danger">Add Purchase Request for CBD ID: {{ $cbdno }}</p>
+                                    <p class="text-danger">Add Request for: <strong>
+                                            {{ $cbdno }}/({{ substr($cbd->year, 2) }}{{ $cbd->planning_ssn }})/{{ substr($cbd->sample_code, 5) }}/{{ $cbd->item }}</strong>
+                                    </p>
 
                                     @if ($errors->any())
                                         <div class="alert alert-danger" role="alert">
@@ -39,15 +40,16 @@
                                             <div class="form-group row">
                                                 {{-- <label for="cbd_id" class="col-sm-4 col-form-label">CBD ID</label> --}}
                                                 <div class="col-sm-5">
-                                                    <input type="hidden" class="form-control" id="cbd_id"
-                                                        name="cbd_id" value="{{ $cbdId }}" readonly>
+                                                    <input type="hidden" class="form-control" id="cbd_id" name="cbd_id"
+                                                        value="{{ $cbdId }}" readonly>
                                                 </div>
                                             </div>
-                                            <div class="mb-3 row">
+                                            <div class="row">
                                                 <label for="tipe" class="col-sm-4 col-form-label">Type:</label>
                                                 <div class="col-sm-5">
                                                     <select class="js-example-basic-single form-select" id="tipe"
                                                         name="tipe">
+                                                        <option value="SLT">SLT</option>
                                                         <option value="Urgent">Urgent</option>
                                                         <option value="Non Urgent">Non Urgent</option>
                                                     </select>
@@ -64,8 +66,8 @@
                                             <div class="form-group row">
                                                 <label for="style" class="col-sm-4 col-form-label">Style</label>
                                                 <div class="col-sm-5">
-                                                    <input type="text" class="form-control" id="style"
-                                                        name="style">
+                                                    <input type="text" class="form-control" id="style" name="style"
+                                                        value="{{ substr($cbd->sample_code, 5) }}">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -75,10 +77,6 @@
                                                         name="destination">
                                                 </div>
                                             </div>
-
-                                        </div>
-
-                                        <div class="col-md-6">
 
                                             <div class="form-group row">
                                                 <label for="department" class="col-sm-4 col-form-label">Department</label>
@@ -95,9 +93,10 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="time_line" class="col-sm-4 col-form-label">Timeline</label>
+                                                <label for="time_line" class="col-sm-4 col-form-label">Timeline / Req I/H
+                                                    Date</label>
                                                 <div class="col-sm-5">
-                                                    <input type="text" class="form-control" id="time_line"
+                                                    <input type="date" class="form-control" id="time_line"
                                                         name="time_line">
                                                 </div>
                                             </div>
@@ -109,11 +108,16 @@
                                                 </div>
                                             </div>
 
+                                        </div>
+
+                                        <div class="col-md-6">
+
                                             <!-- Table displaying the pivot size/color/quantity data -->
                                             <div class="table-responsive">
                                                 <table class="table table-bordered">
                                                     <thead>
                                                         <tr>
+
                                                             <th>Size \ Color</th>
                                                             @foreach ($colors as $color)
                                                                 <th>{{ $color }}</th>
@@ -126,7 +130,7 @@
                                                                 <td>{{ $size }}</td>
                                                                 @foreach ($colors as $color)
                                                                     <td>
-                                                                       {{ $qtyData[$size][$color] ?? '' }}
+                                                                        {{ $qtyData[$size][$color] ?? '' }}
                                                                     </td>
                                                                 @endforeach
                                                             </tr>
@@ -144,64 +148,87 @@
                                     <div class="row">
 
                                         <div class="">
+                                         
+                                            <table class="table table-bordered" id="details-table">
+                                                <thead>
+                                                    <tr>
+                                                        {{-- <th>Item ID</th> --}}
+                                                        <th>ITM ID</th>
+                                                        <th>item Code</th>
+                                                        <th>Name</th>
+                                                        <th>UNIT</th>
+                                                        <th>Sup ID</th>
+                                                        <th>Sup Name</th>
+
+                                                        <th>Color</th>
+                                                        <th>Size</th>
+                                                        <th>QTY</th>
+                                                        <th>Consumption</th>
+                                                        <th>Allowance</th>
+                                                        <th>Total</th>
+
+                                                        <th>Remark</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="details-container">
+                                                    <tr class="detail-row">
+                                                        <td width="5px"><input type="text"
+                                                                class="form-control form-control-sm item-id"
+                                                                name="details[0][item_id]" required style="width: 100%;">
+                                                        </td>
+                                                        <td><input type="text"
+                                                                class="form-control form-control-sm item-code"
+                                                                name="details[0][item_code]" required readonly
+                                                                style="width: 100%;"></td>
+                                                        <td width="150px"><input type="text"
+                                                                class="form-control form-control-sm item-name"
+                                                                name="details[0][item_name]" required readonly
+                                                                style="width: 100%;"></td>
+                                                        <td><input type="text"
+                                                                class="form-control form-control-sm unit"
+                                                                name="details[0][unit]" readonly style="width: 100%;">
+                                                        </td>
+                                                        <td width="5px"><input type="text"
+                                                                class="form-control form-control-sm supplier-id"
+                                                                name="details[0][supplier_id]" required
+                                                                style="width: 100%;"></td>
+                                                        <td width="150px"><input type="text"
+                                                                class="form-control form-control-sm supplier-name"
+                                                                name="details[0][supplier_name]" required readonly
+                                                                style="width: 100%;"></td>
+                                                        <td width="150px"><input type="text"
+                                                                class="form-control form-control-sm color-id"
+                                                                name="details[0][color]" style="width: 100%;"></td>
+                                                        <td><input type="text"
+                                                                class="form-control form-control-sm size-id"
+                                                                name="details[0][size]" style="width: 100%;"></td>
+                                                        <td width="100px"><input type="text"
+                                                                class="form-control form-control-sm qty"
+                                                                name="details[0][qty]" required value="0"
+                                                                pattern="[0-9]+" style="width: 100%;"></td>
+                                                        <td><input type="text"
+                                                                class="form-control form-control-sm consumption"
+                                                                name="details[0][consumption]" value="0"
+                                                                pattern="[0-9]+" style="width: 100%;"></td>
+                                                        <td><input type="text"
+                                                                class="form-control form-control-sm allowance"
+                                                                name="details[0][allowance]" value="0"
+                                                                pattern="[0-9]+" style="width: 100%;"></td>
+                                                        <td width="100px"><input type="text"
+                                                                class="form-control form-control-sm total"
+                                                                name="details[0][total]" readonly style="width: 100%;">
+                                                        </td>
+                                                        <td><input type="text" class="form-control form-control-sm"
+                                                                name="details[0][remark]" style="width: 100%;"></td>
+                                                        <td><button type="button"
+                                                                class="btn btn-danger btn-sm remove-detail">Remove</button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                             <button type="button" class="btn btn-secondary btn-sm mb-2" id="add-detail">Add
                                                 Detail</button>
-                                                <table class="table table-bordered" id="details-table">
-                                                    <thead>
-                                                        <tr>
-                                                            {{-- <th>Item ID</th> --}}
-                                                            <th>item ID</th>
-                                                            <th>item Code</th>
-                                                            <th>Name</th>
-                                                            <th>Color</th>
-                                                            <th>Size</th>
-                                                            <th>UNIT</th>
-                                                            <th>QTY</th>
-                                                            <th>Consumption</th>
-                                                            <th>Allowance</th>
-                                                            <th>Total</th>
-    
-                                                            <th>Remark</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="details-container">
-                                                        <tr class="detail-row">
-                                                            <td><input type="text" class="form-control item-id"
-                                                                    name="details[0][item_id]" required></td>
-                                                            <td>
-                                                           <input type="text" class="form-control item-code"
-                                                                name="details[0][item_code]" required>
-                                                            </td>
-                                                            <td><input type="text" class="form-control item-name"
-                                                                name="details[0][item_name]" required>
-                                                            </td>
-                                                            <td><input type="text" class="form-control color-id"
-                                                                    name="details[0][color]"></td>
-                                                            <td><input type="text" class="form-control size-id"
-                                                                    name="details[0][size]"></td>
-                                                            <td><input type="text" class="form-control unit"
-                                                                    name="details[0][unit]"></td>
-                                                            <td><input type="text" class="form-control qty"
-                                                                    name="details[0][qty]" required value="0"
-                                                                    pattern="[0-9]+"></td>
-                                                            <td><input type="text" class="form-control consumption"
-                                                                    name="details[0][consumption]" value="0"
-                                                                    pattern="[0-9]+"></td>
-                                                            <td><input type="text" class="form-control allowance"
-                                                                    name="details[0][allowance]" value="0"
-                                                                    pattern="[0-9]+"></td>
-                                                            <td><input type="text" class="form-control total"
-                                                                    name="details[0][total]" readonly></td>
-    
-                                                            <td><input type="text" class="form-control"
-                                                                    name="details[0][remark]"></td>
-                                                            <td><button type="button"
-                                                                    class="btn btn-danger btn-sm remove-detail">Remove</button>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
 
                                         </div>
                                     </div>
@@ -266,6 +293,8 @@
                                 <th>ID</th>
                                 <th>Color Code</th>
                                 <th>Color Name</th>
+                                <th>size</th>
+                                <th>qty</th>
 
                             </tr>
                         </thead>
@@ -307,6 +336,37 @@
         </div>
     </div>
 
+    <div class="modal fade" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="supplierModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="supplierModalLabel">Select Supplier</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="suppliers-table" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Supplier Name</th>
+                                <th>Supplier Address</th>
+
+                                <th>Person</th>
+                                <th>Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Supplier rows will be appended here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         setTimeout(function() {
             $('.alert-danger').fadeOut('slow');
@@ -338,23 +398,26 @@
             }
 
 
+
+
             $('#add-detail').on('click', function() {
                 const newDetailRow = `
-            <tr class="detail-row">
-                <td><input type="text" class="form-control item-id" name="details[${detailIndex}][item_id]" required></td>
-                <td><input type="text" class="form-control item-code" name="details[${detailIndex}][item_code]" required></td>
-                <td><input type="text" class="form-control item-name" name="details[${detailIndex}][item_name]" required></td>
-                <td><input type="text" class="form-control color-id" name="details[${detailIndex}][color]"></td>
-                <td><input type="text" class="form-control size-id" name="details[${detailIndex}][size]"></td>
-                <td><input type="text" class="form-control unit" name="details[${detailIndex}][unit]"></td>
-                <td><input type="text" class="form-control qty" name="details[${detailIndex}][qty]" required  value="0" pattern="[0-9]+"></td>
-                <td><input type="text" class="form-control consumption" name="details[${detailIndex}][consumption]"  value="0" pattern="[0-9]+"></td>
-                <td><input type="text" class="form-control allowance" name="details[${detailIndex}][allowance]"  value="0" pattern="[0-9]+"></td>
-                <td><input type="text" class="form-control total" name="details[${detailIndex}][total]" readonly></td>
-          
-                <td><input type="text" class="form-control" name="details[${detailIndex}][remark]"></td>
-                <td><button type="button" class="btn btn-danger btn-sm remove-detail">Remove</button></td>
-            </tr>`;
+                    <tr class="detail-row">
+                        <td><input type="text" class="form-control form-control-sm item-id" name="details[${detailIndex}][item_id]" required style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm item-code" name="details[${detailIndex}][item_code]" required readonly style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm item-name" name="details[${detailIndex}][item_name]" required readonly style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm unit" name="details[${detailIndex}][unit]" readonly style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm supplier-id" name="details[${detailIndex}][supplier_id]" required style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm supplier-name" name="details[${detailIndex}][supplier_name]" required readonly style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm color-id" name="details[${detailIndex}][color]" style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm size-id" name="details[${detailIndex}][size]" style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm qty" name="details[${detailIndex}][qty]" required value="0" pattern="[0-9]+" style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm consumption" name="details[${detailIndex}][consumption]" value="0" pattern="[0-9]+" style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm allowance" name="details[${detailIndex}][allowance]" value="0" pattern="[0-9]+" style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm total" name="details[${detailIndex}][total]" value="0" readonly style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm" name="details[${detailIndex}][remark]" style="width: 100%;"></td>
+                        <td><button type="button" class="btn btn-danger btn-sm remove-detail">Remove</button></td>
+                    </tr>`;
                 $('#details-container').append(newDetailRow);
                 const newRow = $('#details-container').find('.detail-row').last();
                 addEventListeners(newRow); // Add event listeners to the new row
@@ -390,11 +453,11 @@
                 loadColors();
             });
 
-            $(document).on('click', '.size-id', function() {
-                selectedInput = $(this);
-                $('#sizeModal').modal('show');
-                loadSizes();
-            });
+            // $(document).on('click', '.size-id', function() {
+            //     selectedInput = $(this);
+            //     $('#sizeModal').modal('show');
+            //     loadSizes();
+            // });
 
 
             function loadItems() {
@@ -425,7 +488,15 @@
                                 },
                                 {
                                     title: "Item Name",
-                                    data: "item_name"
+                                    data: "item_name",
+                                    render: function(data, type, row) {
+                                        // Batasi item_name menjadi maksimal 25 karakter
+                                        if (type === 'display' && data.length > 50) {
+                                            return data.substring(0, 50) + '...';
+                                        } else {
+                                            return data;
+                                        }
+                                    }
                                 },
                                 {
                                     title: "Unit",
@@ -446,9 +517,12 @@
                         $('#items-table tbody').on('click', 'tr', function() {
                             var data = table.row(this).data();
                             selectedInput.val(data.id); // Mengambil ID item
-                            $(selectedInput).closest('.detail-row').find('.item-code').val(data.item_code);
-                            $(selectedInput).closest('.detail-row').find('.item-name').val(data.item_name);
-                            $(selectedInput).closest('.detail-row').find('.unit').val(data.unit.unit_code);
+                            $(selectedInput).closest('.detail-row').find('.item-code').val(data
+                                .item_code);
+                            $(selectedInput).closest('.detail-row').find('.item-name').val(data
+                                .item_name);
+                            $(selectedInput).closest('.detail-row').find('.unit').val(data.unit
+                                .unit_code);
                             $('#itemModal').modal('hide');
                         });
                     },
@@ -458,32 +532,71 @@
                 });
             }
 
+
+
             function loadColors() {
                 $('#colors-table tbody').empty();
+                var cbdId = $('#cbd_id').val();
 
                 $.ajax({
-                    url: '{{ route('get.colorglobal') }}',
+                    url: '{{ route('get.cbdglobal') }}',
                     method: 'GET',
+                    data: {
+                        cbd_id: cbdId
+                    },
                     success: function(data) {
-                        // Inisialisasi DataTable
+
+
+
+                        var tableData = [];
+                        data.forEach(function(cbd) {
+                            cbd.details.forEach(function(detail) {
+                                tableData.push({
+                                    id: cbd.id,
+                                    color_code: detail.color_code,
+                                    color: detail.color,
+                                    size: detail.size,
+                                    qty: detail.qty
+                                });
+                            });
+                        });
+
+
                         table = $('#colors-table').DataTable({
                             paging: true,
                             searching: true,
                             ordering: true,
                             destroy: true,
                             info: true,
-                            data: data,
+                            data: tableData,
                             columns: [{
                                     title: "ID",
                                     data: "id"
                                 },
                                 {
-                                    title: "Color Code",
+                                    title: "Color_Code",
                                     data: "color_code"
                                 },
                                 {
-                                    title: "Color Name",
-                                    data: "color_name"
+                                    title: "Color",
+                                    data: "color",
+                                    render: function(data, type, row) {
+                                        // Tambahkan spasi di depan setiap kata dalam teks
+                                        if (type === 'display') {
+                                            return data.replace(/\b(\w+)\b/g, ' $1');
+                                        } else {
+                                            return data;
+                                        }
+                                    }
+                                },
+
+                                {
+                                    title: "size",
+                                    data: "size"
+                                },
+                                {
+                                    title: "qty",
+                                    data: "qty"
                                 },
 
                             ]
@@ -492,8 +605,18 @@
                         // Tambahkan event handler untuk setiap baris tabel
                         $('#colors-table tbody').on('click', 'tr', function() {
                             var data = table.row(this).data();
-                            selectedInput.val(data.color_code); // Mengambil ID item
+
+                            data.color = data.color.replace(/\n/g, ' ');
+
+                            selectedInput.val(data.color); // Mengambil ID item
+
+                            $(selectedInput).closest('.detail-row').find('.size-id').val(data
+                                .size);
+                            $(selectedInput).closest('.detail-row').find('.qty').val(data
+                                .qty);
+
                             $('#colorModal').modal('hide');
+
                         });
                     },
                     error: function(xhr, status, error) {
@@ -545,6 +668,91 @@
                         console.error(xhr.responseText);
                     }
 
+                });
+            }
+
+
+            $(document).on('click', '.supplier-id', function() {
+                selectedInput = $(this);
+                $('#supplierModal').modal('show'); // Show the modal
+                loadSuppliers();
+            });
+
+
+            function loadSuppliers() {
+                $('#supplier-table tbody').empty();
+
+                $.ajax({
+                    url: '{{ route('get.supplierglobal') }}', // Sesuaikan dengan route yang benar
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(data) {
+                        // Inisialisasi DataTable
+                        table = $('#suppliers-table').DataTable({
+                            paging: true,
+                            searching: true,
+                            ordering: true,
+                            destroy: true,
+                            info: true,
+                            data: data,
+                            columns: [{
+                                    title: "ID",
+                                    data: "id"
+                                },
+
+                                {
+                                    title: "supplier_name",
+                                    data: "supplier_name",
+                                    render: function(data, type, row) {
+                                        // Batasi panjang teks maksimal menjadi 50 karakter
+                                        if (type === 'display' && data.length > 25) {
+                                            return data.substr(0, 25) + '...';
+                                        }
+                                        return data;
+                                    }
+                                },
+                                {
+                                    title: "supplier_address",
+                                    data: "supplier_address",
+                                    render: function(data, type, row) {
+                                        // Batasi panjang teks maksimal menjadi 25 karakter
+                                        if (type === 'display' && data.length > 25) {
+                                            return data.substr(0, 25) + '...';
+                                        }
+                                        return data;
+                                    }
+                                },
+
+                                {
+                                    title: "supplier_person",
+                                    data: "supplier_person"
+                                },
+                                {
+                                    title: "remark",
+                                    data: "remark"
+                                }
+                            ]
+                        });
+
+                        // Tambahkan event handler untuk setiap baris tabel
+                        $('#suppliers-table tbody').on('click', 'tr', function() {
+                            var supplier = table.row(this).data();
+                            selectedInput.val(supplier.id); // Mengambil ID item
+                            $(selectedInput).closest('.detail-row').find('.supplier-name').val(
+                                supplier
+                                .supplier_name);
+                            $('#supplierModal').modal('hide');
+
+                            // Trigger the total calculation after setting the supplier ID and name
+                            var row = $(selectedInput).closest('.detail-row');
+                            calculateTotal(row);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
                 });
             }
 

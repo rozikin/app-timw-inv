@@ -82,19 +82,16 @@ class SupplierController extends Controller
         }
     }
 
+    public function GetsupplierGlobal(Request $request){
+        $purchaseRequestId = $request->input('idx');
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $suppliers = Supplier::latest()->get();
+        return response()->json($suppliers);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
+
+    
     public function Storesupplier(Request $request)
     {
         if( $request->supplier_id == ""){
@@ -103,10 +100,9 @@ class SupplierController extends Controller
                 'supplier_name' => 'required',
                 'supplier_npwp' => 'required',
                 'supplier_address' => 'required',
-                'supplier_city' => 'required',
-                'supplier_nation' => 'required',
+    
                 'supplier_person' => 'required',
-                'supplier_phone' => 'required',
+        
     
             ]);
     
@@ -122,6 +118,7 @@ class SupplierController extends Controller
                 'supplier_code' => $request->supplier_code,
                 'supplier_name' => $request->supplier_name,
                 'supplier_npwp' => $request->supplier_npwp,
+                'supplier_fax' => $request->supplier_fax,
                 'supplier_address' => $request->supplier_address,
                 'supplier_city' => $request->supplier_city,
                 'supplier_nation' => $request->supplier_nation,
@@ -165,6 +162,7 @@ class SupplierController extends Controller
                 'supplier_code' => $request->supplier_code,
                 'supplier_name' => $request->supplier_name,
                 'supplier_npwp' => $request->supplier_npwp,
+                'supplier_fax' => $request->supplier_fax,
                 'supplier_address' => $request->supplier_address,
                 'supplier_city' => $request->supplier_city,
                 'supplier_nation' => $request->supplier_nation,

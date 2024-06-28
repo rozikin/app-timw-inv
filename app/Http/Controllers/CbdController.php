@@ -121,13 +121,28 @@ class CbdController extends Controller
 
     
         try {
-            Excel::import(new CbdsImport, $request->file('import_file'));
-
-            $notification = array(
-                'message' => 'Import Successfully',
-                'alert-type' => 'success'
-            );
-
+            $import = new CbdsImport;
+            Excel::import($import, $request->file('import_file'));
+    
+            $failures = $import->getFailures();
+    
+            if (count($failures) > 0) {
+                $message = 'Import completed with warnings: ';
+                foreach ($failures as $failure) {
+                    $message .= 'Row ' . $failure->row() . ' - ' . implode(', ', $failure->errors()) . '; ';
+                }
+    
+                $notification = array(
+                    'message' => $message,
+                    'alert-type' => 'warning'
+                );
+            } else {
+                $notification = array(
+                    'message' => 'Import Successfully',
+                    'alert-type' => 'success'
+                );
+            }
+    
         } catch (\Exception $e) {
             $notification = array(
                 'message' => 'Import failed: ' . $e->getMessage(),
@@ -147,6 +162,25 @@ class CbdController extends Controller
             'success' => true,
             'message' => 'Data Post Berhasil Dihapus!.',
         ]);
+    }
+
+    public function Getcbdglobal(Request $request){
+
+     // Validate the incoming request
+     $request->validate([
+        'cbd_id' => 'required|integer'
+    ]);
+
+    // Retrieve the colors based on the cbd_id
+    $cbdId = $request->input('cbd_id');
+    $colors = Cbd::with('details')->where('id', $cbdId)->get();
+
+
+    // dd($colors);
+
+    // Return the data as JSON
+    return response()->json($colors);
+
     }
 
 

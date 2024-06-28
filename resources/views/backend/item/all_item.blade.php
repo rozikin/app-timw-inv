@@ -84,15 +84,15 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="item_code" class="form-label">Item Code:</label>
-                                    <input type="text" class="form-control" id="item_code" name="item_code" autofocus>
+                                    <input type="text" class="form-control" id="item_code" name="item_code" autofocus required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="item_name" class="form-label">Name:</label>
-                                    <input type="text" class="form-control" id="item_name" name="item_name">
+                                    <input type="text" class="form-control" id="item_name" name="item_name" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Description:</label>
-                                    <input type="text" class="form-control" id="description" name="description">
+                                    <input type="text" class="form-control" id="description" name="description" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Category</label>

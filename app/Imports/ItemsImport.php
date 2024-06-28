@@ -21,7 +21,8 @@ class ItemsImport implements ToModel, WithValidation,WithHeadingRow
             'item_name' => $row['item_name'],
             'description' => $row['description'],
             'category_id' => $row['category_id'],
-            'unit_id' => $row['unit_id']
+            'unit_id' => $row['unit_id'],
+            'remark' => $row['remark'],
         ]);
     }
 

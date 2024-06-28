@@ -45,7 +45,7 @@
                                         <th>Order No</th>
                                         <th>SPLR MAT</th>
                                         <th>Item</th>
-                                        <th>Sample Code</th>
+                                        <th>Sample / Style</th>
                                         <th>Color Code</th>
                                         <th>Color</th>
                                         <th>Size Code</th>

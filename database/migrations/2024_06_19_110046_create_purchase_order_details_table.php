@@ -11,23 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('purchase_request_details', function (Blueprint $table) {
+        Schema::create('purchase_order_details', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('purchase_request_id');
-            $table->unsignedBigInteger('item_id');
-            $table->unsignedBigInteger('supplier_id')->nullable();
+            $table->unsignedBigInteger('purchase_order_id')->unsigned();
+            $table->unsignedBigInteger('item_id')->unsigned();
             $table->string('color')->nullable();
             $table->string('size')->nullable();
             $table->string('qty');
-            $table->string('consumtion')->nullable();
-            $table->string('allowance')->nullable();
-            $table->string('total');
+            $table->string('price');
+            $table->string('total_price');
             $table->string('status')->nullable();
             $table->string('remark')->nullable();
+         
             $table->timestamps();
 
-            // Foreign key constraints
-            $table->foreign('purchase_request_id')->references('id')->on('purchase_requests')->onDelete('cascade');
+            $table->foreign('purchase_order_id')->references('id')->on('purchase_orders')->onDelete('cascade');
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
         });
     }
@@ -37,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchase_request_details');
+        Schema::dropIfExists('purchase_order_details');
     }
 };

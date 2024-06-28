@@ -16,9 +16,14 @@ return new class extends Migration
             $table->string('order_no');  // Kolom order_no untuk foreign key
             $table->string('color_code');
             $table->string('color');
+            $table->string('pattern_dimension_code');
             $table->string('size_code');
             $table->string('size');
             $table->string('qty');
+            $table->string('arrangment_by');
+            $table->string('trim_description');
+            $table->string('trim_item_no');
+            $table->string('trim_supplier');
             $table->timestamps();
             $table->foreign('order_no')->references('order_no')->on('cbds')->onDelete('cascade');
         });

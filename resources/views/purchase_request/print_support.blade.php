@@ -47,15 +47,14 @@
 
         .table th,
         .table td {
-            border: 1px solid rgb(94, 93, 93);
-            padding: 2px;
+            border: 1px solid black;
+            padding: 5px;
             text-align: left;
             font-size: 10px;
         }
 
         .table th {
             background-color: #f2f2f2;
-            padding: 5px;
         }
 
         .table-no-border td {
@@ -152,10 +151,6 @@
             overflow: hidden;
             text-overflow: ellipsis; /* Tampilkan elipsis jika teks terlalu panjang */
         }
-
-        .txt-text{
-            font-size: 12px;
-        }
     </style>
 </head>
 
@@ -209,52 +204,17 @@
 
         <br>
 
-        <div class="txt-text">PO ORIGINAL</div>
 
-        <div class="table-responsive">
-            <table class="table table-po"  style="width:25%">
-                <thead>
-                    <tr>
-
-                        <th>S\C</th>
-                        @foreach ($colors as $color)
-                            <th>{{ $color }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($sizes as $size)
-                        <tr>
-                            <td>{{ $size }}</td>
-                            @foreach ($colors as $color)
-                                <td>
-                                    {{ $qtyData[$size][$color] ?? '' }}
-                                </td>
-                            @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-
-        <br>
-
-
-        <div class="txt-text">ITEM REQUEST</div>
         <table class="table detail-request table-detail-request">
             <thead>
                 <tr>
                     <th>NO</th>
-                    <th>ITEMS REQUESTED</th>
+                    <th  class="wide-column">ITEMS REQUESTED</th>
                     <th>SIZE</th>
                     <th>COLOR</th>
                     <th>UNIT</th>
-                    <th>WH STOCK</th>
-                    <th>REQ PO</th>
-                    <th>CONSUMPTION</th>
-                    <th>ALLOWANCE</th>
-                    <th>TOTAL QTY</th>
+                    <th>WAREHOUSE STOCK</th>
+                    <th>QTY REQUESTED</th>
                     <th>REMARKS</th>
                 </tr>
             </thead>
@@ -269,9 +229,6 @@
                         <td>{{ $detail->item->unit->unit_code }}</td>
                         <td>{{ $detail->warehouse_stock ?? 0 }}</td>
                         <td>{{ $detail->qty }}</td>
-                        <td>{{ $detail->consumtion }}</td>
-                        <td>{{ $detail->allowance }}</td>
-                        <td>{{ $detail->total }}</td>
                         <td>{{ $detail->remark }}</td>
                     </tr>
                 @endforeach

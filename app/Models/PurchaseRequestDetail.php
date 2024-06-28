@@ -10,7 +10,9 @@ class PurchaseRequestDetail extends Model
     use HasFactory;
     protected $guarded = [];
 
-    protected $fillable = ['purchase_request_id', 'item_id','color','size','qty','consumtion','allowance','total','status','remark'];
+    protected $fillable = ['purchase_request_id', 'item_id', 'supplier_id','color','size','qty','consumtion','allowance','total','status','remark'];
+
+    
     public function purchaserequest()
     {
         return $this->belongsTo(PurchaseRequest::class, 'purchase_request_id');
@@ -19,6 +21,11 @@ class PurchaseRequestDetail extends Model
     public function item()
     {
         return $this->belongsTo(Item::class, 'item_id');
-    }
+    }   
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class, 'supplier_id');
+    }   
 
 }

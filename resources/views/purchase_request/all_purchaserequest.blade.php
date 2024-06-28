@@ -4,7 +4,6 @@
     <div class="page-content mt-5">
 
 
-
         <div class="row">
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
@@ -30,7 +29,7 @@
                                  
                                 
                                     <a href="{{ route('add.purchaserequest') }}"  class="btn btn-primary"><i class="feather-10" data-feather="plus"></i>  &nbsp;Add</a>
-                                    <a href="{{ route('export.cbd') }}"  class="btn btn-primary"><i class="feather-10" data-feather="download"></i>  &nbsp;Export</a>
+                                    {{-- <a href="{{ route('export.cbd') }}"  class="btn btn-primary"><i class="feather-10" data-feather="download"></i>  &nbsp;Export</a> --}}
                                   </div>
                             </div>
                         </div>
@@ -52,8 +51,10 @@
                                         <th>Item_name</th>
                                         <th>Color</th>
                                         <th>Size</th>
+                                        <th>Unit</th>
                                         <th>Total</th>
                                         <th>Remark</th>
+                                        <th>Status</th>
                                         <th>Action</th>
 
                                     </tr>
@@ -95,7 +96,6 @@
             });
 
         
-
             var table = $('#cbdTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -103,8 +103,13 @@
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex' },
                     { data: 'purchase_request_no', name: 'purchase_request_no' },
-                    { data: 'cbd_id', name: 'cbd_id' },
-                    { data: 'tipe', name: 'tipe' },
+                    { data: 'order_no', name: 'order_no' },
+                    { data: 'tipe', name: 'tipe', render: function(data, type, row) {
+                        if (data == 'Urgent') {
+                            return '<span class="badge bg-danger">'+data+'</span>';
+                        }
+                        return data;
+                    }},
                     { data: 'mo', name: 'mo' },
                     { data: 'style', name: 'style' },
                     { data: 'destination', name: 'destination' },
@@ -112,11 +117,13 @@
                     { data: 'item_name', name: 'item_name' },
                     { data: 'color', name: 'color' },
                     { data: 'size', name: 'size' },
+                    { data: 'unit', name: 'unit' },
                     { data: 'total', name: 'total' },
                     { data: 'remark', name: 'remark' },
+                    { data: 'status', name: 'status' },
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ],
-                
+            
             });
 
 

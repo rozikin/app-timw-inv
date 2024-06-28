@@ -203,9 +203,9 @@
                         </ul>
                     </div>
                 </li>
-            @endif
+            @endif 
 
-            <li class="nav-item nav-category">Transaction</li>
+            <li class="nav-item nav-category">PO Transaction</li>
             @if (Auth::user()->can('transaction.menu'))
 
                 <li class="nav-item {{ request()->is('*/transaction') ? 'active' : '' }}">
@@ -280,7 +280,7 @@
                 @endif
 
                 <li
-                    class="nav-item {{ request()->is('*/purchaserequest') || request()->is('edit/purchaserequest/*') || request()->is('*/purchaserequest/*')  ? 'active' : '' }}">
+                    class="nav-item {{ request()->is('*/purchaserequest') || request()->is('edit/purchaserequest/*') || request()->is('*/purchaserequest/*') || request()->is('*/purchaserequestid/*')   ? 'active' : '' }}">
                     @if (Auth::user()->can('all.purchaserequest'))
                         <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout1" role="button"
                             aria-expanded="false" aria-controls="emailsyout1">
@@ -305,6 +305,68 @@
                     </div>
 
                 </li>
+                <li
+                    class="nav-item {{ request()->is('*/purchaseorder') || request()->is('edit/purchaseorder/*') || request()->is('*/purchaseorder/*') || request()->is('*/purchaseorderid/*')  ? 'active' : '' }}">
+                    @if (Auth::user()->can('all.purchaseorder'))
+                        <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout1x" role="button"
+                            aria-expanded="false" aria-controls="emailsyout1x">
+                            <i class="link-icon" data-feather="check-circle"></i>
+                            <span class="link-title">Purchase Order</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                    @endif
+                    <div class="{{ request()->is('*/purchaseorder') || request()->is('*/purchaseorder/*') || request()->is('*/purchaseorderid/*') || request()->is('*/purchaseorder')  ? 'show' : 'collapse' }}"
+                        id="emailsyout1x">
+                        <ul class="nav sub-menu">
+
+                            @if (Auth::user()->can('purchaseorder.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.purchaseorder') }}"
+                                        class="nav-link {{ request()->is('all/purchaseorder') ? 'active' : '' }}">
+                                        Purchase Order (PO)</a>
+                                </li>
+                            @endif
+
+                        </ul>
+                    </div>
+
+                </li>
+
+            @endif
+
+
+            <li class="nav-item nav-category">WAREHOUSE</li>
+            @if (Auth::user()->can('transaction.menu'))
+
+          
+         
+                <li
+                    class="nav-item {{ request()->is('*/materialin') || request()->is('edit/materialin/*') || request()->is('*/materialin/*') || request()->is('*/materialinid/*')   ? 'active' : '' }}">
+                    @if (Auth::user()->can('all.materialin'))
+                        <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout10" role="button"
+                            aria-expanded="false" aria-controls="emailsyout10">
+                            <i class="link-icon" data-feather="check-circle"></i>
+                            <span class="link-title">Material IN</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                    @endif
+                    <div class="{{ request()->is('*/materialin') || request()->is('*/materialin/*') || request()->is('*/materialin') || request()->is('*/photoreturn') || request()->is('*/serahterima') ? 'show' : 'collapse' }}"
+                        id="emailsyout10">
+                        <ul class="nav sub-menu">
+
+                            @if (Auth::user()->can('materialin.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.materialin') }}"
+                                        class="nav-link {{ request()->is('all/materialin') ? 'active' : '' }}">
+                                        Material IN</a>
+                                </li>
+                            @endif
+
+                        </ul>
+                    </div>
+
+                </li>
+              
 
             @endif
 
