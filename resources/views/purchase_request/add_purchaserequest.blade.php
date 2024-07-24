@@ -96,7 +96,7 @@
                                             <div class="form-group row">
                                                 <label for="time_line" class="col-sm-4 col-form-label">Timeline</label>
                                                 <div class="col-sm-5">
-                                                    <input type="text" class="form-control" id="time_line"
+                                                    <input type="date" class="form-control" id="time_line"
                                                         name="time_line">
                                                 </div>
                                             </div>
@@ -117,8 +117,7 @@
                                     <div class="row">
 
                                         <div class="">
-                                            <button type="button" class="btn btn-secondary btn-sm mb-2" id="add-detail">Add
-                                                Detail</button>
+
                                             <table class="table table-bordered" id="details-table">
                                                 <thead>
                                                     <tr>
@@ -126,20 +125,22 @@
                                                         <th>item ID</th>
                                                         <th>item Code</th>
                                                         <th>Name</th>
+                                                        <th>UNIT</th>
+                                                        <th>SUP ID</th>
+                                                        <th>SUP NAME</th>
                                                         <th>Color</th>
                                                         <th>Size</th>
-                                                        <th>UNIT</th>
+
                                                         <th>QTY</th>
                                                         <th>Consumption</th>
                                                         <th>Allowance</th>
                                                         <th>Total</th>
-
                                                         <th>Remark</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="details-container">
-                                                    <tr class="detail-row">
+                                                    {{-- <tr class="detail-row">
                                                         <td><input type="text" class="form-control item-id"
                                                                 name="details[0][item_id]" required></td>
                                                         <td>
@@ -149,12 +150,16 @@
                                                         <td><input type="text" class="form-control item-name"
                                                                 name="details[0][item_name]" required>
                                                         </td>
+                                                        <td><input type="text" class="form-control unit"
+                                                            name="details[0][unit]"></td>
+
+
+
                                                         <td><input type="text" class="form-control color-id"
                                                                 name="details[0][color]"></td>
                                                         <td><input type="text" class="form-control size-id"
                                                                 name="details[0][size]"></td>
-                                                        <td><input type="text" class="form-control unit"
-                                                                name="details[0][unit]"></td>
+                                                     
                                                         <td><input type="text" class="form-control qty"
                                                                 name="details[0][qty]" required value="0"
                                                                 pattern="[0-9]+"></td>
@@ -172,9 +177,12 @@
                                                         <td><button type="button"
                                                                 class="btn btn-danger btn-sm remove-detail">Remove</button>
                                                         </td>
-                                                    </tr>
+                                                    </tr> --}}
                                                 </tbody>
                                             </table>
+
+                                            <button type="button" class="btn btn-secondary btn-sm mb-2" id="add-detail">Add
+                                                Detail</button>
 
                                         </div>
                                     </div>
@@ -345,20 +353,21 @@
             $('#add-detail').on('click', function() {
                 const newDetailRow = `
             <tr class="detail-row">
-                <td><input type="text" class="form-control item-id" name="details[${detailIndex}][item_id]" required></td>
-                <td><input type="text" class="form-control item-code" name="details[${detailIndex}][item_code]" required></td>
-                <td><input type="text" class="form-control item-name" name="details[${detailIndex}][item_name]" required></td>
-                <td><input type="text" class="form-control color-id" name="details[${detailIndex}][color]"></td>
-                <td><input type="text" class="form-control size-id" name="details[${detailIndex}][size]"></td>
-                <td><input type="text" class="form-control unit" name="details[${detailIndex}][unit]"></td>
-                <td><input type="text" class="form-control qty" name="details[${detailIndex}][qty]" required  value="0" pattern="[0-9]+"></td>
-                <td><input type="text" class="form-control consumption" name="details[${detailIndex}][consumption]"  value="0" pattern="[0-9]+"></td>
-                <td><input type="text" class="form-control allowance" name="details[${detailIndex}][allowance]"  value="0" pattern="[0-9]+"></td>
-                <td><input type="text" class="form-control total" name="details[${detailIndex}][total]" value="0" readonly></td>
-          
-                <td><input type="text" class="form-control" name="details[${detailIndex}][remark]"></td>
-                <td><button type="button" class="btn btn-danger btn-sm remove-detail">Remove</button></td>
-            </tr>`;
+                        <td><input type="text" class="form-control form-control-sm item-id" name="details[${detailIndex}][item_id]" required style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm item-code" name="details[${detailIndex}][item_code]" required readonly style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm item-name" name="details[${detailIndex}][item_name]" required readonly style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm unit" name="details[${detailIndex}][unit]" readonly style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm supplier-id" name="details[${detailIndex}][supplier_id]" required style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm supplier-name" name="details[${detailIndex}][supplier_name]" required readonly style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm color-id" name="details[${detailIndex}][color]" style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm size-id" name="details[${detailIndex}][size]" style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm qty" name="details[${detailIndex}][qty]" required value="0" pattern="[0-9]+" style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm consumption" name="details[${detailIndex}][consumption]" value="0" pattern="[0-9]+" style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm allowance" name="details[${detailIndex}][allowance]" value="0" pattern="[0-9]+" style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm total" name="details[${detailIndex}][total]" value="0" readonly style="width: 100%;"></td>
+                        <td><input type="text" class="form-control form-control-sm" name="details[${detailIndex}][remark]" style="width: 100%;"></td>
+                        <td><button type="button" class="btn btn-danger btn-sm remove-detail">Remove</button></td>
+                    </tr>`;
                 $('#details-container').append(newDetailRow);
                 const newRow = $('#details-container').find('.detail-row').last();
                 addEventListeners(newRow); // Add event listeners to the new row
@@ -565,14 +574,6 @@
         });
 
 
-
-        // Event listener for clicking on supplier_name input
-        //  $(document).on('click', '.supplier_name', function() {
-        //         selectedSupplierInput = $(this); // Store the input element
-        //         $('#supplierModal').modal('show'); // Show the modal
-        //         loadSuppliers(); // Load suppliers data
-        //     });
-
         function loadSuppliers() {
             $('#supplier-table tbody').empty();
 
@@ -598,15 +599,23 @@
 
                             {
                                 title: "supplier_name",
-                                data: "supplier_name"
+                                data: "supplier_name",
+                                render: function(data, type, row) {
+                                    // Batasi panjang teks maksimal menjadi 50 karakter
+                                    if (type === 'display' && data.length > 25) {
+                                        return data.substr(0, 25) + '...';
+                                    }
+                                    return data;
+                                }
                             },
+
                             {
                                 title: "supplier_address",
                                 data: "supplier_address",
                                 render: function(data, type, row) {
-                                    // Batasi panjang teks maksimal menjadi 50 karakter
-                                    if (type === 'display' && data.length > 50) {
-                                        return data.substr(0, 50) + '...';
+                                    // Batasi panjang teks maksimal menjadi 25 karakter
+                                    if (type === 'display' && data.length > 25) {
+                                        return data.substr(0, 25) + '...';
                                     }
                                     return data;
                                 }
@@ -623,12 +632,17 @@
                         ]
                     });
 
+
                     // Tambahkan event handler untuk setiap baris tabel
                     $('#suppliers-table tbody').on('click', 'tr', function() {
                         var supplier = table.row(this).data();
-                        selectedSupplierInput.val(supplier
-                            .supplier_name); // Mengisi supplier name
-                        $('#supplier_id').val(supplier.id); // Mengisi supplier id
+                        selectedInput.val(supplier.id); // Mengambil ID item
+                        $(selectedInput).closest('.detail-row').find('.supplier-name').val(
+                            supplier
+                            .supplier_name);
+                        $('#supplierModal').modal('hide');
+
+
                         $('#supplierModal').modal('hide');
                     });
                 },

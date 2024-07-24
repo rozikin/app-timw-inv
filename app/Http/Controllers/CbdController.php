@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cbd;
+use App\Models\CbdDetail;
 use Illuminate\Http\Request;
 use App\Imports\CbdsImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -184,5 +185,36 @@ class CbdController extends Controller
     }
 
 
+
+    public function Getcbddetail(Request $request){
+        
+            if ($request->ajax()) {
+                $data = CbdDetail::with('cbd')->get();
+        
+                return datatables()->of($data)
+                    ->addColumn('order_no', function ($row) {
+                        return $row->cbd->order_no ?? 'N/A';
+                    })
+                    ->addColumn('sample_code', function ($row) {
+                        return $row->cbd->sample_code ?? 'N/A';
+                    })
+                    ->addColumn('planning_ssn', function ($row) {
+                        return $row->cbd->year.'-'.$row->cbd->planning_ssn ?? 'N/A';
+                    })
+                    ->addColumn('color_code', function ($row) {
+                        return $row->color_code ?? 'N/A';
+                    })
+                    ->addColumn('color', function ($row) {
+                        return $row->color ?? 'N/A';
+                    })
+                    ->addColumn('size', function ($row) {
+                        return $row->size ?? 'N/A';
+                    })
+                    ->make(true);
+            }
+        
+            return response()->json(['message' => 'Invalid request'], 400);
+
+        }
 
 }

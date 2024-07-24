@@ -43,23 +43,23 @@
                                         <th>No</th>
                                         <th>Purchase No</th>
                                         <th>Request No</th>
+                                        <th>MO /Style</th>
                                         <th>Supplier</th>
                                         <th>Date in House</th>
-                                        <th>delivery_at</th>
                                         <th>applicant</th>
+                                        <th>Item_code</th>
                                         <th>Item_name</th>
                                         <th>Color</th>
                                         <th>Size</th>
                                         <th>Unit</th>
                                         <th>qty</th>
-                                        <th>price</th>
-                                    
-                                        <th>Status</th>
+                                        <th>Price</th>
+                                        <th>remark</th>
                                         <th>Action</th>
 
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody> 
 
                                 </tbody>
                             </table>
@@ -105,10 +105,36 @@
                     { "data": "DT_RowIndex", "name": "DT_RowIndex", "searchable": false },
                     { "data": "purchase_order_no", "name": "purchase_order_no" },
                     { "data": "purchase_request_no", "name": "purchase_request_no" },
-                    { "data": "supplier_name", "name": "supplier_name" },
+                    { "data": "mo", "name": "mo" },
+                    {
+                                title: "supplier_name",
+                                data: "supplier_name",
+                                render: function(data, type, row) {
+                                    // Batasi panjang teks maksimal menjadi 25 karakter
+                                    if (type === 'display' && data.length > 25) {
+                                        return data.substr(0, 25) + '...';
+                                    }
+                                    return data;
+                                }
+                            },
                     { "data": "date_in_house", "name": "date_in_house" },
-                    { "data": "delivery_at", "name": "delivery_at" },
                     { "data": "applicant", "name": "applicant" },
+                    { 
+                        "data": "item_code", 
+                        "name": "item_code",
+                        "render": function(data, type, row) {
+                            if (Array.isArray(row.item_details) && row.item_details.length > 0) {
+                                var items = '<ul>';
+                                row.item_details.forEach(function(item) {
+                                    items += '<li>' + item.item_code + '</li>';
+                                });
+                                items += '</ul>';
+                                return items;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
                     { 
                         "data": "item_name", 
                         "name": "item_name",
@@ -132,7 +158,7 @@
                             if (Array.isArray(row.item_details) && row.item_details.length > 0) {
                                 var colors = '<ul>';
                                 row.item_details.forEach(function(item) {
-                                    colors += '<li>' + (item.color ? item.color : '-') + '</li>';
+                                    colors += (item.color ?  '<li>' + item.color+ '</li>' : '') ;
                                 });
                                 colors += '</ul>';
                                 return colors;
@@ -148,7 +174,7 @@
                             if (Array.isArray(row.item_details) && row.item_details.length > 0) {
                                 var sizes = '<ul>';
                                 row.item_details.forEach(function(item) {
-                                    sizes += '<li>' + (item.size ? item.size : '-') + '</li>';
+                                    sizes +=  (item.size ? '<li>' + item.size + '</li>' : '') ;
                                 });
                                 sizes += '</ul>';
                                 return sizes;
@@ -164,7 +190,7 @@
                             if (Array.isArray(row.item_details) && row.item_details.length > 0) {
                                 var sizes = '<ul>';
                                 row.item_details.forEach(function(item) {
-                                    sizes += '<li>' + (item.unit_code ? item.unit_code : '-') + '</li>';
+                                    sizes +=  (item.unit_code ? '<li>' + item.unit_code  + '</li>' : '');
                                 });
                                 sizes += '</ul>';
                                 return sizes;
@@ -207,16 +233,16 @@
                     },
                    
                     { 
-                        "data": "status", 
-                        "name": "status",
+                        "data": "remark", 
+                        "name": "remark",
                         "render": function(data, type, row) {
                             if (Array.isArray(row.item_details) && row.item_details.length > 0) {
-                                var statuss = '<ul>';
+                                var remarks = '<ul>';
                                 row.item_details.forEach(function(item) {
-                                    statuss += '<li>' + (item.status ? item.status : '') + '</li>';
+                                    remarks += (item.remark ?  '<li>' + item.remark + '</li>' : '') ;
                                 });
-                                statuss += '</ul>';
-                                return statuss;
+                                remarks += '</ul>';
+                                return remarks;
                             } else {
                                 return '';
                             }

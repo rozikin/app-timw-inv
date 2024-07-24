@@ -13,8 +13,27 @@
 
 table.dataTable td {
     font-size: 1em;
+    
   }
 
   table.dataTable tr.dtrg-level-0 td {
-    font-size: 1.1em;
+    font-size: 1em;
   }
+
+  .dataTables_wrapper {
+    font-size: inherit; 
+}
+
+.small-font td,
+.small-font th {
+    font-size: 7px; 
+}
+
+
+body {
+  font-size: 13px;
+  font-family: Calibri, sans-serif;
+}
+
+
+

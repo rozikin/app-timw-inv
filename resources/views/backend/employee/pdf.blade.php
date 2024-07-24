@@ -20,7 +20,6 @@
             /* Menampilkan kartu secara berdampingan */
             margin-right: 20px;
             /* Jarak antara kartu */
-
         }
 
         .qr-code {
@@ -54,13 +53,6 @@
             margin-top: 20px;
         }
 
-
-        
-
-
-     
-    
-
         @media print {
             .page-break {
                 page-break-before: always;
@@ -70,10 +62,6 @@
 </head>
 
 <body>
-
-
-
-
 
     <div>
         {{-- <h1>Employee Report</h1> --}}
@@ -91,13 +79,6 @@
         @endforeach
 
     </div>
-
-
-
-
-
-
-
 
 </body>
 

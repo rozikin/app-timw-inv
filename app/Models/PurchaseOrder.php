@@ -34,6 +34,7 @@ class PurchaseOrder extends Model
         'note2',
         'rule',
         'status',
+        'remarksx',
         'user_id',
     ];
 

@@ -11,6 +11,7 @@ use DataTables;
 use App\Models\Cbd;
 use Carbon\Carbon;
 use PDF;
+use Illuminate\Support\Facades\Log;
 
 
 class PurchaseRequestController extends Controller
@@ -76,7 +77,7 @@ class PurchaseRequestController extends Controller
     
                     $createPOButton = $allDetailsPo ? 
                         '' : 
-                        '<a href="/add/purchaseorderid/'.$row->id.'" class="dropdown-item text-success" target="_blank"> &nbsp; Create Purchase Order</a>';
+                        '<a href="/add/purchaseorderid/'.$row->id.'" class="dropdown-item text-success"> &nbsp; Create Purchase Order</a>';
                     
                     $editButton = $hasStatus ? 
                         '<a href="javascript:void(0)" class="dropdown-item text-muted disabled"> &nbsp; Edit</a>' : 
@@ -370,7 +371,7 @@ class PurchaseRequestController extends Controller
             'style' => $request->style,
             'destination' => $request->destination,
             'time_line' => $request->time_line,
-            'remark' => $request->remark1,
+            'remark1' => $request->remark1,
             'status' => '',
             'revision_no' => 0,
             'user_id' => Auth::id(),
@@ -397,6 +398,7 @@ class PurchaseRequestController extends Controller
 
         return redirect()->route('all.purchaserequest')->with('success', 'Purchase Request berhasil disimpan.');
     }
+
 
 
     public function Editpurchaserequest($id)
@@ -431,6 +433,7 @@ class PurchaseRequestController extends Controller
         // Ambil CBD ID dan nomor CBD
         $cbdId = $cbd->id;
         $cbdno = $cbd->order_no;
+        
     }
 
 
@@ -455,6 +458,8 @@ class PurchaseRequestController extends Controller
         'details.*.total' => 'required|numeric',
     ]);
 
+    // Log::info('Request Data:', $request->all());
+
     // Temukan Purchase Request berdasarkan ID
     $purchaseRequest = PurchaseRequest::findOrFail($id);
 
@@ -463,20 +468,26 @@ class PurchaseRequestController extends Controller
     //     return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengedit Purchase Request ini.');
     // }
 
+     // Increment revision_no
+     $purchaseRequest->increment('revision_no');
+
     // Update Purchase Request
     $purchaseRequest->update([
+        'cbd_id' => $request->cbd_id,
         'tipe' => $request->tipe,
+        'purchase_request_no' => $request->purchase_request_no,
         'department' => $request->department,
         'applicant' => $request->applicant,
         'mo' => $request->mo,
         'style' => $request->style,
         'destination' => $request->destination,
-        'time_line' => $request->time_line,
-        'remark' => $request->remark1,
+        'time_line' => $request->time_line,             
+        'remark1' => $request->remark1,
+        'status' => '',
+        'user_id' => Auth::id(),
     ]);
 
-    // Increment revision_no
-    $purchaseRequest->increment('revision_no');
+   
 
     // Hapus semua detail terkait sebelum menambahkan yang baru
     $purchaseRequest->detailrequest()->delete();
@@ -486,6 +497,7 @@ class PurchaseRequestController extends Controller
         PurchaseRequestDetail::create([
             'purchase_request_id' => $purchaseRequest->id,
             'item_id' => $detail['item_id'],
+            'supplier_id' => $detail['supplier_id'],
             'color' => $detail['color'] ?? null,
             'size' => $detail['size'] ?? null,
             'qty' => $detail['qty'],
@@ -494,7 +506,7 @@ class PurchaseRequestController extends Controller
             'total' => $detail['total'],
             'remark' => $detail['remark'] ?? null,
             'status' => '',
-        ]);
+        ]); 
     }
 
     return redirect()->route('all.purchaserequest')->with('success', 'Purchase Request berhasil diperbarui.');
@@ -526,39 +538,50 @@ public function Deletepurchaserequest(Request $request, $id)
 
 public function ExportPDF($id)
 {
+    // Ambil data PurchaseRequest beserta detail dan unit item
     $purchaseRequest = PurchaseRequest::with('detailrequest.item.unit')->findOrFail($id);
 
+    // Ambil cbd_id dari PurchaseRequest
     $idx = $purchaseRequest->cbd_id;
 
-    $cbd = Cbd::with('details')->findOrFail($idx);
+    // Jika cbd_id ada, ambil data Cbd beserta details
+    if ($idx) {
+        $cbd = Cbd::with('details')->findOrFail($idx);
 
+        $sizes = [];
+        $colors = [];
+        $qtyData = [];
 
-    $sizes = [];
-    $colors = [];
-    $qtyData = [];
+        foreach ($cbd->details as $detail) {
+            $sizes[$detail->size] = $detail->size;
+            $colors[$detail->color] = $detail->color;
+            $qtyData[$detail->size][$detail->color] = $detail->qty;
+        }
 
-    foreach ($cbd->details as $detail) {
-        $sizes[$detail->size] = $detail->size;
-        $colors[$detail->color] = $detail->color;
-        $qtyData[$detail->size][$detail->color] = $detail->qty;
+        // Sort sizes and colors alphabetically
+        sort($sizes);
+        sort($colors);
+
+        // Gunakan view 'print' dengan data lengkap
+        $view = 'purchase_request.print';
+        $data = compact('purchaseRequest', 'sizes', 'colors', 'qtyData');
+    } else {
+        // Jika cbd_id kosong, gunakan view 'print_support'
+        $view = 'purchase_request.print_support';
+        $data = compact('purchaseRequest');
     }
 
-    // Sort sizes and colors alphabetically
-    sort($sizes);
-    sort($colors);
+    // Buat PDF dari view yang dipilih dengan data yang sesuai
+    $pdf = Pdf::loadView($view, $data);
 
-   // Check if cbd_id is present
-   $view = $purchaseRequest->cbd_id ? 'purchase_request.print' : 'purchase_request.print_support';
-
-   $pdf = Pdf::loadView($view, compact('purchaseRequest','sizes', 'colors', 'qtyData'));
-
-   return $pdf->stream('purchase_request.pdf');
+    // Return stream PDF
+    return $pdf->stream('purchase_request.pdf');
 }
 
 
 public function Getpurchaserequestsp(Request $request){
 
-    $purchaseRequestId = 3;
+    $purchaseRequestId = $request->input('idx');
 
     $purchaseRequests = PurchaseRequest::with(['detailrequest.supplier'])
         ->where('id', $purchaseRequestId)
@@ -588,7 +611,10 @@ public function Getpurchaserequestitems(Request $request)
 
     $items =  PurchaseRequestDetail::where('purchase_request_id', $purchaseRequestId)
         ->where('supplier_id', $supplierId)
-        ->where('status', '')
+        ->where(function ($query) {
+            $query->where('status', '')
+                  ->orWhereNull('status');
+        })
         ->with('item.unit', 'supplier')
         ->get();
 

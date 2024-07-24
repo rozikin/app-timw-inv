@@ -3,7 +3,6 @@
 @section('admin')
     <div class="page-content mt-5">
 
-
         <div class="row">
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
@@ -11,50 +10,43 @@
 
                         <div>
                             <div class="row">
-                              
+                                <div class="col">
+                                    <nav class="page-breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <a href="{{ route('add.consumption') }}" class="btn btn-sm btn-primary mx-1"
+                                                id="btn-create-consumption"><i class="feather-16"
+                                                    data-feather="file-plus"></i>
+                                                &nbsp;Add Data</a>
+                                            {{-- <a href="{{ route('add.consumption') }}" class="btn btn-primary mx-1"><i class="feather-16" data-feather="file-plus"></i> &nbsp;Add consumption</a> --}}
+                                        </ol>
+                                    </nav>
+                                </div>
 
                                 <div class="col">
-                                    <h6 class="card-title text-center">PURCHASE REQUEST All</h6>
+                                    <h6 class="card-title text-center">consumption All</h6>
                                 </div>
-                              
+                                <div class="col">
+                                    <h6 class="card-title text-center"></h6>
+                                </div>
                             </div>
 
                         </div>
-                            
-                        <div class="row">
-                            <div class="col">
-                             
 
-                                <div class="btn-group" role="group" aria-label="Basic example">
-                                 
-                                
-                                    <a href="{{ route('add.purchaserequest') }}"  class="btn btn-primary"><i class="feather-10" data-feather="plus"></i>  &nbsp;Add</a>
-                                    {{-- <a href="{{ route('export.cbd') }}"  class="btn btn-primary"><i class="feather-10" data-feather="download"></i>  &nbsp;Export</a> --}}
-                                  </div>
-                            </div>
-                        </div>
+                        <div class="table-responsive">
 
-
-                        <div class="table-responsive mt-2">
-
-                            <table id="cbdTable" class="table table-sm">
+                            <table id="consumptionTable" class="table table-sm">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Request No</th>
-                                        <th>CBD</th>
-                                        <th>tipe</th>
-                                        <th>Mo</th>
-                                        <th>STYLE</th>
-                                        <th>destination</th>
-                                        <th>applicant</th>
-                                        <th>Item_name</th>
+                                        <th>Order NO</th>
+                                        <th>Seasion</th>
+                                        <th>Sample Code</th>
+                                        <th>Color Code</th>
                                         <th>Color</th>
                                         <th>Size</th>
-                                        <th>Unit</th>
-                                        <th>Total</th>
-                                        <th>Remark</th>
-                                        <th>Status</th>
+                                        <th>Width Fabric</th>
+                                        <th>Consumption</th>
+                                        <th>Consumption Detail</th>
                                         <th>Action</th>
 
                                     </tr>
@@ -72,76 +64,65 @@
 
     </div>
 
-
-
-
-
-
-
-
-
-
-
     <script>
-        $(function() {
-
-            $.ajaxSetup({
-
-                headers: {
-
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-
-                }
-
-            });
-
-        
-            var table = $('#cbdTable').DataTable({
+        $(document).ready(function() {
+            var table = $('#consumptionTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('get.purchaserequest') }}",
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                    { data: 'purchase_request_no', name: 'purchase_request_no' },
-                    { data: 'order_no', name: 'order_no' },
-                    { data: 'tipe', name: 'tipe', render: function(data, type, row) {
-                        if (data == 'Urgent' || data == 'SLT') {
-                            return '<span class="badge bg-danger">'+data+'</span>';
-                        }
-                        return data;
-                    }},
-                    { data: 'mo', name: 'mo' },
-                    { data: 'style', name: 'style' },
-                    { data: 'destination', name: 'destination' },
-                    { data: 'applicant', name: 'applicant' },
+                ajax: "{{ route('get.consumption') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
                     {
-                                title: "item_name",
-                                data: "item_name",
-                                render: function(data, type, row) {
-                                    // Batasi panjang teks maksimal menjadi 25 karakter
-                                    if (type === 'display' && data.length > 25) {
-                                        return data.substr(0, 25) + '...';
-                                    }
-                                    return data;
-                                }
-                            },
-                    { data: 'color', name: 'color' },
-                    { data: 'size', name: 'size' },
-                    { data: 'unit', name: 'unit' },
-                    { data: 'total', name: 'total' },
-                    { data: 'remark', name: 'remark' },
-                    { data: 'status', name: 'status' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false },
-                ],
-            
+                        data: 'order_no',
+                        name: 'order_no'
+                    },
+                    {
+                        data: 'seasion',
+                        name: 'seasion'
+                    },
+                    {
+                        data: 'sample_code',
+                        name: 'sample_code'
+                    },
+                    {
+                        data: 'color_code',
+                        name: 'color_code'
+                    },
+                    {
+                        data: 'color',
+                        name: 'color'
+                    },
+                    {
+                        data: 'size',
+                        name: 'size'
+                    },
+                    {
+                        data: 'width_fabric',
+                        name: 'width_fabric'
+                    },
+                    {
+                        data: 'consumption',
+                        name: 'consumption'
+                    },
+                    {
+                        data: 'consumption_detail',
+                        name: 'consumption_detail'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
             });
 
 
 
 
-
-
-            $('body').on('click', '.deletePurchaserequest', function() {
+            $('body').on('click', '.deleteConsumption', function() {
 
 
 
@@ -168,7 +149,7 @@
 
                         $.ajax({
                             type: "GET",
-                            url: "/delete/purchaserequest/" + request_id,
+                            url: "/delete/consumption/" + request_id,
                             success: function(data) {
                                 table.ajax.reload(null, false);
 

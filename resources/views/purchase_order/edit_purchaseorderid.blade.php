@@ -45,6 +45,14 @@
                                             </div>
 
                                             <div class="form-group row">
+                                                <label for="remarksx" class="col-sm-4 col-form-label">PO TIN</label>
+                                                <div class="col-sm-5">
+                                                    <input type="text" class="form-control" id="remarksx" name="remarksx"
+                                                        value="{{ $purchaseOrder->remarksx }}">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
                                                 <label for="supplier_id" class="col-sm-4 col-form-label">Supplier</label>
                                                 <div class="col-sm-5">
 
@@ -53,6 +61,7 @@
                                                         value="{{ $purchaseOrder->purchase_request_id }}">
                                                     <input type="hidden" class="form-control supplier_id" id="supplier_id"
                                                         name="supplier_id" value="{{ $purchaseOrder->supplier_id }}">
+                                                        
                                                     <input type="text" class="form-control supplier_name"
                                                         id="supplier_name" name="supplier_name"
                                                         value="{{ $purchaseOrder->supplier->supplier_name }}">
@@ -160,7 +169,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach ($purchaseRequest->detailrequest as $detail)
+                                                    @foreach ($purchaseRequest as $detail)
                                                         <tr>
                                                             <td>{{ $detail->item_id }}</td>
                                                             <td>{{ $detail->item->item_code }}</td>
@@ -230,11 +239,11 @@
                                                                     value="{{ $detail->item->unit->unit_code }}" readonly>
                                                             </td>
                                                             <td><input type="text" class="form-control qty"
-                                                                    name="details[{{ $index }}][qty]"
-                                                                    value="{{ $detail->qty }}" pattern="[0-9]+"></td>
+                                                                    name="details[{{ $index }}][qty]"               
+                                                                    value="{{ $detail->qty }}" ></td>
                                                             <td><input type="text" class="form-control price"
                                                                     name="details[{{ $index }}][price]"
-                                                                    value="{{ $detail->price }}" pattern="[0-9]+"></td>
+                                                                    value="{{ $detail->price }}"></td>
                                                             <td><input type="text" class="form-control total_price"
                                                                     name="details[{{ $index }}][total_price]"
                                                                     value="{{ $detail->qty * $detail->price }}" readonly>
@@ -263,13 +272,13 @@
                                         <!-- accepted payments column -->
                                         <div class="col-7 mt-5">
                                             <div class="form-group row">
-                                                <label for="style" class="col-sm-1 col-form-label">Notes</label>
+                                                <label for="style" class="col-sm-2 col-form-label">Notes</label>
                                                 <div class="col-sm-8">
                                                     <textarea class="form-control" rows="3" name="note2" id="note2" placeholder="Enter notes here..">{{ $purchaseOrder->note2 }}</textarea>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="rule" class="col-sm-1 col-form-label">Rule</label>
+                                                <label for="rule" class="col-sm-2 col-form-label">Rule</label>
                                                 <div class="col-sm-8">
                                                     <textarea class="form-control" rows="3" name="rule" id="rule" placeholder="Enter rule here..">{{ $purchaseOrder->rule }}</textarea>
                                                 </div>
@@ -546,9 +555,9 @@
                     <td><input type="text" class="form-control size-id" name="details[${detail.id}][size]" value="${detail.size ? detail.size : ''}"></td>
                     <td><input type="text" class="form-control unit" name="details[${detail.id}][unit]" value="${detail.item.unit.unit_code}"></td>
                     <td><input type="text" class="form-control qty" name="details[${detail.id}][qty]" value="${detail.qty}" required></td>
-                    <td><input type="text" class="form-control price" name="details[${detail.id}][price]" value="0" pattern="[0-9]+"></td>
+                    <td><input type="text" class="form-control price" name="details[${detail.id}][price]" value="0"></td>
                 
-                    <td><input type="text" class="form-control total_price" name="details[${detail.id}][total_price]" pattern="[0-9]+" readonly></td>
+                    <td><input type="text" class="form-control total_price" name="details[${detail.id}][total_price]" readonly></td>
                    <td>
                         <input type="text" class="form-control" name="details[${detail.id}][remark]"
                             value="${detail.remark ? detail.remark : ''}">
@@ -644,14 +653,33 @@
 
             function loadSuppliers() {
                 $('#supplier-table tbody').empty();
+                var idx = $('#purchase_request_id').val();
 
                 $.ajax({
-                    url: '{{ route('get.supplierglobal') }}', // Sesuaikan dengan route yang benar
+                    url: '{{ route('get.purchaserequestsp') }}', // Sesuaikan dengan route yang benar
                     method: 'GET',
+                    data: {
+                        idx: idx
+                    },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(data) {
+
+                        var tableData = [];
+
+                        data.forEach(function(supplier) {
+                            tableData.push({
+                                id: supplier.id,
+                                supplier_name: supplier.supplier_name,
+                                supplier_address: supplier.supplier_address,
+                                supplier_person: supplier.supplier_person,
+                                remark: supplier.remark
+                            });
+                        });
+
+
+
                         // Inisialisasi DataTable
                         table = $('#suppliers-table').DataTable({
                             paging: true,
@@ -659,7 +687,7 @@
                             ordering: true,
                             destroy: true,
                             info: true,
-                            data: data,
+                            data: tableData,
                             columns: [{
                                     title: "ID",
                                     data: "id"
@@ -667,15 +695,23 @@
 
                                 {
                                     title: "supplier_name",
-                                    data: "supplier_name"
+                                    data: "supplier_name",
+                                    render: function(data, type, row) {
+                                        // Batasi panjang teks maksimal menjadi 50 karakter
+                                        if (type === 'display' && data.length > 25) {
+                                            return data.substr(0, 25) + '...';
+                                        }
+                                        return data;
+                                    }
                                 },
+
                                 {
                                     title: "supplier_address",
                                     data: "supplier_address",
                                     render: function(data, type, row) {
                                         // Batasi panjang teks maksimal menjadi 50 karakter
-                                        if (type === 'display' && data.length > 50) {
-                                            return data.substr(0, 50) + '...';
+                                        if (type === 'display' && data.length > 25) {
+                                            return data.substr(0, 25) + '...';
                                         }
                                         return data;
                                     }
@@ -699,6 +735,9 @@
                                 .supplier_name); // Mengisi supplier name
                             $('#supplier_id').val(supplier.id); // Mengisi supplier id
                             $('#supplierModal').modal('hide');
+
+
+                            loadItems1()
                         });
                     },
                     error: function(xhr, status, error) {
@@ -706,6 +745,7 @@
                     }
                 });
             }
+
 
 
 

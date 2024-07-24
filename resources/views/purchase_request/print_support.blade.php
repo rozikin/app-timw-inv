@@ -48,13 +48,14 @@
         .table th,
         .table td {
             border: 1px solid black;
-            padding: 5px;
+            padding: 2px;
             text-align: left;
             font-size: 10px;
         }
 
         .table th {
             background-color: #f2f2f2;
+            padding: 3px;
         }
 
         .table-no-border td {
@@ -210,8 +211,7 @@
                 <tr>
                     <th>NO</th>
                     <th  class="wide-column">ITEMS REQUESTED</th>
-                    <th>SIZE</th>
-                    <th>COLOR</th>
+                
                     <th>UNIT</th>
                     <th>WAREHOUSE STOCK</th>
                     <th>QTY REQUESTED</th>
@@ -224,8 +224,7 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ substr($detail->item->item_name, 0, 200) }}</td>
                         <!-- Batasi item_name hingga 50 karakter -->
-                        <td>{{ $detail->size }}</td>
-                        <td>{{ $detail->color }}</td>
+                     
                         <td>{{ $detail->item->unit->unit_code }}</td>
                         <td>{{ $detail->warehouse_stock ?? 0 }}</td>
                         <td>{{ $detail->qty }}</td>

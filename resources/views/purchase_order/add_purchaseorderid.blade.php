@@ -63,7 +63,8 @@
                                                     House</label>
                                                 <div class="col-sm-5">
                                                     <input type="date" class="form-control" id="request_in_house"
-                                                        name="request_in_house" required>
+                                                        name="request_in_house" required
+                                                        value="{{ $purchaseRequest->time_line }}">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -132,32 +133,6 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Table displaying the pivot size/color/quantity data -->
-                                            {{-- <div class="table-responsive">
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Size \ Color</th>
-                                                            @foreach ($colors as $color)
-                                                                <th>{{ $color }}</th>
-                                                            @endforeach
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($sizes as $size)
-                                                            <tr>
-                                                                <td>{{ $size }}</td>
-                                                                @foreach ($colors as $color)
-                                                                    <td>
-                                                                       {{ $qtyData[$size][$color] ?? '' }}
-                                                                    </td>
-                                                                @endforeach
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </div> --}}
-
                                         </div>
 
                                     </div>
@@ -203,7 +178,7 @@
                                                 <thead>
                                                     <tr>
                                                         {{-- <th>Item ID</th> --}}
-                                                        
+
                                                         <th>item ID</th>
                                                         <th>item Code</th>
                                                         <th>Name</th>
@@ -219,40 +194,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="details-container">
-                                                    {{-- <tr class="detail-row">
-                                                        <td><input type="text" class="form-control item-id"
-                                                                name="details[0][item_id]" required></td>
-                                                        <td>
-                                                            <input type="text" class="form-control item-code"
-                                                                name="details[0][item_code]" required>
-                                                        </td>
-                                                        <td><input type="text" class="form-control item-name"
-                                                                name="details[0][item_name]" required>
-                                                        </td>
-                                                        <td><input type="text" class="form-control color-id"
-                                                                name="details[0][color]"></td>
-                                                        <td><input type="text" class="form-control size-id"
-                                                                name="details[0][size]"></td>
-                                                        <td><input type="text" class="form-control unit"
-                                                                name="details[0][unit]"></td>
-                                                        <td><input type="text" class="form-control qty"
-                                                                name="details[0][qty]" required value="0"
-                                                                pattern="[0-9]+"></td>
-                                                        <td><input type="text" class="form-control consumption"
-                                                                name="details[0][consumption]" value="0"
-                                                                pattern="[0-9]+"></td>
-                                                        <td><input type="text" class="form-control allowance"
-                                                                name="details[0][allowance]" value="0"
-                                                                pattern="[0-9]+"></td>
-                                                        <td><input type="text" class="form-control total"
-                                                                name="details[0][total]" readonly></td>
 
-                                                        <td><input type="text" class="form-control"
-                                                                name="details[0][remark]"></td>
-                                                        <td><button type="button"
-                                                                class="btn btn-danger btn-sm remove-detail">Remove</button>
-                                                        </td>
-                                                    </tr> --}}
                                                 </tbody>
                                             </table>
 
@@ -509,6 +451,7 @@
                 const totalPrice = qty * price;
                 row.find('.total_price').val(totalPrice.toLocaleString(
                     'en-US')); // Format to localized string without decimals
+
             }
 
 
@@ -517,62 +460,11 @@
                 row.find('.qty, .price').on('input', function() {
                     calculateTotalPrice(row);
 
-                    console.log('coba');
+
+
+
                 });
             }
-
-
-            // $(document).on('click', '.select-detail', function() {
-            //     var detail = $(this).data('detail'); // Retrieve data-detail directly
-
-            //     // Ensure detail is a string representation of JSON, parse it
-            //     try {
-
-            //         console.log('Parsed Detail:', detail);
-
-            //         const detailx = JSON.stringify(detail);
-
-            //         detail = JSON.parse(detailx);
-
-            //         // Verify the parsed data
-
-
-            //         // Construct the new row with parsed JSON data
-            //         var newRowx = `<tr class="detail-row">
-        //     <td><input type="text" class="form-control item-id" name="details[${detail.id}][item_id]" value="${detail.item_id}" required></td>
-        //     <td><input type="text" class="form-control item-code" name="details[${detail.id}][item_code]" value="${detail.item.item_code}" required></td>
-        //     <td><input type="text" class="form-control item-name" name="details[${detail.id}][item_name]" value="${detail.item.item_name}" required></td>
-        //     <td><input type="text" class="form-control color-id" name="details[${detail.id}][color]" value="${detail.color ? detail.color : ''}"></td>
-        //     <td><input type="text" class="form-control size-id" name="details[${detail.id}][size]" value="${detail.size ? detail.size : ''}"></td>
-        //     <td><input type="text" class="form-control unit" name="details[${detail.id}][unit]" value="${detail.item.unit.unit_code}"></td>
-        //     <td><input type="text" class="form-control qty" name="details[${detail.id}][qty]" value="${detail.qty}" required></td>
-        //     <td><input type="text" class="form-control price" name="details[${detail.id}][price]" value="0" pattern="[0-9]+"></td>
-
-        //     <td><input type="text" class="form-control total_price" name="details[${detail.id}][total_price]" pattern="[0-9]+" readonly></td>
-        //    <td>
-        //         <input type="text" class="form-control" name="details[${detail.id}][remark]"
-        //             value="${detail.remark ? detail.remark : ''}">
-        //     </td>
-        //     <td><button type="button" class="btn btn-danger btn-sm remove-detail">Remove</button></td>
-        // </tr>`;
-
-            //         $('#details-container').append(newRowx); // Append new row to details container
-            //         const newlyAddedRow = $('#details-container').find('.detail-row').last();
-
-            //         addEventListeners(newlyAddedRow);
-
-
-
-
-            //         // Optionally, you can remove the row from the original table
-            //         $(this).closest('tr').remove();
-
-            //     } catch (error) {
-            //         console.error('Error parsing JSON:', error);
-            //         // Handle parsing error gracefully
-            //         return; // Exit function or handle the error as needed
-            //     }
-            // });
 
 
 
@@ -641,6 +533,12 @@
                 $('#supplierModal').modal('show'); // Show the modal
                 loadSuppliers(); // Load suppliers data
             });
+
+
+
+
+
+
 
             function loadSuppliers() {
                 $('#supplier-table tbody').empty();
@@ -751,7 +649,7 @@
                     data: {
                         id1: id1,
                         id2: id2
-                    },
+                    }, 
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
@@ -765,8 +663,8 @@
                                 <td>${item.item_id}</td>
                                 <td>${item.item.item_code}</td>
                                 <td>${item.item.item_name}</td>
-                                <td>${item.color}</td>
-                                <td>${item.size}</td>F
+                                <td>${item.color?item.color:''}</td>
+                                <td>${item.size?item.size:''}</td>F
                                 <td>${item.qty}</td>
                                 <td>${item.total}</td>
                                 <td>${item.item.unit.unit_code ? item.item.unit.unit_code : ''}</td>
@@ -774,29 +672,38 @@
                                 <td><button type="button" class="btn btn-danger btn-sm select-detail">Select</button></td>
                             </tr>`;
                             itemsTableBody.append(row);
-                        });
+                        }); 
 
                         $('.select-detail').on('click', function() {
                             var row = $(this).closest('tr'); // Get the clicked row
                             var detail = {
-                    id: row.find('td:eq(0)').text(), // Get purchase_request_detail_id from the first cell
-                    item_id: row.find('td:eq(1)').text(), // Extract item ID from the second cell
-                    item: {
-                        item_code: row.find('td:eq(2)').text(), // Extract item code from the third cell
-                        item_name: row.find('td:eq(3)').text(), // Extract item name from the fourth cell
-                        unit: {
-                            unit_code: row.find('td:eq(8)').text() // Extract unit code from the ninth cell
-                        }
-                    },
-                    color: row.find('td:eq(4)').text(), // Extract color from the fifth cell
-                    size: row.find('td:eq(5)').text(), // Extract size from the sixth cell
-                    qty: row.find('td:eq(6)').text(), // Extract quantity from the seventh cell
-                    remark: row.find('td:eq(9)').text() // Extract remark from the tenth cell
-                };
+                                id: row.find('td:eq(0)')
+                            .text(), // Get purchase_request_detail_id from the first cell
+                                item_id: row.find('td:eq(1)')
+                            .text(), // Extract item ID from the second cell
+                                item: {
+                                    item_code: row.find('td:eq(2)')
+                                .text(), // Extract item code from the third cell
+                                    item_name: row.find('td:eq(3)')
+                                .text(), // Extract item name from the fourth cell
+                                    unit: {
+                                        unit_code: row.find('td:eq(8)')
+                                        .text() // Extract unit code from the ninth cell
+                                    }
+                                },
+                                color: row.find('td:eq(4)')
+                            .text(), // Extract color from the fifth cell   
+                                size: row.find('td:eq(5)')
+                            .text(), // Extract size from the sixth cell
+                                total: row.find('td:eq(7)')
+                            .text(), // Extract quantity from the seventh cell
+                                remark: row.find('td:eq(9)')
+                                .text() // Extract remark from the tenth cell
+                            };
 
-                                console.log(detail);
+                            // console.log(detail);
 
-                      
+
 
                             var newRowx = `<tr class="detail-row">
                                 <td><input type="text" class="form-control item-id" name="details[${detail.id}][item_id]" value="${detail.item_id}" required></td>
@@ -805,15 +712,17 @@
                                 <td><input type="text" class="form-control color-id" name="details[${detail.id}][color]" value="${detail.color ? detail.color : ''}"></td>
                                 <td><input type="text" class="form-control size-id" name="details[${detail.id}][size]" value="${detail.size ? detail.size : ''}"></td>
                                 <td><input type="text" class="form-control unit" name="details[${detail.id}][unit]" value="${detail.item.unit.unit_code}"></td>
-                                <td><input type="text" class="form-control qty" name="details[${detail.id}][qty]" value="${detail.qty}" required></td>
-                                <td><input type="text" class="form-control price" name="details[${detail.id}][price]" pattern="[0-9]+" required></td>
-                                <td><input type="text" class="form-control total_price" name="details[${detail.id}][total_price]" pattern="[0-9]+" readonly></td>
+                                <td><input type="text" class="form-control qty" name="details[${detail.id}][qty]" value="${detail.total}" required></td>
+                                <td><input type="text" class="form-control price" name="details[${detail.id}][price]" required></td>
+                                <td><input type="text" class="form-control total_price" name="details[${detail.id}][total_price]" readonly></td>
                                 <td><input type="text" class="form-control" name="details[${detail.id}][remark]" value="${detail.remark ? detail.remark : ''}"></td>
                                 <td><button type="button" class="btn btn-danger btn-sm remove-detail">Remove</button></td>
                             </tr>`;
 
-                            $('#details-container').append(newRowx); // Append new row to details container
-                            const newlyAddedRow = $('#details-container').find('.detail-row').last();
+                            $('#details-container').append(
+                            newRowx); // Append new row to details container
+                            const newlyAddedRow = $('#details-container').find('.detail-row')
+                                .last();
 
                             // Attach event listeners to newly added row
                             addEventListeners(newlyAddedRow);
@@ -830,7 +739,7 @@
                 });
             }
 
-        
+
 
 
 

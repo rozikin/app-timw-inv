@@ -49,25 +49,26 @@
             border-collapse: collapse;
         }
 
-        .table th,
+        .table th,  
         .table td {
             border: 1px solid black;
-            padding: 5px;
+            padding: 4px;
             text-align: left;
-            font-size: 9px;
+            font-size: 10px;
         }
 
         .table th {
             background-color: #f2f2f2;
+            padding: 5px;
         }
 
         .table-no-border td {
             border: none;
-            font-size: 9px;
+            font-size: 10px;
         }
 
         .footer-table td {
-            font-size: 9px;
+            font-size: 10px;
         }
 
         .table-request {
@@ -117,13 +118,13 @@
         }
 
         .header-info p {
-            font-size: 8px;
+            font-size: 10px;
             margin: 1px 0;
         }
 
         .header-form-no {
             text-align: left;
-            font-size: 8px;
+            font-size: 10px;
        
             /* Atur padding */
         }
@@ -138,13 +139,13 @@
         }
 
         .table-detail-request {
-            font-size: 7px;
+            font-size: 10px;
             /* Atur ukuran font yang diinginkan */
         }
 
-        .table-detail-request th,
+        .table-detail-request th,   
         .table-detail-request td {
-            font-size: 7px;
+            font-size: 10px;
             /* Atur ukuran font untuk header dan data */
         }
 
@@ -174,7 +175,7 @@
 
         .supplier-table td {
             border: none;
-            font-size: 9px;
+            font-size: 10px;
             vertical-align: top;
            
         }
@@ -198,7 +199,7 @@
         }
 
         .header-info p {
-            font-size: 9px;
+            font-size: 10px;
             margin: 2px 0;
         }
 
@@ -207,12 +208,12 @@
             border-collapse: collapse;
             margin-top: 1px;
             border: 1px solid #000;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .supplier-tablex td {
             border: none;
-            font-size: 9px;
+            font-size: 10px;
             vertical-align: top;
         }
 
@@ -243,7 +244,7 @@
 
         .supplier-tablexx td {
             border: none;
-            font-size: 9px;
+            font-size: 10px;
             vertical-align: top;
         
         }
@@ -272,7 +273,7 @@
 
         .supplier-tablexxx td {
             border: none;
-            font-size: 9px;
+            font-size: 10px;
             vertical-align: top;
         }
 
@@ -296,7 +297,7 @@
 
         .supplier-tablexxx td {
             border: none;
-            font-size: 9px;
+            font-size: 10px;
             vertical-align: top;
         }
 
@@ -320,14 +321,14 @@
         .supplier-tablexq {
             width: 100%;
             border-collapse: collapse;
-         
+            margin-top: 1px;
             margin-bottom: 1px;
             border: 1px solid #000;
         }
 
         .supplier-tablexq td {
             border: none;
-            font-size: 9px;
+            font-size: 10px;
             vertical-align: top;
         }
 
@@ -362,7 +363,7 @@
                     <h1>PT. TI Matsuoka Winner Industry</h1>
                     <p>Head Office :</p>
                     <p>
-                        Summitmas II 3rd Fl. Jl. Jend. Sudirman kav 61-62 Jakarta 12190
+                        Summitmas II 3rd Fl. Jl. Jend. Sudirman kav 61-62 Jakarta 121100
                     </p>
                     <p>
                         Tel. (021) 520 1756 - Fax. (021) 520 1294
@@ -445,7 +446,7 @@
                     <table>
                         <tr>
                             <td> Date in House</td>
-                            <td>: {{ $purchaseorder->date_in_house }}</td>
+                            <td>:  {{ \Carbon\Carbon::parse($purchaseorder->date_in_house)->format('d-M-Y') }}</td>
                         </tr>
                         <tr>
                             <td>Allocation</td>
@@ -500,6 +501,10 @@
                         <tr>
                             <td>Date</td>
                             <td>: </td>
+                        </tr>       
+                        <tr>
+                            <td>Type</td>
+                            <td>: {{ $purchaseorder->purchaseRequest->tipe }} </td>  
                         </tr>
 
                     </table>
@@ -534,10 +539,10 @@
                         <td>{{ $detail->item->unit->unit_code }}</td>
                         <td>{{ $detail->qty }}</td>
                         <td>{{ $detail->remark }}</td>
-                        <td>USD  {{ $detail->price }}</td>
+                        <td>USD {{ $detail->price }}</td>
                         <td>USD  {{ $detail->total_price }}</td>
-                    </tr>
-                @endforeach
+                    </tr>       
+                @endforeach 
             </tbody>
         </table>
         <table class="supplier-tablexq">

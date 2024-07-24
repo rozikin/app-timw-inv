@@ -9,9 +9,9 @@ class PurchaseRequest extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    // protected $guarded = [];
 
-    protected $fillable = ['user_id', 'cbd_id','purchase_request_no','tipe','mo','style','destination','department','applicant','time_line','remark'.'status' ,'revision_no'];
+    protected $fillable = ['user_id', 'cbd_id','purchase_request_no','tipe','mo','style','destination','department','applicant','time_line','remark1','status' ,'revision_no'];
 
     public function detailrequest()
     {

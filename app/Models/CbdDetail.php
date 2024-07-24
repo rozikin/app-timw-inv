@@ -29,4 +29,9 @@ class CbdDetail extends Model
      {
          return $this->belongsTo(Cbd::class, 'order_no', 'order_no');
      }
+
+     public function consumptions()
+     {
+         return $this->hasMany(Consumption::class, 'cbd_detail_id');
+     }
 }

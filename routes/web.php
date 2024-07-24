@@ -9,10 +9,12 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\ColorController;
+use App\Http\Controllers\ConsumptionController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\ItemController;        
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\RakController;
@@ -257,6 +259,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/delete/cbd/{id}', 'Deletecbd')->name('delete.cbd')->middleware('can:delete.cbd');
         Route::get('/export/cbd', 'Exportcbd')->name('export.cbd')->middleware('can:export.cbd');;
         Route::get('/get/cbd', 'Getcbd')->name('get.cbd')->middleware('can:all.cbd');
+        Route::get('/get/cbddetail', 'Getcbddetail')->name('get.cbddetail')->middleware('can:all.cbd');
         Route::get('/get/cbdglobal', 'Getcbdglobal')->name('get.cbdglobal');
         Route::get('/get/cbdcount', 'GetcbdCount')->name('get.cbdcount');
         Route::get('/get/posisicbd', 'GetPosisi')->name('get.posisicbd');
@@ -299,26 +302,28 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/delete/purchaseorder/{id}', 'Deletepurchaseorder')->name('delete.purchaseorder')->middleware('can:delete.purchaseorder');
         Route::get('/export/purchaseorder', 'Exportpurchaseorder')->name('export.purchaseorder')->middleware('can:export.purchaseorder');;
         Route::get('/get/purchaseorder', 'Getpurchaseorder')->name('get.purchaseorder')->middleware('can:all.purchaseorder');
+        Route::get('/get/purchaseordersupplier', 'Getpurchaseordersupplier')->name('get.purchaseordersupplier')->middleware('can:all.purchaseorder');
+        Route::get('/get/purchaseorderitem', 'Getpurchaseorderitem')->name('get.purchaseorderitem')->middleware('can:all.purchaseorder');
         Route::get('/get/purchaseordercount', 'GetpurchaseorderCount')->name('get.purchaseordercount');
         Route::get('/print/purchaseorder', 'Printpurchaseorder')->name('print.purchaseorder')->middleware('can:export.purchaseorder');
         Route::get('/pdf/purchaseorder/{id}', 'exportPDF')->name('pdf.purchaseorder')->middleware('can:export.purchaseorder');
         Route::post('/import/purchaseorder', 'Importpurchaseorder')->name('import.purchaseorder')->middleware('can:import.purchaseorder');
         Route::get('/import/purchaseorders', 'Importpurchaseorders')->name('import.purchaseorders')->middleware('can:import.purchaseorder');
-    
-    });
-
+     
+    }); 
+ 
     Route::controller(MaterialInController::class)->group(function () {
         Route::get('/all/materialin', 'Allmaterialin')->name('all.materialin')->middleware('can:all.materialin');
         Route::get('/add/materialin', 'Addmaterialin')->name('add.materialin')->middleware('can:add.materialin');
-        Route::get('/add/materialin', 'Addmaterialin')->name('add.materialin')->middleware('can:add.materialin');
+        Route::get('/add/materialinsp', 'Addmaterialinsp')->name('add.materialinsp')->middleware('can:add.materialin');
         Route::post('/store/materialin', 'Storematerialin')->name('store.materialin');
+        Route::post('/store/materialinsp', 'Storematerialinsp')->name('store.materialinsp');
         Route::get('/edit/materialin/{id}', 'Editmaterialin')->name('edit.materialin')->middleware('can:edit.materialin');
         Route::post('/update/materialin/{id}', 'Updatematerialin')->name('update.materialin')->middleware('can:edit.materialin');
         Route::get('/delete/materialin/{id}', 'Deletematerialin')->name('delete.materialin')->middleware('can:delete.materialin');
         Route::get('/export/materialin', 'Exportmaterialin')->name('export.materialin')->middleware('can:export.materialin');;
         Route::get('/get/materialin', 'Getmaterialin')->name('get.materialin')->middleware('can:all.materialin');
-        Route::get('/get/materialincount', 'GetmaterialinCount')->name('get.materialincount');
-        Route::get('/get/posisimaterialin', 'GetPosisi')->name('get.posisimaterialin');
+
         Route::post('/check/materialin', 'Checkmaterialin')->name('check.materialin');
         Route::get('/print/materialin', 'Printmaterialin')->name('print.materialin')->middleware('can:export.materialin');
         Route::get('/pdf/materialin/{id}', 'exportPDF')->name('pdf.materialin')->middleware('can:export.materialin');
@@ -327,8 +332,38 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     
     });
 
+    Route::controller(ConsumptionController::class)->group(function () {
+        Route::get('/all/consumption', 'Allconsumption')->name('all.consumption')->middleware('can:all.consumption');
+        Route::get('/add/consumption', 'Addconsumption')->name('add.consumption')->middleware('can:add.consumption');
+        Route::post('/store/consumption', 'Storeconsumption')->name('store.consumption');
+        Route::get('/edit/consumption/{id}', 'Editconsumption')->name('edit.consumption')->middleware('can:edit.consumption');
+        Route::post('/update/consumption/{id}', 'Updateconsumption')->name('update.consumption')->middleware('can:edit.consumption');
+        Route::get('/delete/consumption/{id}', 'Deleteconsumption')->name('delete.consumption')->middleware('can:delete.consumption');
+        Route::get('/export/consumption', 'Exportconsumption')->name('export.consumption')->middleware('can:export.consumption');;
+        Route::get('/get/consumption', 'Getconsumption')->name('get.consumption')->middleware('can:all.consumption');
+    
+    });
 
+    
+    Route::controller(QRCodeController::class)->group(function () {
+        Route::get('/all/qr_code', 'Allqr_code')->name('all.qr_code')->middleware('can:all.qr_code');
+        Route::get('/add/qr_code', 'Addqr_code')->name('add.qr_code')->middleware('can:add.qr_code');
+        Route::post('/store/qr_code', 'Storeqr_code')->name('store.qr_code');
+        Route::get('/edit/qr_code/{id}', 'Editqr_code')->name('edit.qr_code')->middleware('can:edit.qr_code');
+        Route::post('/update/qr_code/{id}', 'Updateqr_code')->name('update.qr_code')->middleware('can:edit.qr_code');
+        Route::get('/delete/qr_code/{id}', 'DeleteQrcode')->name('delete.qr_code')->middleware('can:delete.qr_code');
+        Route::get('/export/qr_code', 'Exportqr_code')->name('export.qr_code')->middleware('can:export.qr_code');;
+        Route::get('/get/qr_code', 'Getqr_code')->name('get.qr_code')->middleware('can:all.qr_code');
+        Route::get('/get/original', 'Getoriginal')->name('get.original')->middleware('can:all.qr_code');
+        Route::get('/print/qr_code', 'Printqr_code')->name('print.qr_code')->middleware('can:export.qr_code');
+        Route::post('/import/qr_code', 'Importqr_code')->name('import.qr_code')->middleware('can:import.qr_code');
+        Route::get('/import/qr_codes', 'Importqr_codes')->name('import.qr_codes')->middleware('can:import.qr_code');
+        Route::post('/pdf/qr_code', 'exportPDF')->name('pdf.qr_code')->middleware('can:all.qr_code');
+    
+    });
+ 
 
+ 
 
     
    
@@ -336,5 +371,3 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 }); 
 
 //end admin middleware
-
-

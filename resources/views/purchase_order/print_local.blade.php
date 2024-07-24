@@ -16,7 +16,7 @@
             top: 0;
             /* Letakkan header di bagian atas */
             left: 0;
-            z-index: 999;
+            z-index:1099;
             /* Pastikan header muncul di atas konten */
         }
 
@@ -29,7 +29,7 @@
 
         .footer {
             bottom: 0;
-            font-size: 9px;
+            font-size:10px;
             margin: 0;
         }
 
@@ -52,22 +52,23 @@
         .table th,
         .table td {
             border: 1px solid black;
-            padding: 5px;
+            padding: 4px;
             text-align: left;
-            font-size: 8px;
+            font-size: 10px;
         }
 
         .table th {
             background-color: #f2f2f2;
+            padding: 5px;
         }
 
         .table-no-border td {
             border: none;
-            font-size: 9px;
+            font-size:10px;
         }
 
         .footer-table td {
-            font-size: 9px;
+            font-size:10px;
         }
 
         .table-request {
@@ -164,7 +165,7 @@
 
         .supplier-table td {
             border: none;
-            font-size: 9px;
+            font-size:10px;
             vertical-align: top;
             
         }
@@ -188,7 +189,7 @@
         }
 
         .header-info p {
-            font-size: 9px;
+            font-size:10px;
             margin: 2px 0;
         }
 
@@ -197,12 +198,12 @@
             border-collapse: collapse;
             margin-top: 1px;
             border: 1px solid #000;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .supplier-tablex td {
             border: none;
-            font-size: 9px;
+            font-size: 8px;
             vertical-align: top;
         }
 
@@ -232,7 +233,7 @@
 
         .supplier-tablexx td {
             border: none;
-            font-size: 9px;
+            font-size:10px;
             vertical-align: top;
         }
 
@@ -263,20 +264,20 @@
             width: 100%;
             border: 1px solid rgb(54, 53, 53);
             border-collapse: collapse;
-            font-size: 9px;
+            font-size:10px;
         }
   
 
         .xxxx th{
             border: 1px solid  rgb(54, 53, 53);
             border-collapse: collapse;
-            font-size: 9px;
+            font-size:10px;
         }
         .xxxx td {
             border: 1px solid  rgb(54, 53, 53);
             border-collapse: collapse;
            
-            font-size: 9px;
+            font-size:10px;
             padding: 50px 8px; */
         }
 
@@ -297,13 +298,14 @@
             width: 100%;
             border-collapse: collapse;
        
+            margin-top: 1px;
             margin-bottom: 1px;
             border: 1px solid #000;
         }
 
         .supplier-tablexq td {
             border: none;
-            font-size: 9px;
+            font-size: 8px;
             vertical-align: top;
         }
 
@@ -338,11 +340,6 @@
         }
 
   
-
-
-
-
-
 
 
     </style>
@@ -443,11 +440,11 @@
                     <table>
                         <tr>
                             <td> Date in House</td>
-                            <td>: {{ $purchaseorder->date_in_house }}</td>
+                            <td>:  {{ \Carbon\Carbon::parse($purchaseorder->date_in_house)->format('d-M-Y') }}</td>
                         </tr>
                         <tr>
                             <td>Allocation</td>
-                            <td>: {{ $purchaseorder->allocation  }}</td>
+                            <td>: {{ $purchaseorder->allocation  }}</td>    
                         </tr>
                         <tr>
                             <td>Applicant</td>
@@ -496,7 +493,11 @@
                     <table>
                         <tr>
                             <td>Date</td>
-                            <td>: </td>
+                            <td>: </td>     
+                        </tr>
+                        <tr>
+                            <td>Type</td>
+                            <td>: {{ $purchaseorder->purchaseRequest->tipe }} </td>  
                         </tr>
 
                     </table>
@@ -531,16 +532,16 @@
                         <td>{{ $detail->item->unit->unit_code }}</td>
                         <td>{{ $detail->qty }}</td>
                         <td>{{ $detail->remark }}</td>
-                        <td>IDR {{ $detail->price }}</td>
+                        <td>IDR  {{ $detail->price }}</td>
                         <td>IDR {{ $detail->total_price }}</td>
-                    </tr>
+                    </tr>   
                 @endforeach
             </tbody>
-        </table>
+        </table>        
         <table class="supplier-tablexq">
             <tr>
                 <td class="left-column">
-                   
+                    
 
                    <p>Note :    {{ $purchaseorder->note1 }}</p>
                 </td>

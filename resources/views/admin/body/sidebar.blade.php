@@ -98,12 +98,18 @@
                         'edit/category/*',
                         'all/color',
                         'edit/color/*',
+                        'all/consumption',
+                        'edit/consumption/*',
                         'all/employee',
                         'edit/employee/*',
+                        '*/employee',
                         'all/item',
                         'edit/item/*',
                         'all/itemvariant',
                         'edit/itemvariant/*',
+                        'all/qr_code',
+                        'edit/qr_code/*',
+                        '*/qr_code',
                         'all/size',
                         'edit/size/*',
                         'all/supplier',
@@ -153,6 +159,14 @@
                                 </li>
                             @endif
 
+                            @if (Auth::user()->can('all.consumption'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.consumption') }}"
+                                        class="nav-link {{ request()->is('all/consumption') || request()->is('edit/consumption/*') ? 'active' : '' }}">
+                                        Consumption</a>
+                                </li>
+                            @endif
+
                             @if (Auth::user()->can('all.employee'))
                                 <li class="nav-item">
                                     <a href="{{ route('all.employee') }}"
@@ -166,6 +180,14 @@
                                     <a href="{{ route('all.item') }}"
                                         class="nav-link {{ request()->is('all/item') || request()->is('edit/item/*') ? 'active' : '' }}">
                                         Item</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('all.qr_code'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.qr_code') }}"
+                                        class="nav-link {{ request()->is('all/qr_code') || request()->is('*/qr_code') ? 'active' : '' }}">
+                                        QR Code Fabric</a>
                                 </li>
                             @endif
 
@@ -203,7 +225,7 @@
                         </ul>
                     </div>
                 </li>
-            @endif 
+            @endif
 
             <li class="nav-item nav-category">PO Transaction</li>
             @if (Auth::user()->can('transaction.menu'))
@@ -280,7 +302,7 @@
                 @endif
 
                 <li
-                    class="nav-item {{ request()->is('*/purchaserequest') || request()->is('edit/purchaserequest/*') || request()->is('*/purchaserequest/*') || request()->is('*/purchaserequestid/*')   ? 'active' : '' }}">
+                    class="nav-item {{ request()->is('*/purchaserequest') || request()->is('edit/purchaserequest/*') || request()->is('*/purchaserequest/*') || request()->is('*/purchaserequestid/*') ? 'active' : '' }}">
                     @if (Auth::user()->can('all.purchaserequest'))
                         <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout1" role="button"
                             aria-expanded="false" aria-controls="emailsyout1">
@@ -306,7 +328,7 @@
 
                 </li>
                 <li
-                    class="nav-item {{ request()->is('*/purchaseorder') || request()->is('edit/purchaseorder/*') || request()->is('*/purchaseorder/*') || request()->is('*/purchaseorderid/*')  ? 'active' : '' }}">
+                    class="nav-item {{ request()->is('*/purchaseorder') || request()->is('edit/purchaseorder/*') || request()->is('*/purchaseorder/*') || request()->is('*/purchaseorderid/*') ? 'active' : '' }}">
                     @if (Auth::user()->can('all.purchaseorder'))
                         <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout1x" role="button"
                             aria-expanded="false" aria-controls="emailsyout1x">
@@ -315,7 +337,7 @@
                             <i class="link-arrow" data-feather="chevron-down"></i>
                         </a>
                     @endif
-                    <div class="{{ request()->is('*/purchaseorder') || request()->is('*/purchaseorder/*') || request()->is('*/purchaseorderid/*') || request()->is('*/purchaseorder')  ? 'show' : 'collapse' }}"
+                    <div class="{{ request()->is('*/purchaseorder') || request()->is('*/purchaseorder/*') || request()->is('*/purchaseorderid/*') || request()->is('*/purchaseorder') ? 'show' : 'collapse' }}"
                         id="emailsyout1x">
                         <ul class="nav sub-menu">
 
@@ -334,14 +356,11 @@
 
             @endif
 
-
             <li class="nav-item nav-category">WAREHOUSE</li>
             @if (Auth::user()->can('transaction.menu'))
 
-          
-         
                 <li
-                    class="nav-item {{ request()->is('*/materialin') || request()->is('edit/materialin/*') || request()->is('*/materialin/*') || request()->is('*/materialinid/*')   ? 'active' : '' }}">
+                    class="nav-item {{ request()->is('*/materialin') || request()->is('edit/materialin/*') || request()->is('*/materialin/*') || request()->is('*/materialinid/*') ? 'active' : '' }}">
                     @if (Auth::user()->can('all.materialin'))
                         <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout10" role="button"
                             aria-expanded="false" aria-controls="emailsyout10">
@@ -366,7 +385,33 @@
                     </div>
 
                 </li>
-              
+
+                <li
+                    class="nav-item {{ request()->is('*/materialout') || request()->is('edit/materialout/*') || request()->is('*/materialout/*') || request()->is('*/materialoutid/*') ? 'active' : '' }}">
+                    @if (Auth::user()->can('all.materialout'))
+                        <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout10" role="button"
+                            aria-expanded="false" aria-controls="emailsyout10">
+                            <i class="link-icon" data-feather="check-circle"></i>
+                            <span class="link-title">Material OUT</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                    @endif
+                    <div class="{{ request()->is('*/materialout') || request()->is('*/materialout/*') || request()->is('*/materialout') || request()->is('*/photoreturn') || request()->is('*/serahterima') ? 'show' : 'collapse' }}"
+                        id="emailsyout10">
+                        <ul class="nav sub-menu">
+
+                            @if (Auth::user()->can('materialout.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.materialout') }}"
+                                        class="nav-link {{ request()->is('all/materialout') ? 'active' : '' }}">
+                                        Material OUT</a>
+                                </li>
+                            @endif
+
+                        </ul>
+                    </div>
+
+                </li>
 
             @endif
 

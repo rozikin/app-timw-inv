@@ -34,26 +34,27 @@ class PurchaseOrderController extends Controller
 
         // Kirimkan data ke view untuk ditampilkan
         return view('purchase_order.add_purchaseorderid', compact('purchaseRequest'));
-    }
+    } 
 
     public function Editpurchaseorder($id)
     {
         // Fetch the Purchase Order with details, supplier
         $purchaseOrder = PurchaseOrder::with(['detailorder.item.unit', 'supplier'])->findOrFail($id);
 
-        // Fetch the related Purchase Request using purchase_request_id
-        $purchaseRequest = PurchaseRequest::with([
-            'detailrequest' => function ($query) {
-                $query->whereNull('status')->orWhere('status', '');
-            },
-            'detailrequest.item.unit', 
-            'cbd.details'
-        ])->findOrFail($purchaseOrder->purchase_request_id);
 
-        // Fetch order_no, sample_code, and item from the related CBD model
-        $purchaseRequest->order_no = $purchaseRequest->cbd->order_no ?? null;
-        $purchaseRequest->sample_code = $purchaseRequest->cbd->sample_code ?? null;
-        $purchaseRequest->item = $purchaseRequest->cbd->item ?? null;
+
+        $purchaseRequestId =  $purchaseOrder->purchase_request_id;
+        $supplierId = $purchaseOrder->supplier_id;
+    
+        $purchaseRequest =  PurchaseRequestDetail::where('purchase_request_id', $purchaseRequestId)
+            ->where('supplier_id', $supplierId)
+            ->where('status', '')
+            ->with('item.unit', 'supplier')
+            ->get();
+    
+   
+
+ 
 
         return view('purchase_order.edit_purchaseorderid', compact('purchaseOrder', 'purchaseRequest'));
     }
@@ -200,13 +201,14 @@ class PurchaseOrderController extends Controller
                                     $detail->item->item_name;
     
                         $itemDetails[] = [
+                            'item_code' => $detail->item->item_code,
                             'item_name' =>  $itemName,
                             'unit_code' => $detail->item->unit->unit_code,
-                            'color' => $detail->color ?? '-',
-                            'size' => $detail->size ?? '-',  
+                            'color' => $detail->color ?? '',
+                            'size' => $detail->size ?? '',  
                             'qty' => $detail->qty,
                             'price' => $detail->price,
-                            'status' => $detail->status,
+                            'remark' => $detail->remark,
                         ];
                     }
                     return $itemDetails;
@@ -214,6 +216,10 @@ class PurchaseOrderController extends Controller
                 ->addColumn('purchase_request_no', function($row) {
                     return $row->purchaseRequest->purchase_request_no;
                 })
+                ->addColumn('mo', function($row) {
+                    return $row->purchaseRequest->mo.'|'. $row->purchaseRequest->style;
+                })
+
                 ->addColumn('action', function ($row) {
                     $hasStatus = false;
                     foreach ($row->detailorder as $detail) {
@@ -249,7 +255,7 @@ class PurchaseOrderController extends Controller
                 ->rawColumns(['purchase_request_no','action'])
                 ->make(true);
         }
-    }
+    } 
 
     public function ExportPDF($id)
         {
@@ -260,18 +266,18 @@ class PurchaseOrderController extends Controller
 
 
                     // Ambil PurchaseOrder dengan relasi detailorder, item, unit, dan supplier
-            $purchaseorder = PurchaseOrder::with(['detailorder.item.unit', 'supplier'])->findOrFail($id);
+            $purchaseorder = PurchaseOrder::with(['purchaseRequest','detailorder.item.unit', 'supplier'])->findOrFail($id);
 
             // Pastikan PurchaseOrder dan Supplier ditemukan
             if (!$purchaseorder) {
                 abort(404);
             }
-
+ 
             // Ambil remark dari supplier
             $supplierRemark = $purchaseorder->supplier->remark;
 
             // Pilih view berdasarkan remark supplier
-            $viewName = ($supplierRemark == 'Local') ? 'purchase_order.print_local' : 'purchase_order.print_import';
+            $viewName = ($supplierRemark == 'Lokal') ? 'purchase_order.print_local' : 'purchase_order.print_import';
 
             // Load view yang sesuai dengan remark
             $pdf = \PDF::loadView($viewName, compact('purchaseorder'));
@@ -289,8 +295,7 @@ class PurchaseOrderController extends Controller
                 'purchase_request_id' => 'required|integer',
                 'supplier_id' => 'required|integer',
                 'delivery_at' => 'required|string',
-                'terms' => 'required|string',
-                'payment' => 'required|string',
+              
                 'applicant' => 'required|string',
                 'allocation' => 'required|string',
                 'approval' => 'required|string',
@@ -298,8 +303,8 @@ class PurchaseOrderController extends Controller
                 'status' => 'nullable|string',
                 'details' => 'required|array|min:1', // Minimal 1 detail
                 'details.*.item_id' => 'required|integer',
-                'details.*.qty' => 'required|numeric',
-                'details.*.price' => 'required|numeric',
+                'details.*.qty' => 'required',
+                'details.*.price' => 'required',
             ]);
         
             // Ambil purchase order yang akan diupdate
@@ -346,7 +351,7 @@ class PurchaseOrderController extends Controller
                     'size' => $detailData['size'] ?? null,
                     'qty' => $detailData['qty'],
                     'price' => $detailData['price'],
-                    'total_price' => $detailData['total_price'] ?? ($detailData['qty'] * $detailData['price']),
+                    'total_price' => $detailData['total_price'],
                     'status' => '',
                     'remark' => $detailData['remark'] ?? null,
                 ]);
@@ -373,19 +378,43 @@ class PurchaseOrderController extends Controller
             $purchaseOrder->update([
                 'purchase_request_id' => $request->purchase_request_id,
                 'supplier_id' => $request->supplier_id,
+                'date_in_house' => $request->request_in_house,
                 'delivery_at' => $request->delivery_at,
                 'terms' => $request->terms,
                 'payment' => $request->payment,
+                'ship_mode' => $request->shipment_mode,
                 'applicant' => $request->applicant,
                 'allocation' => $request->allocation,
                 'approval' => $request->approval,
+                'quotation_no' => $request->quotation_no,
+                'quatition_file' => '',
+
+                'subtotal' => $request->sub_total,
+                'rounding' => $request->rounding ?? 0,
+                'discount' => $request->discount ?? 0,
+                'vat' => $request->tax,
+                'vat_amount' => $request->tax_end,
+                'grand_total' => $request->grand_total_end,
+                'purchase_amount' => $request->purchase_amount_end,
+                'note1' => $request->note1,
+                'note2' => $request->note2,
                 'rule' => $request->rule,
-                'status' => $request->status,
-                // Tambahkan field lain sesuai kebutuhan
+                'status' =>'po',
+                'remarksx' => $request->remarksx,
+
+                'user_id' => Auth::id(), // Ambil user_id dari user yang login
             ]);
         
             // Kembalikan ke halaman yang sesuai setelah selesai menyimpan
             return redirect()->route('all.purchaseorder')->with('success', 'Purchase Order berhasil diperbarui.');
+
+              //return response
+              return response()->json([
+                'success' => true,
+                'message' => 'Data Berhasil Disimpan!',
+                'data'    => $post,
+                'alert-type' => 'success'  
+            ]);
         }
 
 
@@ -455,7 +484,40 @@ class PurchaseOrderController extends Controller
                 ]);
             }
         }
-        
 
+        public function Getpurchaseordersupplier()
+        {
+            $suppliersx = PurchaseOrder::with(['detailorder' => function ($query) {
+                $query->whereNull('remark');
+            }, 'detailorder.item.unit', 'supplier' => function ($query) {
+                $query->select('id', 'supplier_name', 'supplier_address', 'supplier_person', 'remark');
+            }])
+            ->whereHas('detailorder', function ($query) {
+                $query->whereNull('remark')
+                ->orWhere('remark', '');
+            })
+            
+            ->get();
+
+            $suppliers = $suppliersx->pluck('supplier')->unique('id')->values();
+    
+                return response()->json($suppliers);
+        }
+
+ 
+        public function Getpurchaseorderitem(Request $request)
+            {
+                $supplierId = $request->input('id2');
+
+            $items = PurchaseOrder::with(['detailorder' => function($query) {
+                    $query->whereNull('remark')
+                    ->orWhere('remark', '');
+                }, 'detailorder.item.unit', 'supplier'])
+                ->where('supplier_id', $supplierId)
+                ->get();
+
+            return response()->json($items);
+            }
+        
 
 }

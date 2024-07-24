@@ -37,6 +37,7 @@ return new class extends Migration
             $table->longText('note2')->nullable();
             $table->longText('rule')->nullable();
             $table->string('status')->nullable();
+            $table->string('remarksx')->nullable();
             $table->integer('user_id')->unsigned();
             $table->unsignedInteger('revision_no')->default(0);
             $table->timestamps();

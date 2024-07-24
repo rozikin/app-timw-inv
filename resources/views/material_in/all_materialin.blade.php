@@ -26,8 +26,10 @@
 
                                 <div class="btn-group" role="group" aria-label="Basic example">
                                  
-                                
-                                    <a href="{{ route('add.materialin') }}"  class="btn btn-primary"><i class="feather-10" data-feather="plus"></i>  &nbsp;Add</a>
+                                    <a href="{{ route('add.materialinsp') }}"  class="btn btn-success"><i class="feather-10" data-feather="plus"></i>  &nbsp;Add</a>
+
+                                    <a href="{{ route('add.materialin') }}"  class="btn btn-primary"><i class="feather-10" data-feather="plus"></i>  &nbsp;Add with Packing List</a>
+                                   
                                     {{-- <a href="{{ route('export.cbd') }}"  class="btn btn-primary"><i class="feather-10" data-feather="download"></i>  &nbsp;Export</a> --}}
                                   </div>
                             </div>
@@ -40,20 +42,25 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Purchase No</th>
-                                        <th>Request No</th>
+                                        <th>IN No</th>
                                         <th>Supplier</th>
                                         <th>Date in House</th>
-                                        <th>delivery_at</th>
-                                        <th>applicant</th>
-                                        <th>Item_name</th>
+                                        <th>NO SJ</th>
+                                        <th>Reciver</th>
+                                        <th>location</th>
+                                        <th>Courier</th>
+                                        <th>Item Code</th>
+                                        <th>Item Name</th>
+                                        <th>Unit</th>
                                         <th>Color</th>
                                         <th>Size</th>
-                                        <th>Unit</th>
                                         <th>qty</th>
-                                        <th>price</th>
-                                    
-                                        <th>Status</th>
+                                      
+                                        <th>Batch</th>
+                                        <th>No Roll</th>
+                                        <th>MO</th>
+                                      
+                                        <th>Remark</th>
                                         <th>Action</th>
 
                                     </tr>
@@ -99,15 +106,42 @@
             var table = $('#cbdTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('get.purchaseorder') }}",
+                ajax: "{{ route('get.materialin') }}",
                 columns: [
                     { "data": "DT_RowIndex", "name": "DT_RowIndex", "searchable": false },
-                    { "data": "purchase_order_no", "name": "purchase_order_no" },
-                    { "data": "purchase_request_no", "name": "purchase_request_no" },
+                    { "data": "material_in_no", "name": "material_in_no" },
                     { "data": "supplier_name", "name": "supplier_name" },
-                    { "data": "date_in_house", "name": "date_in_house" },
-                    { "data": "delivery_at", "name": "delivery_at" },
-                    { "data": "applicant", "name": "applicant" },
+                                { 
+                        "data": "created_at", 
+                        "name": "date_in_house",
+                        "render": function(data, type, row) {
+                            var date = new Date(data);
+                            var year = date.getFullYear();
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2); // Adding leading zero
+                            var day = ("0" + date.getDate()).slice(-2); // Adding leading zero
+                            return year + '-' + month + '-' + day;
+                        }
+                    },
+                    { "data": "no_sj", "name": "no_sj" },
+                    { "data": "received_by", "name": "received_by" },
+                    { "data": "location", "name": "location" },
+                    { "data": "courier", "name": "courier" },
+                    { 
+                        "data": "item_code", 
+                        "name": "item_code",
+                        "render": function(data, type, row) {
+                            if (Array.isArray(row.item_details) && row.item_details.length > 0) {
+                                var items = '<ul>';
+                                row.item_details.forEach(function(item) {
+                                    items += '<li>' + item.item_code + '</li>';
+                                });
+                                items += '</ul>';
+                                return items;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
                     { 
                         "data": "item_name", 
                         "name": "item_name",
@@ -119,38 +153,6 @@
                                 });
                                 items += '</ul>';
                                 return items;
-                            } else {
-                                return '';
-                            }
-                        }
-                    },
-                    { 
-                        "data": "color", 
-                        "name": "color",
-                        "render": function(data, type, row) {
-                            if (Array.isArray(row.item_details) && row.item_details.length > 0) {
-                                var colors = '<ul>';
-                                row.item_details.forEach(function(item) {
-                                    colors += '<li>' + (item.color ? item.color : '-') + '</li>';
-                                });
-                                colors += '</ul>';
-                                return colors;
-                            } else {
-                                return '';
-                            }
-                        }
-                    },
-                    { 
-                        "data": "size", 
-                        "name": "size",
-                        "render": function(data, type, row) {
-                            if (Array.isArray(row.item_details) && row.item_details.length > 0) {
-                                var sizes = '<ul>';
-                                row.item_details.forEach(function(item) {
-                                    sizes += '<li>' + (item.size ? item.size : '-') + '</li>';
-                                });
-                                sizes += '</ul>';
-                                return sizes;
                             } else {
                                 return '';
                             }
@@ -173,6 +175,39 @@
                         }
                     },
                     { 
+                        "data": "color", 
+                        "name": "color",
+                        "render": function(data, type, row) {
+                            if (Array.isArray(row.item_details) && row.item_details.length > 0) {
+                                var colors = '<ul>';
+                                row.item_details.forEach(function(item) {
+                                    colors += (item.color ? '<li>' +  item.color+ '</li>' : '') ;
+                                });
+                                colors += '</ul>';
+                                return colors;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    { 
+                        "data": "size", 
+                        "name": "size",
+                        "render": function(data, type, row) {
+                            if (Array.isArray(row.item_details) && row.item_details.length > 0) {
+                                var sizes = '<ul>';
+                                row.item_details.forEach(function(item) {
+                                    sizes +=  (item.size ? '<li>' + item.size + '</li>' : '');
+                                });
+                                sizes += '</ul>';
+                                return sizes;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                
+                    { 
                         "data": "qty", 
                         "name": "qty",
                         "render": function(data, type, row) {
@@ -189,38 +224,70 @@
                         }
                     },
                     { 
-                        "data": "price", 
-                        "name": "price",
+                        "data": "batch", 
+                        "name": "batch",
                         "render": function(data, type, row) {
                             if (Array.isArray(row.item_details) && row.item_details.length > 0) {
-                                var prices = '<ul>';
+                                var items = '<ul>';
                                 row.item_details.forEach(function(item) {
-                                    prices += '<li>' + item.price + '</li>';
+                                    items += (item.batch?'<li>' + item.batch + '</li>':'');
                                 });
-                                prices += '</ul>';
-                                return prices;
+                                items += '</ul>';
+                                return items;
                             } else {
-                                return '';
-                            } 
+                                return '-';
+                            }
                         }
                     },
-                   
                     { 
-                        "data": "status", 
-                        "name": "status",
+                        "data": "no_roll", 
+                        "name": "no_roll",
                         "render": function(data, type, row) {
                             if (Array.isArray(row.item_details) && row.item_details.length > 0) {
-                                var statuss = '<ul>';
+                                var items = '<ul>';
                                 row.item_details.forEach(function(item) {
-                                    statuss += '<li>' + (item.status ? item.status : '') + '</li>';
+                                    items += (item.no_roll?'<li>' + item.no_roll + '</li>':'');
                                 });
-                                statuss += '</ul>';
-                                return statuss;
+                                items += '</ul>';
+                                return items;
                             } else {
                                 return '';
                             }
                         }
                     },
+                    { 
+                        "data": "mo", 
+                        "name": "mo",
+                        "render": function(data, type, row) {
+                            if (Array.isArray(row.item_details) && row.item_details.length > 0) {
+                                var items = '<ul>';
+                                row.item_details.forEach(function(item) {
+                                    items += (item.mo?'<li>' + item.mo + '</li>':'');
+                                });
+                                items += '</ul>';
+                                return items;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    { 
+                        "data": "remark", 
+                        "name": "remark",
+                        "render": function(data, type, row) {
+                            if (Array.isArray(row.item_details) && row.item_details.length > 0) {
+                                var items = '<ul>';
+                                row.item_details.forEach(function(item) {
+                                    items += (item.remark?'<li>' + item.remark + '</li>':'');
+                                });
+                                items += '</ul>';
+                                return items;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                
                     { 
                         "data": "action", 
                         "name": "action", 
@@ -236,7 +303,7 @@
 
 
 
-            $('body').on('click', '.deletePurchaseorder', function() {
+            $('body').on('click', '.deleteMaterialin', function() {
 
 
 
@@ -263,7 +330,7 @@
 
                         $.ajax({
                             type: "GET",
-                            url: "/delete/purchaseorder/" + request_id,
+                            url: "/delete/materialin/" + request_id,
                             success: function(data) {
                                 table.ajax.reload(null, false);
 

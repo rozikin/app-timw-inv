@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->string("item_code");
+            $table->string("item_code")->unique();
             $table->string("item_name");
             $table->string("description");
             $table->unsignedBigInteger("category_id"); // Assuming category_id is a foreign key

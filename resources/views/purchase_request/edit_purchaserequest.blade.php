@@ -5,7 +5,7 @@
 
         <div class="row">
             <div class="col-md-12 grid-margin stretch-card">
-                <div class="card">
+                <div class="card"> 
                     <div class="card-body">
 
                         <div class="row">
@@ -20,6 +20,10 @@
                                         Edit Purchase Request Information
                                     </div>
                                     <hr>
+
+                                        <p class="text-danger">Edit Request for: <strong>
+                                            {{ $cbdno }}</strong>
+                                    </p>
 
                                     @if ($errors->any())
                                         <div class="alert alert-danger" role="alert">
@@ -42,17 +46,28 @@
                                                         value="{{ $cbdId }}" readonly>
                                                 </div>
                                             </div>
-                                            <div class="mb-3 row">
+                                            <div class="form-group row">
+                                                <label for="purchase_request_no" class="col-sm-4 col-form-label">purchase_request_no</label>
+                                                <div class="col-sm-5">
+                                                    <input type="text" class="form-control" id="purchase_request_no" name="purchase_request_no"
+                                                        value="{{ $purchaseRequest->purchase_request_no }}" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="row">
                                                 <label for="tipe" class="col-sm-4 col-form-label">Type:</label>
                                                 <div class="col-sm-5">
                                                     <select class="js-example-basic-single form-select" id="tipe"
                                                         name="tipe">
+                                                        <option value="SLT"
+                                                        {{ $purchaseRequest->tipe == 'SLT' ? 'selected' : '' }}>
+                                                        SLT</option>
                                                         <option value="Urgent"
                                                             {{ $purchaseRequest->tipe == 'Urgent' ? 'selected' : '' }}>
                                                             Urgent</option>
                                                         <option value="Non Urgent"
                                                             {{ $purchaseRequest->tipe == 'Non Urgent' ? 'selected' : '' }}>
                                                             Non Urgent</option>
+                                                          
                                                     </select>
                                                 </div>
                                             </div>
@@ -78,18 +93,6 @@
                                                 </div>
                                             </div>
 
-                                        </div>
-
-                                        <div class="col-md-6">
-
-                                            <div class="form-group row">
-                                                <label for="department" class="col-sm-4 col-form-label">Department</label>
-                                                <div class="col-sm-5">
-                                                    <input type="text" class="form-control" id="department"
-                                                        name="department" value="{{ $purchaseRequest->department }}"
-                                                        required>
-                                                </div>
-                                            </div>
                                             <div class="form-group row">
                                                 <label for="applicant" class="col-sm-4 col-form-label">Applicant</label>
                                                 <div class="col-sm-5">
@@ -100,18 +103,35 @@
                                             <div class="form-group row">
                                                 <label for="time_line" class="col-sm-4 col-form-label">Timeline</label>
                                                 <div class="col-sm-5">
-                                                    <input type="text" class="form-control" id="time_line"
+                                                    <input type="date" class="form-control" id="time_line"
                                                         name="time_line" value="{{ $purchaseRequest->time_line }}">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="remark1" class="col-sm-4 col-form-label">Remark</label>
+                                                <label for="department" class="col-sm-4 col-form-label">Department</label>
                                                 <div class="col-sm-5">
-                                                    <input type="text" class="form-control" id="remark1" name="remark1"
-                                                        value="{{ $purchaseRequest->remark }}">
+                                                    <input type="text" class="form-control" id="department"
+                                                        name="department" value="{{ $purchaseRequest->department }}"
+                                                        required>
                                                 </div>
                                             </div>
 
+                                            <div class="form-group row">
+                                                <label for="remark1" class="col-sm-4 col-form-label">Remark</label>
+                                                <div class="col-sm-5">
+                                                    <input type="text" class="form-control" id="remark1" name="remark1"
+                                                        value="{{ $purchaseRequest->remark1}}">
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="col-md-6">
+
+                                        
+                                          
+                                        
                                             <!-- Table displaying the pivot size/color/quantity data -->
                                             @if (!empty($colors) && !empty($sizes))
                                                 <table class="table table-bordered">
@@ -158,9 +178,16 @@
                                                         <th>item ID</th>
                                                         <th>item Code</th>
                                                         <th>Name</th>
+                                                        <th>UNIT</th>
+
+                                                        <th>SUP ID</th>
+                                                        
+                                                        <th>SUP NAME</th>
+
+
                                                         <th>Color</th>
                                                         <th>Size</th>
-                                                        <th>UNIT</th>
+                                                   
                                                         <th>QTY</th>
                                                         <th>Consumption</th>
                                                         <th>Allowance</th>
@@ -174,44 +201,59 @@
                                                     @if (!empty($purchaseRequest->detailrequest))
                                                         @foreach ($purchaseRequest->detailrequest as $index => $detail)
                                                             <tr class="detail-row">
-                                                                <td><input type="text" class="form-control item-id"
+                                                                <td><input type="text" class="form-control form-control-sm item-id"
                                                                         name="details[{{ $index }}][item_id]"
-                                                                        required value="{{ $detail->item_id }}"></td>
-                                                                <td><input type="text" class="form-control item-code"
+                                                                        required value="{{ $detail->item_id }}" style="width: 100%;"></td>
+                                                                <td><input type="text" class="form-control form-control-sm item-code"
                                                                         name="details[{{ $index }}][item_code]"
-                                                                        required value="{{ $detail->item->item_code }}">
+                                                                        required value="{{ $detail->item->item_code }}" style="width: 100%;">
                                                                 </td>
-                                                                <td><input type="text" class="form-control item-name"
+                                                                <td><input type="text" class="form-control form-control-sm item-name"
                                                                         name="details[{{ $index }}][item_name]"
-                                                                        required value="{{ $detail->item->item_name }}">
+                                                                        required value="{{ $detail->item->item_name }}" style="width: 100%;">
                                                                 </td>
-                                                                <td><input type="text" class="form-control color-id"
+
+                                                                <td><input type="text" class="form-control form-control-sm unit"
+                                                                    name="details[{{ $index }}][unit]"
+                                                                    value="{{ $detail->item->unit->unit_code }}" style="width: 100%;"></td> 
+                                                                    
+                                                                    
+                                                                <td><input type="text" class="form-control form-control-sm supplier-id"
+                                                                        name="details[{{ $index }}][supplier_id]"
+                                                                        required value="{{ $detail->supplier_id }}" style="width: 100%;"></td>
+                                                                <td><input type="text" class="form-control form-control-sm supplier-name"
+                                                                        name="details[{{ $index }}][supplier_name]"
+                                                                        required value="{{ $detail->supplier->supplier_name }}" style="width: 100%;">
+                                                                </td>
+
+                                                                
+
+
+                                                                <td><input type="text" class="form-control form-control-sm color-id"
                                                                         name="details[{{ $index }}][color]"
-                                                                        value="{{ $detail->color }}"></td>
-                                                                <td><input type="text" class="form-control size-id"
+                                                                        value="{{ $detail->color }}" style="width: 100%;"></td>
+                                                                <td><input type="text" class="form-control form-control-sm size-id"
                                                                         name="details[{{ $index }}][size]"
-                                                                        value="{{ $detail->size }}"></td>
-                                                                <td><input type="text" class="form-control unit"
-                                                                        name="details[{{ $index }}][unit]"
-                                                                        value="{{ $detail->item->unit->unit_code }}"></td>
-                                                                <td><input type="text" class="form-control qty"
+                                                                        value="{{ $detail->size }}" style="width: 100%;"></td>
+                                                              
+                                                                <td><input type="text" class="form-control form-control-sm qty"
                                                                         name="details[{{ $index }}][qty]" required
-                                                                        value="{{ $detail->qty }}" pattern="[0-9]+">
+                                                                        value="{{ $detail->qty }}" style="width: 100%;" pattern="[0-9]+">
                                                                 </td>
-                                                                <td><input type="text" class="form-control consumption"
+                                                                <td><input type="text" class="form-control form-control-sm consumption"
                                                                         name="details[{{ $index }}][consumption]"
-                                                                        value="{{ $detail->consumtion }}"
+                                                                        value="{{ $detail->consumtion }}" style="width: 100%;"
                                                                         pattern="[0-9]+"></td>
-                                                                <td><input type="text" class="form-control allowance"
+                                                                <td><input type="text" class="form-control form-control-sm allowance"
                                                                         name="details[{{ $index }}][allowance]"
-                                                                        value="{{ $detail->allowance }}"
+                                                                        value="{{ $detail->allowance }}" style="width: 100%;"
                                                                         pattern="[0-9]+"></td>
-                                                                <td><input type="text" class="form-control total"
+                                                                <td><input type="text" class="form-control form-control-sm total"
                                                                         name="details[{{ $index }}][total]"
-                                                                        readonly value="{{ $detail->total }}"></td>
-                                                                <td><input type="text" class="form-control"
+                                                                        readonly value="{{ $detail->total }}" style="width: 100%;"></td>
+                                                                <td><input type="text" class="form-control form-control-sm"
                                                                         name="details[{{ $index }}][remark]"
-                                                                        value="{{ $detail->remark }}"></td>
+                                                                        value="{{ $detail->remark }}" style="width: 100%;"></td>
                                                                 <td><button type="button"
                                                                         class="btn btn-danger btn-sm remove-detail">Remove</button>
                                                                 </td>
@@ -325,6 +367,37 @@
         </div>
     </div>
 
+    <div class="modal fade" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="supplierModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="supplierModalLabel">Select Supplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                </button>
+            </div>
+            <div class="modal-body">
+                <table id="suppliers-table" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Supplier Name</th>
+                            <th>Supplier Address</th>
+
+                            <th>Person</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Supplier rows will be appended here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
     <script>
         setTimeout(function() {
             $('.alert-danger').fadeOut('slow');
@@ -361,18 +434,24 @@
             $('#add-detail').on('click', function() {
                 const newDetailRow = `
             <tr class="detail-row">
-                <td><input type="text" class="form-control item-id" name="details[${detailIndex}][item_id]" required></td>
-                <td><input type="text" class="form-control item-code" name="details[${detailIndex}][item_code]" required></td>
-                <td><input type="text" class="form-control item-name" name="details[${detailIndex}][item_name]" required></td>
-                <td><input type="text" class="form-control color-id" name="details[${detailIndex}][color]"></td>
-                <td><input type="text" class="form-control size-id" name="details[${detailIndex}][size]"></td>
-                <td><input type="text" class="form-control unit" name="details[${detailIndex}][unit]"></td>
-                <td><input type="text" class="form-control qty" name="details[${detailIndex}][qty]" required  value="0" pattern="[0-9]+"></td>
-                <td><input type="text" class="form-control consumption" name="details[${detailIndex}][consumption]"  value="0" pattern="[0-9]+"></td>
-                <td><input type="text" class="form-control allowance" name="details[${detailIndex}][allowance]"  value="0" pattern="[0-9]+"></td>
-                <td><input type="text" class="form-control total" name="details[${detailIndex}][total]" readonly></td>
+                <td><input type="text" class="form-control form-control-sm item-id" name="details[${detailIndex}][item_id]" required></td>
+                <td><input type="text" class="form-control form-control-sm item-code" name="details[${detailIndex}][item_code]" required></td>
+                <td><input type="text" class="form-control form-control-sm item-name" name="details[${detailIndex}][item_name]" required></td>
+                     <td><input type="text" class="form-control form-control-sm unit" name="details[${detailIndex}][unit]"></td>
+
+                <td><input type="text" class="form-control form-control-sm supplier-id" name="details[${detailIndex}][supplier_id]" required style="width: 100%;"></td>
+                <td><input type="text" class="form-control form-control-sm supplier-name" name="details[${detailIndex}][supplier_name]" required readonly style="width: 100%;"></td>
+
+
+                <td><input type="text" class="form-control form-control-sm color-id" name="details[${detailIndex}][color]"></td>
+                <td><input type="text" class="form-control form-control-sm size-id" name="details[${detailIndex}][size]"></td>
+           
+                <td><input type="text" class="form-control form-control-sm qty" name="details[${detailIndex}][qty]" required  value="0" pattern="[0-9]+"></td>
+                <td><input type="text" class="form-control form-control-sm consumption" name="details[${detailIndex}][consumption]"  value="0" pattern="[0-9]+"></td>
+                <td><input type="text" class="form-control form-control-sm allowance" name="details[${detailIndex}][allowance]"  value="0" pattern="[0-9]+"></td>
+                <td><input type="text" class="form-control form-control-sm total" name="details[${detailIndex}][total]" readonly></td>
           
-                <td><input type="text" class="form-control" name="details[${detailIndex}][remark]"></td>
+                <td><input type="text" class="form-control form-control-sm" name="details[${detailIndex}][remark]"></td>
                 <td><button type="button" class="btn btn-danger btn-sm remove-detail">Remove</button></td>
             </tr>`;
                 $('#details-container').append(newDetailRow);
@@ -515,7 +594,7 @@
                         // Tambahkan event handler untuk setiap baris tabel
                         $('#colors-table tbody').on('click', 'tr', function() {
                             var data = table.row(this).data();
-                            selectedInput.val(data.color_code); // Mengambil ID item
+                            selectedInput.val(data.color_name); // Mengambil ID item
                             $('#colorModal').modal('hide');
                         });
                     },
@@ -570,12 +649,94 @@
 
                 });
             }
-
-
-
-
-
-
         });
+
+        $(document).on('click', '.supplier-id', function() {
+            selectedInput = $(this);
+            $('#supplierModal').modal('show'); // Show the modal
+            loadSuppliers();
+        });
+
+
+        function loadSuppliers() {
+            $('#supplier-table tbody').empty();
+
+            $.ajax({
+                url: '{{ route('get.supplierglobal') }}', // Sesuaikan dengan route yang benar
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    // Inisialisasi DataTable
+                    table = $('#suppliers-table').DataTable({
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        destroy: true,
+                        info: true,
+                        data: data,
+                        columns: [{
+                                title: "ID",
+                                data: "id"
+                            },
+
+                            {
+                                title: "supplier_name",
+                                data: "supplier_name",
+                                render: function(data, type, row) {
+                                    // Batasi panjang teks maksimal menjadi 50 karakter
+                                    if (type === 'display' && data.length > 25) {
+                                        return data.substr(0, 25) + '...';
+                                    }
+                                    return data;
+                                }
+                            },
+
+                            {
+                                title: "supplier_address",
+                                data: "supplier_address",
+                                render: function(data, type, row) {
+                                    // Batasi panjang teks maksimal menjadi 25 karakter
+                                    if (type === 'display' && data.length > 25) {
+                                        return data.substr(0, 25) + '...';
+                                    }
+                                    return data;
+                                }
+                            },
+
+                            {
+                                title: "supplier_person",
+                                data: "supplier_person"
+                            },
+                            {
+                                title: "remark",
+                                data: "remark"
+                            }
+                        ]
+                    });
+
+
+                    // Tambahkan event handler untuk setiap baris tabel
+                    $('#suppliers-table tbody').on('click', 'tr', function() {
+                        var supplier = table.row(this).data();
+                        selectedInput.val(supplier.id); // Mengambil ID item
+                            $(selectedInput).closest('.detail-row').find('.supplier-name').val(
+                                supplier
+                                .supplier_name);
+                            $('#supplierModal').modal('hide');
+
+
+                        $('#supplierModal').modal('hide');
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+
+
     </script>
 @endsection

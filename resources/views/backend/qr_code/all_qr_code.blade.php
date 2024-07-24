@@ -3,7 +3,6 @@
 @section('admin')
     <div class="page-content mt-5">
 
-
         <div class="row">
             <div class="col-md-12 grid-margin stretch-card">
                 <div class="card">
@@ -11,50 +10,52 @@
 
                         <div>
                             <div class="row">
-                              
 
                                 <div class="col">
-                                    <h6 class="card-title text-center">PURCHASE REQUEST All</h6>
+                                    <h6 class="card-title text-center">qr_code All</h6>
                                 </div>
-                              
+
                             </div>
 
                         </div>
-                            
+
                         <div class="row">
                             <div class="col">
-                             
 
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                 
-                                
-                                    <a href="{{ route('add.purchaserequest') }}"  class="btn btn-primary"><i class="feather-10" data-feather="plus"></i>  &nbsp;Add</a>
-                                    {{-- <a href="{{ route('export.cbd') }}"  class="btn btn-primary"><i class="feather-10" data-feather="download"></i>  &nbsp;Export</a> --}}
-                                  </div>
+
+                                    <a href="{{ route('import.qr_codes') }}" class="btn btn-primary"><i class="feather-10"
+                                            data-feather="upload"></i> &nbsp;Import</a>
+                                    <a href="{{ route('print.qr_code') }}" class="btn btn-primary"><i class="feather-10"
+                                            data-feather="printer"></i> &nbsp;Print</a>
+
+                                    <a href="{{ route('export.qr_code') }}" class="btn btn-primary"><i class="feather-10"
+                                            data-feather="download"></i> &nbsp;Export</a>
+                                </div>
                             </div>
                         </div>
 
+                        <div class="table-responsive">
 
-                        <div class="table-responsive mt-2">
-
-                            <table id="cbdTable" class="table table-sm">
+                            <table id="qr_codeTable" class="table table-sm">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Request No</th>
-                                        <th>CBD</th>
-                                        <th>tipe</th>
-                                        <th>Mo</th>
-                                        <th>STYLE</th>
-                                        <th>destination</th>
-                                        <th>applicant</th>
-                                        <th>Item_name</th>
-                                        <th>Color</th>
-                                        <th>Size</th>
-                                        <th>Unit</th>
-                                        <th>Total</th>
-                                        <th>Remark</th>
-                                        <th>Status</th>
+                                        <th>ORIGINAL NO</th>
+                                        <th>RECEIVE DATE</th>
+                                        <th>SUPPLIER_NAME</th>
+                                        <th>ITEM_CODE</th>
+                                        <th>PO</th>
+                                        <th>COLOR CODE</th>
+                                        <th>COLOR NAME</th>
+                                        <th>BATCH</th>
+                                        <th>ROLL</th>
+                                        <th>GROSS WEIGHT</th>
+                                        <th>NET WEIGHT</th>
+                                        <th>QTY</th>
+                                        <th>BASIC WIDTH</th>
+                                        <th>BASIC GRM</th>
+                                        <th>MO</th>
                                         <th>Action</th>
 
                                     </tr>
@@ -72,16 +73,6 @@
 
     </div>
 
-
-
-
-
-
-
-
-
-
-
     <script>
         $(function() {
 
@@ -95,57 +86,103 @@
 
             });
 
-        
-            var table = $('#cbdTable').DataTable({
+            $('#modal-create').on('shown.bs.modal', function() {
+                $(this).find('[autofocus]').focus();
+            });
+
+
+
+
+            var table = $('#qr_codeTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('get.purchaserequest') }}",
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex' },
-                    { data: 'purchase_request_no', name: 'purchase_request_no' },
-                    { data: 'order_no', name: 'order_no' },
-                    { data: 'tipe', name: 'tipe', render: function(data, type, row) {
-                        if (data == 'Urgent' || data == 'SLT') {
-                            return '<span class="badge bg-danger">'+data+'</span>';
-                        }
-                        return data;
-                    }},
-                    { data: 'mo', name: 'mo' },
-                    { data: 'style', name: 'style' },
-                    { data: 'destination', name: 'destination' },
-                    { data: 'applicant', name: 'applicant' },
+                ajax: "{{ route('get.qr_code') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
                     {
-                                title: "item_name",
-                                data: "item_name",
-                                render: function(data, type, row) {
-                                    // Batasi panjang teks maksimal menjadi 25 karakter
-                                    if (type === 'display' && data.length > 25) {
-                                        return data.substr(0, 25) + '...';
-                                    }
-                                    return data;
-                                }
-                            },
-                    { data: 'color', name: 'color' },
-                    { data: 'size', name: 'size' },
-                    { data: 'unit', name: 'unit' },
-                    { data: 'total', name: 'total' },
-                    { data: 'remark', name: 'remark' },
-                    { data: 'status', name: 'status' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false },
+                        data: 'original_no',
+                        name: 'original_no'
+                    },
+                    {
+                        data: 'received_date',
+                        name: 'received_date'
+                    },
+                    {
+                        data: 'supplier_name',
+                        name: 'supplier_name'
+                    },
+                    {
+                        data: 'item_code',
+                        name: 'item_code'
+                    },
+                    {
+                        data: 'po',
+                        name: 'po'
+                    },
+                    {
+                        data: 'color_code',
+                        name: 'color_code'
+                    },
+                    {
+                        data: 'color_name',
+                        name: 'color_name'
+                    },
+                    {
+                        data: 'batch',
+                        name: 'batch'
+                    },
+                    {
+                        data: 'roll',
+                        name: 'roll'
+                    },
+                    {
+                        data: 'gross_weight',
+                        name: 'gross_weight'
+                    },
+                    {
+                        data: 'net_weight',
+                        name: 'net_weight'
+                    },
+                    {
+                        data: 'qty',
+                        name: 'qty'
+                    },
+                    {
+                        data: 'basic_width',
+                        name: 'basic_width'
+                    },
+                    {
+                        data: 'basic_grm',
+                        name: 'basic_grm'
+                    },
+                    {
+                        data: 'mo',
+                        name: 'mo'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
                 ],
-            
+                order: [
+                    [1, 'asc']
+                ]
+
             });
 
 
 
 
 
-
-            $('body').on('click', '.deletePurchaserequest', function() {
-
+            $('body').on('click', '.deleteQr', function() {
 
 
-                var request_id = $(this).data("id");
+
+                var qr_code_id = $(this).data("id");
 
                 const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
@@ -168,7 +205,7 @@
 
                         $.ajax({
                             type: "GET",
-                            url: "/delete/purchaserequest/" + request_id,
+                            url: "/delete/qr_code/" + qr_code_id,
                             success: function(data) {
                                 table.ajax.reload(null, false);
 

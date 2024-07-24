@@ -28,6 +28,11 @@ class Item extends Model
         return $this->hasMany(PurchaseRequestDetail::class);
     }
 
+    public function materialInDetails()
+    {
+        return $this->hasMany(MaterialInDetail::class, 'item_code', 'item_code');
+    }
+
 
     
 }

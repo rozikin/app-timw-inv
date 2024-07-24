@@ -449,6 +449,7 @@
 
             $(document).on('click', '.color-id', function() {
                 selectedInput = $(this);
+                selectedInput = $(this).val('');
                 $('#colorModal').modal('show');
                 loadColors();
             });
@@ -604,11 +605,14 @@
 
                         // Tambahkan event handler untuk setiap baris tabel
                         $('#colors-table tbody').on('click', 'tr', function() {
+                       
                             var data = table.row(this).data();
 
-                            data.color = data.color.replace(/\n/g, ' ');
+                            color1= data.color.replace(/\n/g, ' ');
+                            color2 = data.color_code;
+                            data.colorx = color2 + ' ' + color1;
 
-                            selectedInput.val(data.color); // Mengambil ID item
+                            selectedInput.val(data.colorx); // Mengambil ID item
 
                             $(selectedInput).closest('.detail-row').find('.size-id').val(data
                                 .size);

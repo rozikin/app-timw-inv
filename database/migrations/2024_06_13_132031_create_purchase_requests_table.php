@@ -22,7 +22,7 @@ return new class extends Migration
              $table->string('department');
              $table->string('applicant');
              $table->string('time_line')->nullable();
-             $table->string('remark')->nullable();
+             $table->string('remark1')->nullable();
              $table->string('status')->nullable();
              $table->string('user_id');
              $table->unsignedInteger('revision_no')->default(0);

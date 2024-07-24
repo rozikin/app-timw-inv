@@ -12,7 +12,7 @@
 
                             <div class="container">
 
-                                <form action="{{ route('store.materialin') }}" method="POST">
+                                <form action="{{ route('store.materialinsp') }}" method="POST">
                                     @csrf
                                     <!-- Purchase Request Fields -->
 
@@ -72,6 +72,7 @@
                                                 </div>
                                             </div>
                                            
+
                                         </div>
 
                                         <div class="col-md-6">
@@ -90,7 +91,6 @@
                                                         name="location">
                                                 </div>
                                             </div>
- 
 
                                             <div class="form-group row">
                                                 <label for="courier" class="col-sm-4 col-form-label">courier</label>
@@ -114,6 +114,7 @@
                                             <table class="table" id="items-table1">
                                                 <thead>
                                                     <tr>
+                                                        <th>ID</th>
                                                         <th>ID PO</th>
                                                         <th>PO</th>
                                                         <th>ID Item</th>
@@ -141,16 +142,13 @@
                                                 id="add-detail">Add
                                                 Detail</button> --}}
 
-                                          
-
                                             <h6>IN Items</h6>
-                                         
-
 
                                             <table class="table table-bordered" id="details-table">
                                                 <thead>
                                                     <tr>
                                                         <th>ID</th>
+                                                        <th>ID PO</th>
                                                         <th>PO</th>
                                                         <th>ID Item</th>
                                                         <th>Item Code</th>
@@ -161,18 +159,6 @@
                                                         <th>Quantity</th>
                                                         <th>Remark</th>
                                                         <th>Action</th>
-                                                        <th>batch</th>
-                                                        <th>qty</th>
-                                                        <th>no_roll</th>
-                                                        <th>gw</th>
-                                                        <th>nw</th>
-                                                        <th>width</th>
-                                                        <th>gramasi</th>
-                                                        <th>mo</th>
-                                                        <th>style</th>
-                                                        <th>rak_id</th>
-                                                        <th>remark</th>
-                                                        <th>satus</th>
 
                                                     </tr>
                                                 </thead>
@@ -181,19 +167,6 @@
                                                 </tbody>
                                             </table>
 
-
-
-                                              <div class="col-md-3" id="form-upload-pl" style="display: none;" >
-                                                <label for="name" class="form-label">Import PL</label>
-                                                <input type="file" class="form-control" id="import_file"
-                                                    name="import_file" required>
-
-                                                    <button id="upload_pl" class="btn btn-primary me-2">Upload</button>
-
-
-                                            </div>
-
-                                          
                                         </div>
 
                                     </div>
@@ -210,8 +183,6 @@
         </div>
 
     </div>
-
-
 
     <div class="modal fade" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="supplierModalLabel"
         aria-hidden="true">
@@ -391,8 +362,6 @@
 
 
 
-
-
             function loadItems1() {
                 $('#items-table1 tbody').empty();
 
@@ -417,11 +386,12 @@
 
                         data.forEach(function(item) {
                             item.detailorder.forEach(function(detail) {
-                                // console.log(detail);
+
 
                                 var row = `<tr>
+                                    <td>${detail.id}</td>
                                     <td>${detail.purchase_order_id}</td>
-                                    <td>${item.purchase_order_no} | PO TIN : ${item.remarksx}</td>
+                                    <td>${item.purchase_order_no}|| PO TIN : ${item.remarksx}</td>
                                     <td>${detail.item_id}</td>
                                     <td>${detail.item.item_code}</td>
                                     <td>${detail.item.item_name}</td>
@@ -429,6 +399,7 @@
                                     <td>${detail.color ? detail.color : ''}</td>
                                     <td>${detail.size ? detail.size : ''}</td>
                                     <td>${detail.qty}</td>
+                            
                                     <td>${detail.remark ? detail.remark : ''}</td>
                                     <td><button type="button" class="btn btn-danger btn-sm select-detail">Select</button></td>
                                 </tr>`;
@@ -439,48 +410,51 @@
                         $('.select-detail').on('click', function() {
                             var row = $(this).closest('tr'); // Get the clicked row
 
-                            $('#form-upload-pl').show();
+
 
 
                             var detail = {
                                 id: row.find('td:eq(0)').text(),
-                                po_number: row.find('td:eq(1)').text(),
-                                item_id: row.find('td:eq(2)').text(),
-                                 
+                                po_id: row.find('td:eq(1)').text(),
+                                po_number: row.find('td:eq(2)').text(),
+                                item_id: row.find('td:eq(3)').text(),
+
                                 item: {
-                                    item_code: row.find('td:eq(3)')
+                                    item_code: row.find('td:eq(4)')
                                         .text(), // Extract item code from the third cell
-                                    item_name: row.find('td:eq(4)')
+                                    item_name: row.find('td:eq(5)')
                                         .text(), // Extract item name from the fourth cell
                                     unit: {
-                                        unit_code: row.find('td:eq(5)')
+                                        unit_code: row.find('td:eq(6)')
                                             .text() // Extract unit code from the ninth cell
                                     }
                                 },
-                                color: row.find('td:eq(6)')
+                                color: row.find('td:eq(7)')
                                     .text(), // Extract color from the fifth cell   
-                                size: row.find('td:eq(7)')
+                                size: row.find('td:eq(8)')
                                     .text(), // Extract size from the sixth cell
-                                total: row.find('td:eq(8)')
+                                total: row.find('td:eq(9)')
                                     .text(), // Extract quantity from the seventh cell
-                                remark: row.find('td:eq(9)')
+                                remark: row.find('td:eq(10)')
                                     .text() // Extract remark from the tenth cell
                             };
 
-                            console.log(detail);
+                            // console.log(detail);
 
 
 
                             var newRowx = `<tr class="detail-row">
-                                <td><input type="text" class="form-control po-id" name="po_id" value="${detail.id}" required></td>
-                                <td><input type="text" class="form-control po-number" name="po_number" value="${detail.po_number}" required></td>
-                                <td><input type="text" class="form-control item-id" name="item_id" value="${detail.item_id}" required></td>
-                                <td><input type="text" class="form-control item-code" name="item_code" value="${detail.item.item_code}" required></td>
-                                <td><input type="text" class="form-control item-name" name="item_name" value="${detail.item.item_name}" required></td>
-                                <td><input type="text" class="form-control color-id" name="color" value="${detail.color ? detail.color : ''}"></td>
-                                <td><input type="text" class="form-control size-id" name="size" value="${detail.size ? detail.size : ''}"></td>
-                                <td><input type="text" class="form-control unit" name="unit" value="${detail.item.unit.unit_code}"></td>
-                                <td><input type="text" class="form-control qty" name="qty" value="${detail.total}" required></td>
+                                <td><input type="text" class="form-control po-id" name="details[${detail.id}][po_id]" value="${detail.id}" required></td>
+                                <td><input type="text" class="form-control po-id" name="details[${detail.id}][po_id]" value="${detail.po_id}" required></td>
+                                <td><input type="text" class="form-control po-number" name="details[${detail.id}][po_number]" value="${detail.po_number}" required></td>
+                                <td><input type="text" class="form-control item-id" name="details[${detail.id}][item_id]" value="${detail.item_id}" required></td>
+                                <td><input type="text" class="form-control item-code" name="details[${detail.id}][item_code]" value="${detail.item.item_code}" required></td>
+                                <td><input type="text" class="form-control item-name" name="details[${detail.id}][item_name]" value="${detail.item.item_name}" required></td>
+                                   <td><input type="text" class="form-control unit" name="details[${detail.id}][unit]" value="${detail.item.unit.unit_code}"></td>
+                                <td><input type="text" class="form-control color-id" name="details[${detail.id}][color]" value="${detail.color ? detail.color : ''}"></td>
+                                <td><input type="text" class="form-control size-id" name="details[${detail.id}][size]" value="${detail.size ? detail.size : ''}"></td>
+                             
+                                <td><input type="text" class="form-control qty" name="details[${detail.id}][qty]" value="${detail.total}" required></td>
                 
                                 <td><input type="text" class="form-control" name="details[${detail.id}][remark]" value="${detail.remark ? detail.remark : ''}"></td>
                                 <td><button type="button" class="btn btn-danger btn-sm remove-detail">Remove</button></td>
@@ -501,7 +475,6 @@
 
 
                         });
-
 
                     },
                     error: function(xhr, status, error) {
@@ -555,55 +528,60 @@
         });
 
         $(document).ready(function() {
-    $('#upload_pl').on('click', function(e) {
-        e.preventDefault();
+            $('#upload_pl').on('click', function(e) {
+                e.preventDefault();
 
-        var formData = new FormData();
-        formData.append('import_file', $('#import_file')[0].files[0]);
+                var formData = new FormData();
+                formData.append('import_file', $('#import_file')[0].files[0]);
 
-        $.ajax({
-            url: '{{ route('import.materialin') }}',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(data) {
-    var tbody = $('#details-containerx');
+                $.ajax({
+                    url: '{{ route('import.materialin') }}',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(data) {
+                        var tbody = $('#details-containerx');
 
-    // Append rows
-    data.rows.forEach(function(row, rowIndex) {
-        var existingRow = tbody.find('tr').eq(rowIndex);
+                        // Append rows
+                        data.rows.forEach(function(row, rowIndex) {
+                            var existingRow = tbody.find('tr').eq(rowIndex);
 
-        if (existingRow.length === 0) {
-            existingRow = $('<tr>');
-            for (var i = 0; i < 11; i++) {
-                existingRow.append('<td><input type="text" class="form-control form-control-sm" readonly></td>');
-            }
-            tbody.append(existingRow);
-        }
+                            if (existingRow.length === 0) {
+                                existingRow = $('<tr>');
+                                for (var i = 0; i < 11; i++) {
+                                    existingRow.append(
+                                        '<td><input type="text" class="form-control form-control-sm" readonly></td>'
+                                        );
+                                }
+                                tbody.append(existingRow);
+                            }
 
-        var startIndex = existingRow.children('td').length;
-        data.header.forEach(function(header, index) {
-            if (index + startIndex < 12) return;
+                            var startIndex = existingRow.children('td').length;
+                            data.header.forEach(function(header, index) {
+                                if (index + startIndex < 12) return;
 
-            // Get the value of input with name 'header'
-            var inputValue = row[header] || '';
+                                // Get the value of input with name 'header'
+                                var inputValue = row[header] || '';
 
-            var newCell = $('<td data-name="' + header + '">' +
-    '<input type="text" class="form-control form-control-sm" name="details[' + rowIndex + '][' + header + ']" value="' + inputValue + '">' +
-    '</td>');
-existingRow.append(newCell);
+                                var newCell = $('<td data-name="' + header +
+                                    '">' +
+                                    '<input type="text" class="form-control form-control-sm" name="details[' +
+                                    rowIndex + '][' + header +
+                                    ']" value="' + inputValue + '">' +
+                                    '</td>');
+                                existingRow.append(newCell);
+                            });
+                        });
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.error);
+                    }
+                });
+            });
         });
-    });
-},
-            error: function(xhr) {
-                alert(xhr.responseJSON.error);
-            }
-        });
-    });
-});
     </script>
 @endsection
