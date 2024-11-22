@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PurchaseOrder extends Model
 {
     use HasFactory;
+
+    use SoftDeletes;
 
     protected $fillable = [
         'purchase_order_no',
@@ -35,8 +38,9 @@ class PurchaseOrder extends Model
         'rule',
         'status',
         'remarksx',
+        'revision_no',
         'user_id',
-    ];
+        'deleted_at',];
 
  
 

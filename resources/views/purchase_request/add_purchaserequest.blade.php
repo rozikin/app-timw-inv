@@ -1,6 +1,37 @@
 @extends('admin.admin_dashboard')
 
 @section('admin')
+
+    <style>
+        .table-scrollable {
+            position: relative;
+            max-height: 300px;
+            /* Sesuaikan tinggi maksimum sesuai kebutuhan */
+            overflow-y: auto;
+        }
+
+        .table-scrollable thead {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            /* Pastikan header memiliki latar belakang agar terlihat */
+            z-index: 1;
+        }
+
+        .table-scrollable table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-scrollable th,
+        .table-scrollable td {
+            padding: 5px;
+            border: 1px solid #ddd;
+            font-size: 0.8em;
+            /* Font-size lebih kecil */
+        }
+    </style>
+
     <div class="page-content mt-5">
 
         <div class="row">
@@ -116,7 +147,7 @@
                                     <!-- Purchase Request Details Fields -->
                                     <div class="row">
 
-                                        <div class="">
+                                        <div class="table-scrollable">
 
                                             <table class="table table-bordered" id="details-table">
                                                 <thead>

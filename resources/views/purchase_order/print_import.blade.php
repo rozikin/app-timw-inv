@@ -9,8 +9,7 @@
             padding: 0;
         }
 
-        .header,
-        .footer {
+        .header {
             width: 100%;
             position: fixed;
             top: 0;
@@ -22,7 +21,6 @@
 
         .header {
             margin: 0;
-         
             box-sizing: border-box;
             border-bottom: 1px solid #000;
         }
@@ -38,6 +36,7 @@
             /* Atur margin top untuk konten */
             margin-bottom: 1px;
             position: relative;
+            font-size: 15px;
         }
 
         .content p {
@@ -49,7 +48,7 @@
             border-collapse: collapse;
         }
 
-        .table th,  
+        .table th,
         .table td {
             border: 1px solid black;
             padding: 4px;
@@ -76,10 +75,7 @@
             width: auto;
         }
 
-        .table-request td {
-        }
-
-    
+        .table-request td {}
 
         .header-table {
             width: 100%;
@@ -125,14 +121,12 @@
         .header-form-no {
             text-align: left;
             font-size: 10px;
-       
             /* Atur padding */
         }
 
         .header-form-no p {
             border: 1px solid #000;
             /* Tambahkan border pada paragraf */
-      
             /* Atur padding */
             margin: 0;
             /* Hapus margin */
@@ -143,7 +137,7 @@
             /* Atur ukuran font yang diinginkan */
         }
 
-        .table-detail-request th,   
+        .table-detail-request th,
         .table-detail-request td {
             font-size: 10px;
             /* Atur ukuran font untuk header dan data */
@@ -177,7 +171,6 @@
             border: none;
             font-size: 10px;
             vertical-align: top;
-           
         }
 
         .supplier-table .left-column {
@@ -246,7 +239,6 @@
             border: none;
             font-size: 10px;
             vertical-align: top;
-        
         }
 
         .supplier-tablexx .left-column {
@@ -261,8 +253,6 @@
         .supplier-tablexx .nowrap {
             white-space: nowrap;
         }
-
-
 
         .supplier-tablexxx {
             width: 100%;
@@ -279,7 +269,6 @@
 
         .supplier-tablexxx .left-column {
             width: 40%;
-           
         }
 
         .supplier-tablexxx .right-column1 {
@@ -287,12 +276,11 @@
             text-align: right;
         }
 
-
-          .supplier-tablexxx {
+        .supplier-tablexxx {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1px;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
 
         .supplier-tablexxx td {
@@ -303,20 +291,12 @@
 
         .supplier-tablexxx .left-column {
             width: 40%;
-           
         }
 
         .supplier-tablexxx .right-column1 {
             width: 20%;
             text-align: right;
         }
-
-
-
-
-
-
-
 
         .supplier-tablexq {
             width: 100%;
@@ -334,21 +314,12 @@
 
         .supplier-tablexq .left-column {
             width: 40%;
-           
         }
 
         .supplier-tablexq .right-column1 {
             width: 20%;
             text-align: right;
         }
-
-    
-        
-
- 
-
-
-
     </style>
 </head>
 
@@ -393,9 +364,21 @@
         <div class="left-column">
             <table class="supplier-table">
                 <tr>
+                    <td class="left-column nowrap"></td>
+                    <td class="right-column">
+
+                        Rev : {{ $purchaseorder->revision_no }}
+
+                    </td>
+                </tr>
+                <tr>
                     <td class="left-column nowrap">MESSRS,</td>
-                    <td class="right-column">Date:
-                        {{ \Carbon\Carbon::parse($purchaseorder->created_at)->format('d-M-Y') }}</td>
+                    <td class="right-column">
+
+                        Date:
+                        {{ \Carbon\Carbon::parse($purchaseorder->created_at)->format('d-M-Y') }}
+
+                    </td>
                 </tr>
                 <tr>
                     <td>{{ $purchaseorder->supplier->supplier_name }}</td>
@@ -446,11 +429,11 @@
                     <table>
                         <tr>
                             <td> Date in House</td>
-                            <td>:  {{ \Carbon\Carbon::parse($purchaseorder->date_in_house)->format('d-M-Y') }}</td>
+                            <td>: {{ \Carbon\Carbon::parse($purchaseorder->date_in_house)->format('d-M-Y') }}</td>
                         </tr>
                         <tr>
                             <td>Allocation</td>
-                            <td>: {{ $purchaseorder->allocation  }}</td>
+                            <td>: {{ $purchaseorder->allocation }}</td>
                         </tr>
                         <tr>
                             <td>Applicant</td>
@@ -501,10 +484,10 @@
                         <tr>
                             <td>Date</td>
                             <td>: </td>
-                        </tr>       
+                        </tr>
                         <tr>
                             <td>Type</td>
-                            <td>: {{ $purchaseorder->purchaseRequest->tipe }} </td>  
+                            <td>: {{ $purchaseorder->purchaseRequest->tipe }} </td>
                         </tr>
 
                     </table>
@@ -540,21 +523,19 @@
                         <td>{{ $detail->qty }}</td>
                         <td>{{ $detail->remark }}</td>
                         <td>USD {{ $detail->price }}</td>
-                        <td>USD  {{ $detail->total_price }}</td>
-                    </tr>       
-                @endforeach 
+                        <td>USD {{ $detail->total_price }}</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
         <table class="supplier-tablexq">
             <tr>
                 <td class="left-column">
 
-                 
-                   <p>Note :    {{ $purchaseorder->note1 }}</p>
+                    <p>Note : {{ $purchaseorder->note1 }}</p>
                 </td>
                 <td class="right-column1">
 
-                   
                 </td>
             </tr>
 
@@ -654,9 +635,9 @@
                         <tr>
                             <p>Issued by,
                                 <br>
-                                PT. TI Matsuoka Winner Industry</p>
+                                PT. TI Matsuoka Winner Industry
+                            </p>
                         </tr>
-                      
 
                     </table>
                 </td>
@@ -676,18 +657,17 @@
 
         </table>
 
-
         <table class="supplier-tablexxx">
             <tr>
                 <td class="left-column">
                     <table>
                         <tr>
-                            <p style="text-decoration: underline; text-align: center;">Mr. {{ $purchaseorder->approval }}
-                               
-                              </p>
-                                <p>President Director</p>
+                            <p style="text-decoration: underline; text-align: center;">Mr.
+                                {{ $purchaseorder->approval }}
+
+                            </p>
+                            <p>President Director</p>
                         </tr>
-                      
 
                     </table>
                 </td>
@@ -695,9 +675,10 @@
 
                     <table>
                         <tr>
-                            <p style="text-decoration: underline; text-align: center;"> {{ $purchaseorder->supplier->supplier_person }}
+                            <p style="text-decoration: underline; text-align: center;">
+                                {{ $purchaseorder->supplier->supplier_person }}
                                 <br>
-                               
+
                             </p>
                         </tr>
 
@@ -706,8 +687,6 @@
             </tr>
 
         </table>
-
-        
 
     </div>
 </body>

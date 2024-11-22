@@ -21,7 +21,7 @@
     <!-- End fonts -->
 
     <link rel="stylesheet" href="{{ asset('backend/assets/vendors/datatables.net-bs5/dataTables.bootstrap5.css') }}">
-   <link rel="stylesheet" href="{{ asset('backend/assets/vendors/datatables.net-bs5/buttons.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('backend/assets/vendors/datatables.net-bs5/buttons.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('backend/assets/vendors/core/core.css') }}">
 
     <link rel="stylesheet" href="{{ asset('backend/assets/vendors/flatpickr/flatpickr.min.css') }}">
@@ -30,9 +30,6 @@
     <link rel="stylesheet" href="{{ asset('backend/assets/vendors/flag-icon-css/css/flag-icon.min.css') }}">
     <link rel="stylesheet" href="{{ asset('backend/assets/vendors/sweetalert2/sweetalert2.min.css') }}">
 
-  
-
-
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{ asset('backend/assets/css/demo1/style.css') }}">
     <link rel="stylesheet" href="{{ asset('backend/assets/css/custom.css') }}">
@@ -40,17 +37,10 @@
 
     <link rel="stylesheet" href="{{ asset('css/toastr.css') }}">
 
-
     <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.png') }}" />
 
-
-  
-      <!-- DataTables Buttons CSS -->
-      {{-- <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"> --}}
-
-
-
-
+    <!-- DataTables Buttons CSS -->
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"> --}}
 
     <!-- javascript -->
 
@@ -69,27 +59,15 @@
     {{-- <script src="{{ asset('backend/assets/vendors/datatables.net-bs5/buttons.html5.min.js') }}"></script> --}}
     {{-- <script src="{{ asset('backend/assets/vendors/datatables.net-bs5/buttons.print.min.js') }}"></script> --}}
 
-
     <script src="{{ asset('backend/assets/js/data-table.js') }}"></script>
 
-
-
     {{-- <script src="{{ asset('js/sweatalert.js') }}"></script> --}}
-
-
 
     <script src="{{ asset('backend/assets/js/code.js') }}"></script>
 
     <script src="{{ asset('js/sweetalert2/sweetalert2.min.js') }}"></script>
 
-
-
-    
     <script src="{{ asset('js/pusher.min.js') }}"></script>
-
-    
-
-
 
 </head>
 
@@ -109,12 +87,6 @@
             @include('admin.body.footer')
         </div>
     </div>
-
-
-
-
-
-
 
     <script>
         @if (Session::has('message'))
@@ -145,11 +117,7 @@
         // }, false);
     </script>
 
-
 </body>
-
-
-
 
 </html>
 

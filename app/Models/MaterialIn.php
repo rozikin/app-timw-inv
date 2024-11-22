@@ -4,23 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MaterialIn extends Model
 {
     use HasFactory;
 
+    use SoftDeletes;
+
 
     protected $fillable = [
         'material_in_no', 
-   
+    
         'supplier_id', 
         'no_sj', 
         'received_by', 
-        'location', 
+        'location',  
         'courier', 
         'remark', 
         'status', 
-        'user_id'
+        'user_id',
+        'deleted_at'
     ];
 
     public function details()

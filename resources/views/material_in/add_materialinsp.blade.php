@@ -71,7 +71,6 @@
                                                         name="no_sj">
                                                 </div>
                                             </div>
-                                           
 
                                         </div>
 
@@ -555,7 +554,7 @@
                                 for (var i = 0; i < 11; i++) {
                                     existingRow.append(
                                         '<td><input type="text" class="form-control form-control-sm" readonly></td>'
-                                        );
+                                    );
                                 }
                                 tbody.append(existingRow);
                             }

@@ -31,9 +31,9 @@
                                 @csrf
 
                                 <div class="text-center">
-                                    <h3>
+                                    <h5>
                                         Add Consumption
-                                    </h3>
+                                    </h5>
 
                                 </div>
 
@@ -140,7 +140,7 @@
                                 </div> --}}
 
                                 <div class="row">
-                                    <h6>Consumption Detail</h6>
+                                    <h5>Consumption Detail</h5>
                                     <div class="col-md-12 mt-3">
                                         <table id="consumptionDetails" class="table table-bordered">
                                             <thead>

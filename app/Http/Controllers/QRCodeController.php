@@ -145,4 +145,15 @@ class QRCodeController extends Controller
         ]);
     }
 
+    public function Getqr_codein($original_no)
+    {
+        $qrcode = QRCode::where('original_no', $original_no)->first();
+
+        if ($qrcode) {
+            return response()->json($qrcode);
+        } else {
+            return response()->json(['message' => 'No data found'], 404);
+        }
+    }
+
 }

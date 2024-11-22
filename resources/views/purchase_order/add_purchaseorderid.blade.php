@@ -1,6 +1,37 @@
 @extends('admin.admin_dashboard')
 
 @section('admin')
+
+    <style>
+        .table-scrollable {
+            position: relative;
+            max-height: 300px;
+            /* Sesuaikan tinggi maksimum sesuai kebutuhan */
+            overflow-y: auto;
+        }
+
+        .table-scrollable thead {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            /* Pastikan header memiliki latar belakang agar terlihat */
+            z-index: 1;
+        }
+
+        .table-scrollable table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-scrollable th,
+        .table-scrollable td {
+            padding: 5px;
+            border: 1px solid #ddd;
+            font-size: 0.8em;
+            /* Font-size lebih kecil */
+        }
+    </style>
+
     <div class="page-content mt-5">
 
         <div class="row">
@@ -168,7 +199,7 @@
 
                                         <hr>
 
-                                        <div class="">
+                                        <div class="table-scrollable">
                                             {{-- <button type="button" class="btn btn-secondary btn-sm mb-2"
                                                 id="add-detail">Add
                                                 Detail</button> --}}
@@ -649,7 +680,7 @@
                     data: {
                         id1: id1,
                         id2: id2
-                    }, 
+                    },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
@@ -672,33 +703,33 @@
                                 <td><button type="button" class="btn btn-danger btn-sm select-detail">Select</button></td>
                             </tr>`;
                             itemsTableBody.append(row);
-                        }); 
+                        });
 
                         $('.select-detail').on('click', function() {
                             var row = $(this).closest('tr'); // Get the clicked row
                             var detail = {
                                 id: row.find('td:eq(0)')
-                            .text(), // Get purchase_request_detail_id from the first cell
+                                    .text(), // Get purchase_request_detail_id from the first cell
                                 item_id: row.find('td:eq(1)')
-                            .text(), // Extract item ID from the second cell
+                                    .text(), // Extract item ID from the second cell
                                 item: {
                                     item_code: row.find('td:eq(2)')
-                                .text(), // Extract item code from the third cell
+                                        .text(), // Extract item code from the third cell
                                     item_name: row.find('td:eq(3)')
-                                .text(), // Extract item name from the fourth cell
+                                        .text(), // Extract item name from the fourth cell
                                     unit: {
                                         unit_code: row.find('td:eq(8)')
-                                        .text() // Extract unit code from the ninth cell
+                                            .text() // Extract unit code from the ninth cell
                                     }
                                 },
                                 color: row.find('td:eq(4)')
-                            .text(), // Extract color from the fifth cell   
+                                    .text(), // Extract color from the fifth cell   
                                 size: row.find('td:eq(5)')
-                            .text(), // Extract size from the sixth cell
+                                    .text(), // Extract size from the sixth cell
                                 total: row.find('td:eq(7)')
-                            .text(), // Extract quantity from the seventh cell
+                                    .text(), // Extract quantity from the seventh cell
                                 remark: row.find('td:eq(9)')
-                                .text() // Extract remark from the tenth cell
+                                    .text() // Extract remark from the tenth cell
                             };
 
                             // console.log(detail);
@@ -720,7 +751,7 @@
                             </tr>`;
 
                             $('#details-container').append(
-                            newRowx); // Append new row to details container
+                                newRowx); // Append new row to details container
                             const newlyAddedRow = $('#details-container').find('.detail-row')
                                 .last();
 

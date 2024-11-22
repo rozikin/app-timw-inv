@@ -1,4 +1,5 @@
 <!-- partial:partials/_sidebar.html -->
+
 <nav class="sidebar">
     <div class="sidebar-header">
         <a href="#" class="sidebar-brand">
@@ -96,9 +97,13 @@
                         '*/category/*',
                         'all/category',
                         'edit/category/*',
+                        'all/cbd',
+                        'edit/cbd/*',
+                        'import/cbds',
                         'all/color',
                         'edit/color/*',
                         'all/consumption',
+                        'add/consumption',
                         'edit/consumption/*',
                         'all/employee',
                         'edit/employee/*',
@@ -151,6 +156,14 @@
                                 </li>
                             @endif
 
+                            @if (Auth::user()->can('all.category'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.cbd') }}"
+                                        class="nav-link {{ request()->is('all/cbd') || request()->is('edit/cbd/*') || request()->is('import/cbds') ? 'active' : '' }}">
+                                        CBD</a>
+                                </li>
+                            @endif
+
                             @if (Auth::user()->can('all.color'))
                                 <li class="nav-item">
                                     <a href="{{ route('all.color') }}"
@@ -162,7 +175,7 @@
                             @if (Auth::user()->can('all.consumption'))
                                 <li class="nav-item">
                                     <a href="{{ route('all.consumption') }}"
-                                        class="nav-link {{ request()->is('all/consumption') || request()->is('edit/consumption/*') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->is('*/consumption') || request()->is('edit/consumption/*') ? 'active' : '' }}">
                                         Consumption</a>
                                 </li>
                             @endif
@@ -170,7 +183,7 @@
                             @if (Auth::user()->can('all.employee'))
                                 <li class="nav-item">
                                     <a href="{{ route('all.employee') }}"
-                                        class="nav-link {{ request()->is('all/employee') || request()->is('edit/employee/*') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->is('*/employee') || request()->is('edit/employee/*') ? 'active' : '' }}">
                                         Employee</a>
                                 </li>
                             @endif
@@ -186,7 +199,7 @@
                             @if (Auth::user()->can('all.qr_code'))
                                 <li class="nav-item">
                                     <a href="{{ route('all.qr_code') }}"
-                                        class="nav-link {{ request()->is('all/qr_code') || request()->is('*/qr_code') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->is('all/qr_code') || request()->is('import/qr_codes') ? 'active' : '' }}">
                                         QR Code Fabric</a>
                                 </li>
                             @endif
@@ -270,37 +283,6 @@
 
                 </li>
 
-                @if (Auth::user()->can('cbd.menu'))
-                    <li class="nav-item {{ request()->is('*/cbd') ? 'active' : '' }}">
-                        <a class="nav-link position-relative" data-bs-toggle="collapse" href="#emailszeoc"
-                            role="button" aria-expanded="false" aria-controls="emailsze">
-                            <i class="link-icon" data-feather="box"></i>
-
-                            <span class="link-title">CBD Order</span>
-                            {{-- <span class="position-absolute start-50 mx-1 badge rounded-pill bg-danger">
-                        40
-                      </span> --}}
-
-                            <i class="link-arrow" data-feather="chevron-down"></i>
-                        </a>
-                        <div class="{{ request()->is('*/cbd') || request()->is('*/cbd/*') || request()->is('*/cbd') ? 'show' : 'collapse' }}"
-                            id="emailszeoc">
-                            <ul class="nav sub-menu">
-
-                                @if (Auth::user()->can('all.cbd'))
-                                    <li class="nav-item">
-                                        <a href="{{ route('all.cbd') }}"
-                                            class="nav-link {{ request()->is('all/cbd') || request()->is('edit/cbd/*') ? 'active' : '' }}">
-                                            CBD</a>
-
-                                    </li>
-                                @endif
-
-                            </ul>
-                        </div>
-                    </li>
-                @endif
-
                 <li
                     class="nav-item {{ request()->is('*/purchaserequest') || request()->is('edit/purchaserequest/*') || request()->is('*/purchaserequest/*') || request()->is('*/purchaserequestid/*') ? 'active' : '' }}">
                     @if (Auth::user()->can('all.purchaserequest'))
@@ -365,11 +347,11 @@
                         <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout10" role="button"
                             aria-expanded="false" aria-controls="emailsyout10">
                             <i class="link-icon" data-feather="check-circle"></i>
-                            <span class="link-title">Material IN</span>
+                            <span class="link-title">MATERIAL RAW</span>
                             <i class="link-arrow" data-feather="chevron-down"></i>
                         </a>
                     @endif
-                    <div class="{{ request()->is('*/materialin') || request()->is('*/materialin/*') || request()->is('*/materialin') || request()->is('*/photoreturn') || request()->is('*/serahterima') ? 'show' : 'collapse' }}"
+                    <div class="{{ request()->is('*/materialin') || request()->is('*/materialin/*') || request()->is('*/materialin') || request()->is('*/materialinsp') || request()->is('all/materialindetail') || request()->is('add/materialout') || request()->is('all/materialout') || request()->is('all/materialreturn') || request()->is('add/materialreturn') ? 'show' : 'collapse' }}"
                         id="emailsyout10">
                         <ul class="nav sub-menu">
 
@@ -381,24 +363,21 @@
                                 </li>
                             @endif
 
-                        </ul>
-                    </div>
+                            {{-- @if (Auth::user()->can('materialin.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.materialindetail') }}"
+                                        class="nav-link {{ request()->is('all/materialindetail') || request()->is('*/materialindetailsp') ? 'active' : '' }}">
+                                        Material IN DETAIL</a>
+                                </li>
+                            @endif --}}
 
-                </li>
-
-                <li
-                    class="nav-item {{ request()->is('*/materialout') || request()->is('edit/materialout/*') || request()->is('*/materialout/*') || request()->is('*/materialoutid/*') ? 'active' : '' }}">
-                    @if (Auth::user()->can('all.materialout'))
-                        <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout10" role="button"
-                            aria-expanded="false" aria-controls="emailsyout10">
-                            <i class="link-icon" data-feather="check-circle"></i>
-                            <span class="link-title">Material OUT</span>
-                            <i class="link-arrow" data-feather="chevron-down"></i>
-                        </a>
-                    @endif
-                    <div class="{{ request()->is('*/materialout') || request()->is('*/materialout/*') || request()->is('*/materialout') || request()->is('*/photoreturn') || request()->is('*/serahterima') ? 'show' : 'collapse' }}"
-                        id="emailsyout10">
-                        <ul class="nav sub-menu">
+                            @if (Auth::user()->can('materialin.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('add.materialinsp') }}"
+                                        class="nav-link {{ request()->is('add/materialinsp') ? 'active' : '' }}">
+                                        Material IN ADD</a>
+                                </li>
+                            @endif
 
                             @if (Auth::user()->can('materialout.menu'))
                                 <li class="nav-item">
@@ -407,12 +386,372 @@
                                         Material OUT</a>
                                 </li>
                             @endif
+                            {{-- 
+                            @if (Auth::user()->can('materialout.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.materialoutdetail') }}"
+                                        class="nav-link {{ request()->is('all/materialoutdetail') || request()->is('*/materialoutdetail') ? 'active' : '' }}">
+                                        Material OUT DETAIL</a>
+                                </li>
+                            @endif --}}
+
+                            @if (Auth::user()->can('materialout.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('add.materialout') }}"
+                                        class="nav-link {{ request()->is('add/materialout') ? 'active' : '' }}">
+                                        Material OUT ADD</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('materialreturn.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.materialreturn') }}"
+                                        class="nav-link {{ request()->is('all/materialreturn') ? 'active' : '' }}">
+                                        Material RETURN</a>
+                                </li>
+                            @endif
+
+                            {{-- @if (Auth::user()->can('materialreturn.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.materialreturndetail') }}"
+                                        class="nav-link {{ request()->is('all/materialreturndetail') || request()->is('*/materialreturndetail') ? 'active' : '' }}">
+                                        Material RETURN DETAIL</a>
+                                </li>
+                            @endif --}}
+
+                            @if (Auth::user()->can('materialreturn.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('add.materialreturn') }}"
+                                        class="nav-link {{ request()->is('add/materialreturn') ? 'active' : '' }}">
+                                        Material RETURN ADD</a>
+                                </li>
+                            @endif
 
                         </ul>
                     </div>
 
                 </li>
 
+                {{-- <li
+                    class="nav-item {{ request()->is('*/accessoriesin') || request()->is('edit/accessoriesin/*') || request()->is('*/accessoriesin/*') || request()->is('*/accessoriesinid/*') ? 'active' : '' }}">
+                    @if (Auth::user()->can('all.accessoriesin'))
+                        <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout101" role="button"
+                            aria-expanded="false" aria-controls="emailsyout101">
+                            <i class="link-icon" data-feather="check-circle"></i>
+                            <span class="link-title">Accessories</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                    @endif
+                    <div class="{{ request()->is('*/accessoriesin') || request()->is('*/accessoriesin/*') || request()->is('*/accessoriesin') || request()->is('*/accessoriesinsp') || request()->is('all/accessoriesindetail') ? 'show' : 'collapse' }}"
+                        id="emailsyout101">
+                        <ul class="nav sub-menu">
+
+                            @if (Auth::user()->can('accessoriesin.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.accessoriesin') }}"
+                                        class="nav-link {{ request()->is('all/accessoriesin') || request()->is('*/accessoriesinsp') ? 'active' : '' }}">
+                                        Accessories IN</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('accessoriesin.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.accessoriesindetail') }}"
+                                        class="nav-link {{ request()->is('all/accessoriesindetail') || request()->is('*/accessoriesindetailsp') ? 'active' : '' }}">
+                                        Accessories IN DETAIL</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('accessoriesin.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('add.accessoriesinsp') }}"
+                                        class="nav-link {{ request()->is('add/accessoriesinsp') ? 'active' : '' }}">
+                                        Accessories IN ADD</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('materialout.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.materialout') }}"
+                                        class="nav-link {{ request()->is('all/materialout') ? 'active' : '' }}">
+                                        Accessories OUT</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('accessoriesout.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.accessoriesoutdetail') }}"
+                                        class="nav-link {{ request()->is('all/accessoriesoutdetail') || request()->is('*/accessoriesoutdetail') ? 'active' : '' }}">
+                                        Accessories OUT DETAIL</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('accessoriesout.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('add.accessoriesout') }}"
+                                        class="nav-link {{ request()->is('add/accessoriesout') ? 'active' : '' }}">
+                                        Accessories OUT ADD</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('accessoriesreturn.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.accessoriesreturn') }}"
+                                        class="nav-link {{ request()->is('all/accessoriesreturn') ? 'active' : '' }}">
+                                        Accessories RETURN</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('accessoriesreturn.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.accessoriesreturndetail') }}"
+                                        class="nav-link {{ request()->is('all/accessoriesreturndetail') || request()->is('*/accessoriesreturndetail') ? 'active' : '' }}">
+                                        Accessories RETURN DETAIL</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('accessoriesreturn.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('add.accessoriesreturn') }}"
+                                        class="nav-link {{ request()->is('add/accessoriesreturn') ? 'active' : '' }}">
+                                        Accessories RETURN ADD</a>
+                                </li>
+                            @endif
+
+                        </ul>
+                    </div>
+
+                </li> --}}
+
+                <li class="nav-item {{ request()->is('*/stock') ? 'active' : '' }}">
+                    @if (Auth::user()->can('all.stock'))
+                        <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout11x" role="button"
+                            aria-expanded="false" aria-controls="emailsyout11x">
+                            <i class="link-icon" data-feather="check-circle"></i>
+                            <span class="link-title">STOCK</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                    @endif
+                    <div class="{{ request()->is('*/stock') || request()->is('all/stockdetail') || request()->is('all/stockmutation') || request()->is('all/stockmutationori') ? 'show' : 'collapse' }}"
+                        id="emailsyout11x">
+                        <ul class="nav sub-menu">
+
+                            @if (Auth::user()->can('stock.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.stock') }}"
+                                        class="nav-link {{ request()->is('all/stock') ? 'active' : '' }}">
+                                        STOCK BY CODE</a>
+                                </li>
+                            @endif
+
+                            {{-- @if (Auth::user()->can('stock.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.stockdetail') }}"
+                                        class="nav-link {{ request()->is('all/stockdetail') || request()->is('*/stockdetail') ? 'active' : '' }}">
+                                        STOCK BY ORIGINAL NO</a>
+                                </li>
+                            @endif --}}
+
+                            @if (Auth::user()->can('stock.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.stockmutation') }}"
+                                        class="nav-link {{ request()->is('all/stockmutation') ? 'active' : '' }}">
+                                        MUTATION BY CODE</a>
+                                </li>
+                            @endif
+
+                            {{-- @if (Auth::user()->can('stock.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.stockmutationori') }}"
+                                        class="nav-link {{ request()->is('all/stockmutationori') ? 'active' : '' }}">
+                                        MUTATION BY ORIGINAL NO</a>
+                                </li>
+                            @endif --}}
+
+                        </ul>
+                    </div>
+
+                </li>
+
+            @endif
+
+            {{-- <li class="nav-item nav-category">RELAX</li> --}}
+            @if (Auth::user()->can('transaction.menu'))
+                {{-- <li
+                    class="nav-item {{ request()->is('*/relaxin') || request()->is('edit/relaxin/*') || request()->is('*/relaxin/*') || request()->is('*/relaxinid/*') || request()->is('*/relaxout') || request()->is('all/relaxreturn') ? 'active' : '' }}">
+                    @if (Auth::user()->can('all.relaxin'))
+                        <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout1nmx" role="button"
+                            aria-expanded="false" aria-controls="emailsyout1nmx">
+                            <i class="link-icon" data-feather="check-circle"></i>
+                            <span class="link-title">RELAX</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                    @endif
+                    <div class="{{ request()->is('*/relaxin') || request()->is('*/relaxin/*') || request()->is('*/relaxindetail') || request()->is('*/relaxout') || request()->is('*/relaxreturn') ? 'show' : 'collapse' }}"
+                        id="emailsyout1nmx">
+                        <ul class="nav sub-menu">
+
+                            @if (Auth::user()->can('all.relaxin'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.relaxin') }}"
+                                        class="nav-link {{ request()->is('all/relaxin') ? 'active' : '' }}">
+                                        RELAX IN</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('all/relaxindetail'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.relaxindetail') }}"
+                                        class="nav-link {{ request()->is('all/relaxindetail') ? 'active' : '' }}">
+                                        RELAX IN DETAIL</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('add.relaxin'))
+                                <li class="nav-item">
+                                    <a href="{{ route('add.relaxin') }}"
+                                        class="nav-link {{ request()->is('add/relaxin') ? 'active' : '' }}">
+                                        RELAX IN ADD</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('all.relaxout'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.relaxout') }}"
+                                        class="nav-link {{ request()->is('all/relaxout') ? 'active' : '' }}">
+                                        RELAX OUT</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('all/relaxoutdetail'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.relaxoutdetail') }}"
+                                        class="nav-link {{ request()->is('all/relaxoutdetail') ? 'active' : '' }}">
+                                        RELAX OUT DETAIL</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('add.relaxout'))
+                                <li class="nav-item">
+                                    <a href="{{ route('add.relaxout') }}"
+                                        class="nav-link {{ request()->is('add/relaxout') ? 'active' : '' }}">
+                                        RELAX OUT ADD</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('all.relaxreturn'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.relaxreturn') }}"
+                                        class="nav-link {{ request()->is('all/relaxreturn') ? 'active' : '' }}">
+                                        RELAX RETURN</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('all/relaxreturndetail'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.relaxreturndetail') }}"
+                                        class="nav-link {{ request()->is('all/relaxreturndetail') ? 'active' : '' }}">
+                                        RELAX RETURN DETAIL</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('add.relaxreturn'))
+                                <li class="nav-item">
+                                    <a href="{{ route('add.relaxreturn') }}"
+                                        class="nav-link {{ request()->is('add/relaxreturn') ? 'active' : '' }}">
+                                        RELAX RETURN ADD</a>
+                                </li>
+                            @endif
+
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item {{ request()->is('*/stockrelax') ? 'active' : '' }}">
+                    @if (Auth::user()->can('all.stockrelax'))
+                        <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout11x1" role="button"
+                            aria-expanded="false" aria-controls="emailsyout11x1">
+                            <i class="link-icon" data-feather="check-circle"></i>
+                            <span class="link-title">STOCK RELAX</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                    @endif
+                    <div class="{{ request()->is('*/stockrelax') || request()->is('all/stockrelaxdetail') || request()->is('all/stockrelaxmutation') || request()->is('all/stockrelaxmutationori') ? 'show' : 'collapse' }}"
+                        id="emailsyout11x1">
+                        <ul class="nav sub-menu">
+
+                            @if (Auth::user()->can('stockrelax.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.stockrelax') }}"
+                                        class="nav-link {{ request()->is('all/stockrelax') ? 'active' : '' }}">
+                                        STOCK RELAX BY CODE</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('stockrelax.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.stockrelaxdetail') }}"
+                                        class="nav-link {{ request()->is('all/stockrelaxdetail') || request()->is('*/stockrelaxdetail') ? 'active' : '' }}">
+                                        STOCK RELAX BY ORIGINAL NO</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('stockrelax.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.stockrelaxmutation') }}"
+                                        class="nav-link {{ request()->is('all/stockrelaxmutation') ? 'active' : '' }}">
+                                        RELAX MUTATION BY CODE</a>
+                                </li>
+                            @endif
+
+                            @if (Auth::user()->can('stockrelax.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('all.stockrelaxmutationori') }}"
+                                        class="nav-link {{ request()->is('all/stockrelaxmutationori') ? 'active' : '' }}">
+                                        RELAX MUTATION BY ORIGINAL NO</a>
+                                </li>
+                            @endif
+
+                        </ul>
+                    </div>
+
+                </li> --}}
+
+                {{-- <li
+                    class="nav-item {{ request()->is('*/relaxout') || request()->is('edit/relaxout/*') || request()->is('*/relaxout/*') || request()->is('*/relaxoutid/*') ? 'active' : '' }}">
+                    @if (Auth::user()->can('all.relaxout'))
+                        <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout1nmx1" role="button"
+                            aria-expanded="false" aria-controls="emailsyout1nmx1">
+                            <i class="link-icon" data-feather="check-circle"></i>
+                            <span class="link-title">RELAX OUT</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                    @endif
+                    <div class="{{ request()->is('*/relaxout') || request()->is('*/relaxout/*') || request()->is('*/relaxout') || request()->is('*/photoreturn') || request()->is('*/serahterima') ? 'show' : 'collapse' }}"
+                        id="emailsyout1nmx1">
+                        <ul class="nav sub-menu">
+
+                        </ul>
+                    </div>
+                </li>
+
+                <li
+                    class="nav-item {{ request()->is('*/relaxreturn') || request()->is('edit/relaxreturn/*') || request()->is('*/relaxreturn/*') || request()->is('*/relaxreturnid/*') ? 'active' : '' }}">
+                    @if (Auth::user()->can('all.relaxreturn'))
+                        <a class="nav-link" data-bs-toggle="collapse" href="#emailsyout1nmx2" role="button"
+                            aria-expanded="false" aria-controls="emailsyout1nmx2">
+                            <i class="link-icon" data-feather="check-circle"></i>
+                            <span class="link-title">RELAX RETURN</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                    @endif
+                    <div class="{{ request()->is('*/relaxreturn') || request()->is('*/relaxreturn/*') || request()->is('*/relaxreturn') || request()->is('*/photoreturn') || request()->is('*/serahterima') ? 'show' : 'collapse' }}"
+                        id="emailsyout1nmx2">
+                        <ul class="nav sub-menu">
+
+                        </ul>
+                    </div>
+                </li> --}}
             @endif
 
         </ul>

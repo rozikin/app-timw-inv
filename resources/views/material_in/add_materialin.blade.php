@@ -9,199 +9,139 @@
                     <div class="card-body">
 
                         <div class="row">
-
                             <div class="container">
 
-                                <form action="{{ route('store.materialin') }}" method="POST">
+                                <form action="{{ route('update.materialin', $materialIn->id) }}" method="POST"
+                                    enctype="multipart/form-data">
                                     @csrf
-                                    <!-- Purchase Request Fields -->
+                                    @method('PUT')
 
+                                    <!-- Material IN Header -->
                                     <div class="text-center">
-                                        Material IN Information
+                                        <h4>Update Material IN Information</h4>
                                     </div>
                                     <hr>
 
-                                    {{-- <p class="text-danger">Add Purchase Request for CBD ID: {{ $cbdno }}</p> --}}
-
                                     @if ($errors->any())
-                                        <div class="alert alert-danger" role="alert">
-                                            @foreach ($errors->all() as $error)
-                                                <h3> {{ $error }} </h3>
-                                            @endforeach
-
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
                                         </div>
                                     @endif
 
                                     <div class="row">
-
+                                        <!-- Left Column -->
                                         <div class="col-md-6">
-
-                                            <div class="form-group row">
-                                                {{-- <label for="cbd_id" class="col-sm-4 col-form-label">CBD ID</label> --}}
-                                                <div class="col-sm-5">
-                                                    {{-- <input type="hidden" class="form-control" id="cbd_id"
-                                                        name="cbd_id" value="{{ $cbdId }}" readonly> --}}
-                                                </div>
-                                            </div>
-
                                             <div class="form-group row">
                                                 <label for="supplier_id" class="col-sm-4 col-form-label">Supplier</label>
-                                                <div class="col-sm-5">
-
+                                                <div class="col-sm-8">
                                                     <div class="input-group">
-                                                        <input type="hidden" class="form-control supplier_id"
-                                                            id="supplier_id" name="supplier_id">
-                                                        <input type="text" class="form-control supplier_name"
-                                                            id="supplier_name" name="supplier_name">
-                                                        <div class="input-group-append">
-                                                            <button class="btn btn-secondary supplier_search"
-                                                                id="supplier_search" type="button">
-                                                                <i class="feather-10" data-feather="search"></i>
-                                                            </button>
-                                                        </div>
+                                                        <input type="hidden" name="supplier_id" id="supplier_id"
+                                                            value="{{ old('supplier_id', $materialIn->supplier_id) }}">
+                                                        <input type="text" class="form-control" name="supplier_name"
+                                                            id="supplier_name"
+                                                            value="{{ old('supplier_name', $materialIn->supplier->name ?? '') }}"
+                                                            readonly>
+                                                        <button type="button" class="btn btn-secondary supplier_search"
+                                                            data-bs-toggle="modal" data-bs-target="#supplierModal">
+                                                            <i data-feather="search"></i>
+                                                        </button>
                                                     </div>
                                                 </div>
-
                                             </div>
 
                                             <div class="form-group row">
-                                                <label for="no_sj" class="col-sm-4 col-form-label">no_sj</label>
-                                                <div class="col-sm-5">
-                                                    <input type="text" class="form-control" id="no_sj"
-                                                        name="no_sj">
+                                                <label for="no_sj" class="col-sm-4 col-form-label">No. SJ</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" name="no_sj" id="no_sj"
+                                                        value="{{ old('no_sj', $materialIn->no_sj) }}" required>
                                                 </div>
                                             </div>
-                                           
                                         </div>
 
+                                        <!-- Right Column -->
                                         <div class="col-md-6">
-
                                             <div class="form-group row">
-                                                <label for="recived_by" class="col-sm-4 col-form-label">Reciver</label>
-                                                <div class="col-sm-5">
-                                                    <input type="text" class="form-control" id="recived_by"
-                                                        name="recived_by">
+                                                <label for="recived_by" class="col-sm-4 col-form-label">Receiver</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" name="recived_by"
+                                                        id="recived_by"
+                                                        value="{{ old('recived_by', $materialIn->recived_by) }}" required>
                                                 </div>
                                             </div>
+
                                             <div class="form-group row">
                                                 <label for="location" class="col-sm-4 col-form-label">Location</label>
-                                                <div class="col-sm-5">
-                                                    <input type="text" class="form-control" id="location"
-                                                        name="location">
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" name="location"
+                                                        id="location" value="{{ old('location', $materialIn->location) }}">
                                                 </div>
                                             </div>
- 
 
                                             <div class="form-group row">
-                                                <label for="courier" class="col-sm-4 col-form-label">courier</label>
-                                                <div class="col-sm-5">
-                                                    <input type="text" class="form-control" id="courier" name="courier"
-                                                        required>
+                                                <label for="courier" class="col-sm-4 col-form-label">Courier</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" name="courier" id="courier"
+                                                        value="{{ old('courier', $materialIn->courier) }}" required>
                                                 </div>
                                             </div>
-
                                         </div>
-
                                     </div>
+
                                     <hr>
 
-                                    <!-- Purchase Request Details Fields -->
-
+                                    <!-- Material IN Details -->
                                     <div class="row">
-
-                                        <div>
-                                            <h6>PO Items</h6>
-                                            <table class="table" id="items-table1">
-                                                <thead>
+                                        <h6>Material IN Items</h6>
+                                        <table class="table table-bordered" id="details-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Item Code</th>
+                                                    <th>Item Name</th>
+                                                    <th>Unit</th>
+                                                    <th>Color</th>
+                                                    <th>Size</th>
+                                                    <th>Quantity</th>
+                                                    <th>Remark</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($materialIn->details as $detail)
                                                     <tr>
-                                                        <th>ID PO</th>
-                                                        <th>PO</th>
-                                                        <th>ID Item</th>
-                                                        <th>Item Code</th>
-                                                        <th>Item Name</th>
-                                                        <th>Unit</th>
-                                                        <th>Color</th>
-                                                        <th>Size</th>
-                                                        <th>Quantity</th>
-                                                        <th>Remark</th>
-                                                        <th>Action</th>
-
+                                                        <td>{{ $detail->id }}</td>
+                                                        <td>{{ $detail->item_code }}</td>
+                                                        <td>{{ $detail->item_name }}</td>
+                                                        <td>{{ $detail->unit }}</td>
+                                                        <td>{{ $detail->color }}</td>
+                                                        <td>{{ $detail->size }}</td>
+                                                        <td>
+                                                            <input type="number" class="form-control"
+                                                                name="details[{{ $detail->id }}][quantity]"
+                                                                value="{{ $detail->quantity }}" required>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control"
+                                                                name="details[{{ $detail->id }}][remark]"
+                                                                value="{{ $detail->remark }}">
+                                                        </td>
+                                                        <td>
+                                                            <button type="button"
+                                                                class="btn btn-danger remove-detail">Remove</button>
+                                                        </td>
                                                     </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <hr>
-
-                                        <div class="">
-                                            {{-- <button type="button" class="btn btn-secondary btn-sm mb-2"
-                                                id="add-detail">Add
-                                                Detail</button> --}}
-
-                                          
-
-                                            <h6>IN Items</h6>
-                                         
-
-
-                                            <table class="table table-bordered" id="details-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>ID</th>
-                                                        <th>PO</th>
-                                                        <th>ID Item</th>
-                                                        <th>Item Code</th>
-                                                        <th>Item Name</th>
-                                                        <th>Unit</th>
-                                                        <th>Color</th>
-                                                        <th>Size</th>
-                                                        <th>Quantity</th>
-                                                        <th>Remark</th>
-                                                        <th>Action</th>
-                                                        <th>batch</th>
-                                                        <th>qty</th>
-                                                        <th>no_roll</th>
-                                                        <th>gw</th>
-                                                        <th>nw</th>
-                                                        <th>width</th>
-                                                        <th>gramasi</th>
-                                                        <th>mo</th>
-                                                        <th>style</th>
-                                                        <th>rak_id</th>
-                                                        <th>remark</th>
-                                                        <th>satus</th>
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="details-containerx">
-
-                                                </tbody>
-                                            </table>
-
-
-
-                                              <div class="col-md-3" id="form-upload-pl" style="display: none;" >
-                                                <label for="name" class="form-label">Import PL</label>
-                                                <input type="file" class="form-control" id="import_file"
-                                                    name="import_file" required>
-
-                                                    <button id="upload_pl" class="btn btn-primary me-2">Upload</button>
-
-
-                                            </div>
-
-                                          
-                                        </div>
-
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                                    <button type="submit" class="btn btn-primary mt-2">Update</button>
                                 </form>
                             </div>
-
                         </div>
 
                     </div>
@@ -210,8 +150,6 @@
         </div>
 
     </div>
-
-
 
     <div class="modal fade" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="supplierModalLabel"
         aria-hidden="true">
@@ -446,7 +384,7 @@
                                 id: row.find('td:eq(0)').text(),
                                 po_number: row.find('td:eq(1)').text(),
                                 item_id: row.find('td:eq(2)').text(),
-                                 
+
                                 item: {
                                     item_code: row.find('td:eq(3)')
                                         .text(), // Extract item code from the third cell
@@ -555,55 +493,60 @@
         });
 
         $(document).ready(function() {
-    $('#upload_pl').on('click', function(e) {
-        e.preventDefault();
+            $('#upload_pl').on('click', function(e) {
+                e.preventDefault();
 
-        var formData = new FormData();
-        formData.append('import_file', $('#import_file')[0].files[0]);
+                var formData = new FormData();
+                formData.append('import_file', $('#import_file')[0].files[0]);
 
-        $.ajax({
-            url: '{{ route('import.materialin') }}',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(data) {
-    var tbody = $('#details-containerx');
+                $.ajax({
+                    url: '{{ route('import.materialin') }}',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(data) {
+                        var tbody = $('#details-containerx');
 
-    // Append rows
-    data.rows.forEach(function(row, rowIndex) {
-        var existingRow = tbody.find('tr').eq(rowIndex);
+                        // Append rows
+                        data.rows.forEach(function(row, rowIndex) {
+                            var existingRow = tbody.find('tr').eq(rowIndex);
 
-        if (existingRow.length === 0) {
-            existingRow = $('<tr>');
-            for (var i = 0; i < 11; i++) {
-                existingRow.append('<td><input type="text" class="form-control form-control-sm" readonly></td>');
-            }
-            tbody.append(existingRow);
-        }
+                            if (existingRow.length === 0) {
+                                existingRow = $('<tr>');
+                                for (var i = 0; i < 11; i++) {
+                                    existingRow.append(
+                                        '<td><input type="text" class="form-control form-control-sm" readonly></td>'
+                                    );
+                                }
+                                tbody.append(existingRow);
+                            }
 
-        var startIndex = existingRow.children('td').length;
-        data.header.forEach(function(header, index) {
-            if (index + startIndex < 12) return;
+                            var startIndex = existingRow.children('td').length;
+                            data.header.forEach(function(header, index) {
+                                if (index + startIndex < 12) return;
 
-            // Get the value of input with name 'header'
-            var inputValue = row[header] || '';
+                                // Get the value of input with name 'header'
+                                var inputValue = row[header] || '';
 
-            var newCell = $('<td data-name="' + header + '">' +
-    '<input type="text" class="form-control form-control-sm" name="details[' + rowIndex + '][' + header + ']" value="' + inputValue + '">' +
-    '</td>');
-existingRow.append(newCell);
+                                var newCell = $('<td data-name="' + header +
+                                    '">' +
+                                    '<input type="text" class="form-control form-control-sm" name="details[' +
+                                    rowIndex + '][' + header +
+                                    ']" value="' + inputValue + '">' +
+                                    '</td>');
+                                existingRow.append(newCell);
+                            });
+                        });
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.error);
+                    }
+                });
+            });
         });
-    });
-},
-            error: function(xhr) {
-                alert(xhr.responseJSON.error);
-            }
-        });
-    });
-});
     </script>
 @endsection

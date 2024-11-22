@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\PurchaseRequestDetail;
 use Carbon\Carbon;
-use PDF;
+use App\Exports\PurchaseOrderExport;
+use Maatwebsite\Excel\Facades\Excel;
+use PDF; 
 
 class PurchaseOrderController extends Controller
 {
@@ -59,8 +61,8 @@ class PurchaseOrderController extends Controller
         return view('purchase_order.edit_purchaseorderid', compact('purchaseOrder', 'purchaseRequest'));
     }
 
-
-
+ 
+ 
 
     protected function generatePurchaseOrderNumber()
     {
@@ -133,6 +135,7 @@ class PurchaseOrderController extends Controller
                 'note2' => $request->note2,
                 'rule' => $request->rule,
                 'status' =>'po',
+                'revision_no' => 0,
                 'user_id' => Auth::id(), // Ambil user_id dari user yang login
             ]);
     
@@ -179,14 +182,24 @@ class PurchaseOrderController extends Controller
        
     }
 
-
+ 
 
     public function Getpurchaseorder(Request $request)
     {
         if ($request->ajax()) {
-            $data = PurchaseOrder::with(['purchaseRequest','detailorder.item.unit', 'supplier'])
-              
-                ->get();
+            $query = PurchaseOrder::with(['purchaseRequest', 'detailorder.item.unit', 'supplier']);
+
+            // Filter berdasarkan startDate dan endDate
+            if ($request->has('startDate') && $request->has('endDate')) {
+                $startDate = $request->startDate;
+                $endDate = $request->endDate;
+    
+                // Filter tanggal pada kolom created_at (atau sesuaikan dengan kolom yang relevan)
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }
+    
+            $data = $query->get();
+                
     
             return datatables()->of($data)
                 ->addIndexColumn()
@@ -208,7 +221,7 @@ class PurchaseOrderController extends Controller
                             'size' => $detail->size ?? '',  
                             'qty' => $detail->qty,
                             'price' => $detail->price,
-                            'remark' => $detail->remark,
+                            'status' => $detail->status,
                         ];
                     }
                     return $itemDetails;
@@ -257,6 +270,148 @@ class PurchaseOrderController extends Controller
         }
     } 
 
+    public function GetpurchaseorderCount(){
+        $purchaseCount = PurchaseOrder::count();
+
+        return response()->json([
+            'request' =>$purchaseCount,
+         
+        ]);
+    }
+
+    public function Updatepurchaseorder(Request $request, $id)
+    {
+        // Validasi input request
+        $request->validate([
+            'purchase_request_id' => 'required|integer',
+            'supplier_id' => 'required|integer',
+            'delivery_at' => 'required|string',
+          
+            'applicant' => 'required|string',
+            'allocation' => 'required|string',
+            'approval' => 'required|string',
+            'rule' => 'nullable|string',
+            'status' => 'nullable|string',
+            'details' => 'required|array|min:1', // Minimal 1 detail
+            'details.*.item_id' => 'required|integer',
+            'details.*.qty' => 'required',
+            'details.*.price' => 'required',
+        ]);
+    
+        // Ambil purchase order yang akan diupdate
+        $purchaseOrder = PurchaseOrder::findOrFail($id);
+    
+        // Ambil purchase request terkait
+        $purchaseRequest = PurchaseRequest::findOrFail($request->purchase_request_id);
+    
+        // Ambil semua item_id yang ada dalam request details
+        $detailItemIds = collect($request->details)->pluck('item_id')->toArray();
+    
+        // Inisialisasi array untuk menyimpan deleted detail IDs
+        $deletedDetailIds = [];
+    
+        // Hapus semua detail terkait dari purchase order yang ada
+        foreach ($purchaseOrder->detailorder as $detail) {
+            $deletedDetailIds[] = $detail->id;
+            $detail->delete();
+    
+            // Update status pada PurchaseRequestDetail yang terkait dengan item yang dihapus
+            PurchaseRequestDetail::where('purchase_request_id', $purchaseRequest->id)
+                ->where('item_id', $detail->item_id)
+                ->where(function ($query) use ($detail) {
+                    if ($detail->color) {
+                        $query->where('color', $detail->color);
+                    } else {
+                        $query->whereNull('color');
+                    }
+                    if ($detail->size) {
+                        $query->where('size', $detail->size);
+                    } else {
+                        $query->whereNull('size');
+                    }
+                })
+                ->update(['status' => '']);
+        }
+    
+        // Simpan detail pembelian ke purchase_order_details
+        foreach ($request->details as $detailData) {
+            $newDetail = PurchaseOrderDetail::create([
+                'purchase_order_id' => $purchaseOrder->id,
+                'item_id' => $detailData['item_id'],
+                'color' => $detailData['color'] ?? null,
+                'size' => $detailData['size'] ?? null,
+                'qty' => $detailData['qty'],
+                'price' => $detailData['price'],
+                'total_price' => $detailData['total_price'],
+                'status' => '',
+                'remark' => $detailData['remark'] ?? null,
+            ]);
+    
+            // Update status pada PurchaseRequestDetail yang sesuai
+            PurchaseRequestDetail::where('purchase_request_id', $purchaseRequest->id)
+                ->where('item_id', $detailData['item_id'])
+                ->where(function ($query) use ($detailData) {
+                    if (isset($detailData['color'])) {
+                        $query->where('color', $detailData['color']);
+                    } else {
+                        $query->whereNull('color');
+                    }
+                    if (isset($detailData['size'])) {
+                        $query->where('size', $detailData['size']);
+                    } else {
+                        $query->whereNull('size');
+                    }
+                })
+                ->update(['status' => 'po']);
+        }
+
+     
+    
+        // Update data pada purchase order
+        $purchaseOrder->update([
+            'purchase_request_id' => $request->purchase_request_id,
+            'supplier_id' => $request->supplier_id,
+            'date_in_house' => $request->request_in_house,
+            'delivery_at' => $request->delivery_at,
+            'terms' => $request->terms,
+            'payment' => $request->payment,
+            'ship_mode' => $request->shipment_mode,
+            'applicant' => $request->applicant,
+            'allocation' => $request->allocation,
+            'approval' => $request->approval,
+            'quotation_no' => $request->quotation_no,
+            'quatition_file' => '',
+
+            'subtotal' => $request->sub_total,
+            'rounding' => $request->rounding ?? 0,
+            'discount' => $request->discount ?? 0,
+            'vat' => $request->tax,
+            'vat_amount' => $request->tax_end,
+            'grand_total' => $request->grand_total_end,
+            'purchase_amount' => $request->purchase_amount_end,
+            'note1' => $request->note1,
+            'note2' => $request->note2,
+            'rule' => $request->rule,
+            'status' =>'po',
+            'remarksx' => $request->remarksx,
+            'revision_no' => $purchaseOrder->revision_no + 1, 
+
+            'user_id' => Auth::id(), // Ambil user_id dari user yang login
+        ]);
+    
+        // Kembalikan ke halaman yang sesuai setelah selesai menyimpan
+        return redirect()->route('all.purchaseorder')->with('success', 'Purchase Order berhasil diperbarui.');
+
+          //return response
+          return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil Disimpan!',
+            'data'    => $post,
+            'alert-type' => 'success'  
+        ]);
+    }
+
+
     public function ExportPDF($id)
         {
             // $purchaseorder = PurchaseOrder::with(['detailorder.item.unit', 'supplier'])->findOrFail($id);
@@ -288,135 +443,7 @@ class PurchaseOrderController extends Controller
 
 
 
-        public function Updatepurchaseorder(Request $request, $id)
-        {
-            // Validasi input request
-            $request->validate([
-                'purchase_request_id' => 'required|integer',
-                'supplier_id' => 'required|integer',
-                'delivery_at' => 'required|string',
-              
-                'applicant' => 'required|string',
-                'allocation' => 'required|string',
-                'approval' => 'required|string',
-                'rule' => 'nullable|string',
-                'status' => 'nullable|string',
-                'details' => 'required|array|min:1', // Minimal 1 detail
-                'details.*.item_id' => 'required|integer',
-                'details.*.qty' => 'required',
-                'details.*.price' => 'required',
-            ]);
-        
-            // Ambil purchase order yang akan diupdate
-            $purchaseOrder = PurchaseOrder::findOrFail($id);
-        
-            // Ambil purchase request terkait
-            $purchaseRequest = PurchaseRequest::findOrFail($request->purchase_request_id);
-        
-            // Ambil semua item_id yang ada dalam request details
-            $detailItemIds = collect($request->details)->pluck('item_id')->toArray();
-        
-            // Inisialisasi array untuk menyimpan deleted detail IDs
-            $deletedDetailIds = [];
-        
-            // Hapus semua detail terkait dari purchase order yang ada
-            foreach ($purchaseOrder->detailorder as $detail) {
-                $deletedDetailIds[] = $detail->id;
-                $detail->delete();
-        
-                // Update status pada PurchaseRequestDetail yang terkait dengan item yang dihapus
-                PurchaseRequestDetail::where('purchase_request_id', $purchaseRequest->id)
-                    ->where('item_id', $detail->item_id)
-                    ->where(function ($query) use ($detail) {
-                        if ($detail->color) {
-                            $query->where('color', $detail->color);
-                        } else {
-                            $query->whereNull('color');
-                        }
-                        if ($detail->size) {
-                            $query->where('size', $detail->size);
-                        } else {
-                            $query->whereNull('size');
-                        }
-                    })
-                    ->update(['status' => '']);
-            }
-        
-            // Simpan detail pembelian ke purchase_order_details
-            foreach ($request->details as $detailData) {
-                $newDetail = PurchaseOrderDetail::create([
-                    'purchase_order_id' => $purchaseOrder->id,
-                    'item_id' => $detailData['item_id'],
-                    'color' => $detailData['color'] ?? null,
-                    'size' => $detailData['size'] ?? null,
-                    'qty' => $detailData['qty'],
-                    'price' => $detailData['price'],
-                    'total_price' => $detailData['total_price'],
-                    'status' => '',
-                    'remark' => $detailData['remark'] ?? null,
-                ]);
-        
-                // Update status pada PurchaseRequestDetail yang sesuai
-                PurchaseRequestDetail::where('purchase_request_id', $purchaseRequest->id)
-                    ->where('item_id', $detailData['item_id'])
-                    ->where(function ($query) use ($detailData) {
-                        if (isset($detailData['color'])) {
-                            $query->where('color', $detailData['color']);
-                        } else {
-                            $query->whereNull('color');
-                        }
-                        if (isset($detailData['size'])) {
-                            $query->where('size', $detailData['size']);
-                        } else {
-                            $query->whereNull('size');
-                        }
-                    })
-                    ->update(['status' => 'po']);
-            }
-        
-            // Update data pada purchase order
-            $purchaseOrder->update([
-                'purchase_request_id' => $request->purchase_request_id,
-                'supplier_id' => $request->supplier_id,
-                'date_in_house' => $request->request_in_house,
-                'delivery_at' => $request->delivery_at,
-                'terms' => $request->terms,
-                'payment' => $request->payment,
-                'ship_mode' => $request->shipment_mode,
-                'applicant' => $request->applicant,
-                'allocation' => $request->allocation,
-                'approval' => $request->approval,
-                'quotation_no' => $request->quotation_no,
-                'quatition_file' => '',
-
-                'subtotal' => $request->sub_total,
-                'rounding' => $request->rounding ?? 0,
-                'discount' => $request->discount ?? 0,
-                'vat' => $request->tax,
-                'vat_amount' => $request->tax_end,
-                'grand_total' => $request->grand_total_end,
-                'purchase_amount' => $request->purchase_amount_end,
-                'note1' => $request->note1,
-                'note2' => $request->note2,
-                'rule' => $request->rule,
-                'status' =>'po',
-                'remarksx' => $request->remarksx,
-
-                'user_id' => Auth::id(), // Ambil user_id dari user yang login
-            ]);
-        
-            // Kembalikan ke halaman yang sesuai setelah selesai menyimpan
-            return redirect()->route('all.purchaseorder')->with('success', 'Purchase Order berhasil diperbarui.');
-
-              //return response
-              return response()->json([
-                'success' => true,
-                'message' => 'Data Berhasil Disimpan!',
-                'data'    => $post,
-                'alert-type' => 'success'  
-            ]);
-        }
-
+      
 
 
 
@@ -488,13 +515,13 @@ class PurchaseOrderController extends Controller
         public function Getpurchaseordersupplier()
         {
             $suppliersx = PurchaseOrder::with(['detailorder' => function ($query) {
-                $query->whereNull('remark');
+                $query->whereNull('status');
             }, 'detailorder.item.unit', 'supplier' => function ($query) {
                 $query->select('id', 'supplier_name', 'supplier_address', 'supplier_person', 'remark');
             }])
             ->whereHas('detailorder', function ($query) {
-                $query->whereNull('remark')
-                ->orWhere('remark', '');
+                $query->whereNull('status')
+                ->orWhere('status', '');
             })
             
             ->get();
@@ -517,6 +544,82 @@ class PurchaseOrderController extends Controller
                 ->get();
 
             return response()->json($items);
+            }
+
+
+
+        public function Getpurchaseorderid($original_no)
+            {
+               // Ambil data PurchaseOrderDetail berdasarkan supplier_id yang diberikan
+                    $purchaseOrderItems = PurchaseOrder::with(['purchaseRequest', 'detailorder.item.unit', 'supplier'])
+                    ->where('supplier_id', $original_no) // langsung mencari dengan supplier_id
+                    ->get();
+
+                // Jika tidak ditemukan data, kembalikan response kosong
+                if ($purchaseOrderItems->isEmpty()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'No items found for the given supplier.',
+                        'data' => []
+                    ], 404);
+                }
+
+                $formattedItems = $purchaseOrderItems->map(function($detail) {
+                    return [
+                        'item_code'      => $detail->item_code,
+                        'item_name'      => $detail->detailorder->item_name,
+                        'supplier_name'  => $detail->purchaseOrder->supplier->supplier_name,
+                        'po'             => $detail->purchaseOrder->purchase_order_no, // Adjust field name as per your schema
+                        'color_code'     => $detail->color,
+                        'color_name'     => $detail->color_name ?? '', // Ensure these fields exist
+                        'size'           => $detail->size ?? '',
+                        'mo'             => $detail->purchaseOrder->purchaseRequest->mo ?? '', // Adjust as needed
+                        'qty'            => $detail->qty,
+                    ];
+                });
+
+                // Kembalikan data dalam bentuk JSON
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Items found successfully.',
+                    'data' => $formattedItems
+                ]);
+            }
+
+
+            public function getSupplierPOItems($supplier_id)
+            {
+                // Ambil data PurchaseOrderDetail berdasarkan supplier_id yang diberikan
+                $purchaseOrderItems = PurchaseOrderDetail::with(['item.unit', 'purchaseOrder'])
+                    ->whereHas('purchaseOrder', function($query) use ($supplier_id) {
+                        $query->where('supplier_id', $supplier_id);
+                    })
+                    ->get();
+        
+                // Jika tidak ditemukan data, kembalikan response kosong
+                if ($purchaseOrderItems->isEmpty()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'No items found for the given supplier.',
+                        'data' => []
+                    ], 404);
+                }
+        
+                // Kembalikan data dalam bentuk JSON
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Items found successfully.',
+                    'data' => $purchaseOrderItems
+                ]);
+            }
+
+
+
+            public function Exportpurchaseorder(Request $request){
+                $startDate = $request->query('startDate');
+                $endDate = $request->query('endDate');
+
+                return Excel::download(new PurchaseOrderExport($startDate, $endDate), 'purchase_orders.xlsx');
             }
         
 

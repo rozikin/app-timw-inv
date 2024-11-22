@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use DataTables;
 use App\Models\Cbd;
 use Carbon\Carbon;
+use App\Exports\PurchaseRequestExport;
 use PDF;
 use Illuminate\Support\Facades\Log;
 
@@ -54,8 +55,170 @@ class PurchaseRequestController extends Controller
         return view('purchase_request.add_purchaserequestid',compact('sizes', 'colors', 'qtyData', 'cbdId','cbdno','cbd'));
     }
 
+    public function GetpurchaserequestCount(){
+        $requestCount = PurchaseRequest::count();
+
+        return response()->json([
+            'request' => $requestCount,
+         
+        ]);
+    }
+
 
     public function Getpurchaserequest(Request $request)
+{
+    if ($request->ajax()) {
+        // Start with the base query
+        $query = PurchaseRequest::with(['detailrequest.item.unit','cbd']);
+        
+        if ($request->has('startDate') && $request->has('endDate')) {
+            $query->whereBetween('created_at', [$request->input('startDate'), $request->input('endDate')]);
+        }
+
+        $data = $query->get();
+    
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+                $allDetailsPo = true;
+                $hasStatus = false;
+                
+                foreach ($row->detailrequest as $detail) {
+                    if ($detail->status !== 'po') {
+                        $allDetailsPo = false;
+                    }
+                    if (!empty($detail->status)) {
+                        $hasStatus = true;
+                    }
+                }
+
+                $createPOButton = $allDetailsPo ? 
+                    '' : 
+                    '<a href="/add/purchaseorderid/'.$row->id.'" class="dropdown-item text-success"> &nbsp; Create Purchase Order</a>';
+                
+                $editButton = $hasStatus ? 
+                    '<a href="javascript:void(0)" class="dropdown-item text-muted disabled"> &nbsp; Edit</a>' : 
+                    '<a href="/edit/purchaserequest/'.$row->id.'" class="dropdown-item text-primary"> &nbsp; Edit</a>';
+                
+                $deleteButton = $hasStatus ? 
+                    '<a href="javascript:void(0)" class="dropdown-item text-muted disabled"> &nbsp; Delete</a>' : 
+                    '<a href="javascript:void(0)" class="dropdown-item text-danger deletePurchaserequest" data-id="' . $row->id . '"> &nbsp; Delete</a>';
+
+                return '<div class="d-flex align-items-center justify-content-between flex-wrap">
+                          <div class="d-flex align-items-center">
+                              <div class="d-flex align-items-center">
+                                  <div class="actions dropdown">
+                                      <a href="#" data-bs-toggle="dropdown"> ••• </a>
+                                      <div class="dropdown-menu" role="menu">
+                                         
+                                          <a href="/pdf/purchaserequest/'.$row->id.'" class="dropdown-item text-info" target="_blank"> &nbsp; View PDF</a>
+                                          ' . $createPOButton . '
+                                           ' . $editButton . '
+                                          ' . $deleteButton . '
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>';
+            })
+            ->addColumn('order_no', function ($row) {
+                return $row->cbd->order_no ?? '-';
+            })
+            ->addColumn('item_name', function ($row) {
+                $details = '<ul>';
+                foreach ($row->detailrequest as $detail) {
+                    $itemName = strlen($detail->item->item_name) > 25 ? 
+                                substr($detail->item->item_name, 0, 25) . '...' : 
+                                $detail->item->item_name;
+                    $details .= '<li>' . $itemName . '</li>';
+                }
+                $details .= '</ul>';
+                return $details;
+            })
+            ->addColumn('color', function ($row) {
+                $details = '<ul>';
+                foreach ($row->detailrequest as $detail) {
+                    if (!empty($detail->color)) {
+                        $details .= '<li>' . $detail->color . '</li>';
+                    }
+                }
+                $details .= '</ul>';
+                if (trim($details) == '<ul></ul>') {
+                    return '&nbsp;';
+                }
+                return $details;
+            })
+            ->addColumn('size', function ($row) {
+                $details = '<ul>';
+                foreach ($row->detailrequest as $detail) {
+                    if (!empty($detail->size)) {
+                        $details .= '<li>' . $detail->size . '</li>';
+                    }
+                }
+                $details .= '</ul>';
+                if (trim($details) == '<ul></ul>') {
+                    return '&nbsp;';
+                }
+                return $details;
+            })
+            ->addColumn('unit', function ($row) {
+                $details = '<ul>';
+                foreach ($row->detailrequest as $detail) {
+                    if (!empty($detail->item->unit->unit_code)) {
+                        $details .= '<li>' . $detail->item->unit->unit_code . '</li>';
+                    }
+                }
+                $details .= '</ul>';
+                if (trim($details) == '<ul></ul>') {
+                    return '&nbsp;';
+                }
+                return $details;
+            })
+            ->addColumn('total', function ($row) {
+                $details = '<ul>';
+                foreach ($row->detailrequest as $detail) {
+                    $details .= '<li>' . $detail->total . '</li>';
+                }
+                $details .= '</ul>';
+                return $details;
+            })
+            ->addColumn('remark', function ($row) {
+                $details = '<ul>';
+                foreach ($row->detailrequest as $detail) {
+                    if (!empty($detail->remark)) {
+                        $details .= '<li>' . $detail->remark . '</li>';
+                    }
+                }
+                $details .= '</ul>';
+                if (trim($details) == '<ul></ul>') {
+                    $details = '<p class="text-center">-</p>';
+                }
+                return $details;
+            })
+            ->addColumn('status', function ($row) {
+                $details = '<ul>';
+                foreach ($row->detailrequest as $detail) {
+                    if ($detail->status == 'po') {
+                        $details .= '<li>' .'<span class="badge bg-success">'. $detail->status .'</span>'. '</li>';
+                    }
+                    else{
+                        $details .= '<li>' .'<span class="badge bg-danger">'.'waiting'.'</span>' .'</li>';
+                    }
+                }
+                if (trim($details) == '<ul></ul>') {
+                    $details = '<p class="text-center">-</p>';
+                }
+                $details .= '</ul>';
+                return $details;
+            })
+            ->rawColumns(['action', 'item_name', 'color', 'size','unit', 'total', 'remark', 'status'])
+            ->make(true);
+    }
+}
+
+
+
+    public function Getpurchaserequest0(Request $request)
     {
         if ($request->ajax()) {
             $data = PurchaseRequest::with(['detailrequest.item.unit','cbd'])->get();
@@ -620,6 +783,26 @@ public function Getpurchaserequestitems(Request $request)
 
     return response()->json($items);
 }
+
+
+public function Exportpurchaserequest(Request $request)
+{
+    // Validasi input tanggal
+    $request->validate([
+        'startDate' => 'required|date',
+        'endDate' => 'required|date|after_or_equal:startDate',
+    ]);
+
+    // Ambil data berdasarkan rentang tanggal
+    $startDate = Carbon::parse($request->startDate)->startOfDay();
+    $endDate = Carbon::parse($request->endDate)->endOfDay();
+
+    // Nama file hasil export
+    $fileName = 'PurchaseRequests_' . now()->format('Ymd_His') . '.xlsx';
+
+    return Excel::download(new PurchaseRequestExport($startDate, $endDate), $fileName);
+}
+
 
 
 

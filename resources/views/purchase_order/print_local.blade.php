@@ -16,7 +16,7 @@
             top: 0;
             /* Letakkan header di bagian atas */
             left: 0;
-            z-index:1099;
+            z-index: 1099;
             /* Pastikan header muncul di atas konten */
         }
 
@@ -29,7 +29,7 @@
 
         .footer {
             bottom: 0;
-            font-size:10px;
+            font-size: 10px;
             margin: 0;
         }
 
@@ -64,11 +64,11 @@
 
         .table-no-border td {
             border: none;
-            font-size:10px;
+            font-size: 10px;
         }
 
         .footer-table td {
-            font-size:10px;
+            font-size: 10px;
         }
 
         .table-request {
@@ -76,11 +76,7 @@
             width: auto;
         }
 
-        .table-request td {
-            
-        }
-
-      
+        .table-request td {}
 
         .header-table {
             width: 100%;
@@ -165,9 +161,8 @@
 
         .supplier-table td {
             border: none;
-            font-size:10px;
+            font-size: 10px;
             vertical-align: top;
-            
         }
 
         .supplier-table .left-column {
@@ -189,7 +184,7 @@
         }
 
         .header-info p {
-            font-size:10px;
+            font-size: 10px;
             margin: 2px 0;
         }
 
@@ -233,7 +228,7 @@
 
         .supplier-tablexx td {
             border: none;
-            font-size:10px;
+            font-size: 10px;
             vertical-align: top;
         }
 
@@ -250,8 +245,6 @@
             white-space: nowrap;
         }
 
-
-
         .supplier-tablexxx {
             width: 100%;
             border-collapse: collapse;
@@ -259,30 +252,29 @@
             margin-bottom: 8px;
         }
 
-        
         .xxxx {
             width: 100%;
             border: 1px solid rgb(54, 53, 53);
             border-collapse: collapse;
-            font-size:10px;
+            font-size: 10px;
         }
-  
 
-        .xxxx th{
-            border: 1px solid  rgb(54, 53, 53);
+        .xxxx th {
+            border: 1px solid rgb(54, 53, 53);
             border-collapse: collapse;
-            font-size:10px;
+            font-size: 10px;
         }
+
         .xxxx td {
-            border: 1px solid  rgb(54, 53, 53);
+            border: 1px solid rgb(54, 53, 53);
             border-collapse: collapse;
-           
-            font-size:10px;
-            padding: 50px 8px; */
+            font-size: 10px;
+            padding: 50px 8px;
+            */
         }
 
         .supplier-tablexxx .left-column {
-            width:40%;
+            width: 40%;
         }
 
         .supplier-tablexxx .right-column1 {
@@ -297,7 +289,6 @@
         .supplier-tablexq {
             width: 100%;
             border-collapse: collapse;
-       
             margin-top: 1px;
             margin-bottom: 1px;
             border: 1px solid #000;
@@ -311,16 +302,12 @@
 
         .supplier-tablexq .left-column {
             width: 40%;
-           
         }
 
         .supplier-tablexq .right-column1 {
             width: 20%;
             text-align: right;
         }
-
-
-
 
         .supplier-tablex1 {
             width: 100%;
@@ -332,16 +319,11 @@
         .supplier-tablex1 td {
             border: none;
             vertical-align: top;
-            
         }
 
         .supplier-tablex1 .left-column {
             width: 100%;
         }
-
-  
-
-
     </style>
 </head>
 
@@ -386,9 +368,21 @@
         <div class="left-column">
             <table class="supplier-table">
                 <tr>
+                    <td class="left-column nowrap"></td>
+                    <td class="right-column">
+
+                        Rev : {{ $purchaseorder->revision_no }}
+
+                    </td>
+                </tr>
+                <tr>
                     <td class="left-column nowrap">MESSRS,</td>
-                    <td class="right-column">Date:
-                        {{ \Carbon\Carbon::parse($purchaseorder->created_at)->format('d-M-Y') }}</td>
+                    <td class="right-column">
+
+                        Date:
+                        {{ \Carbon\Carbon::parse($purchaseorder->created_at)->format('d-M-Y') }}
+
+                    </td>
                 </tr>
                 <tr>
                     <td>{{ $purchaseorder->supplier->supplier_name }}</td>
@@ -407,7 +401,6 @@
 
             </table>
 
-        
             <table class="supplier-table" style="width: auto; margin-left: 0;">
                 <tr>
                     <td>Phone</td>
@@ -427,7 +420,7 @@
                 </tr>
 
             </table>
-          
+
         </div>
         <div class="right-column">
             <!-- Leave this column blank -->
@@ -440,11 +433,11 @@
                     <table>
                         <tr>
                             <td> Date in House</td>
-                            <td>:  {{ \Carbon\Carbon::parse($purchaseorder->date_in_house)->format('d-M-Y') }}</td>
+                            <td>: {{ \Carbon\Carbon::parse($purchaseorder->date_in_house)->format('d-M-Y') }}</td>
                         </tr>
                         <tr>
                             <td>Allocation</td>
-                            <td>: {{ $purchaseorder->allocation  }}</td>    
+                            <td>: {{ $purchaseorder->allocation }}</td>
                         </tr>
                         <tr>
                             <td>Applicant</td>
@@ -493,11 +486,11 @@
                     <table>
                         <tr>
                             <td>Date</td>
-                            <td>: </td>     
+                            <td>: </td>
                         </tr>
                         <tr>
                             <td>Type</td>
-                            <td>: {{ $purchaseorder->purchaseRequest->tipe }} </td>  
+                            <td>: {{ $purchaseorder->purchaseRequest->tipe }} </td>
                         </tr>
 
                     </table>
@@ -532,22 +525,20 @@
                         <td>{{ $detail->item->unit->unit_code }}</td>
                         <td>{{ $detail->qty }}</td>
                         <td>{{ $detail->remark }}</td>
-                        <td>IDR  {{ $detail->price }}</td>
+                        <td>IDR {{ $detail->price }}</td>
                         <td>IDR {{ $detail->total_price }}</td>
-                    </tr>   
+                    </tr>
                 @endforeach
             </tbody>
-        </table>        
+        </table>
         <table class="supplier-tablexq">
             <tr>
                 <td class="left-column">
-                    
 
-                   <p>Note :    {{ $purchaseorder->note1 }}</p>
+                    <p>Note : {{ $purchaseorder->note1 }}</p>
                 </td>
                 <td class="right-column1">
 
-                   
                 </td>
             </tr>
 
@@ -640,21 +631,20 @@
 
         </table>
 
-
         <table class="supplier-tablexxx">
             <tr>
                 <td class="left-column">
-                  
+
                 </td>
                 <td class="right-column1">
 
                     <table class="xxxx">
                         <tr>
-                          <th>President Director</th>
-                          <th>Director</th>
-                          <th>Manager</th>
-                          <th>Head Of Division</th>
-                          <th>In Change</th>
+                            <th>President Director</th>
+                            <th>Director</th>
+                            <th>Manager</th>
+                            <th>Head Of Division</th>
+                            <th>In Change</th>
                         </tr>
 
                         <tr>
@@ -695,9 +685,8 @@
 
         </table> --}}
 
-
     </div>
-    
+
 </body>
 
 </html>

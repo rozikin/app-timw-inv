@@ -1,6 +1,37 @@
 @extends('admin.admin_dashboard')
 
 @section('admin')
+
+    <style>
+        .table-scrollable {
+            position: relative;
+            max-height: 300px;
+            /* Sesuaikan tinggi maksimum sesuai kebutuhan */
+            overflow-y: auto;
+        }
+
+        .table-scrollable thead {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            /* Pastikan header memiliki latar belakang agar terlihat */
+            z-index: 1;
+        }
+
+        .table-scrollable table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-scrollable th,
+        .table-scrollable td {
+            padding: 5px;
+            border: 1px solid #ddd;
+            font-size: 0.8em;
+            /* Font-size lebih kecil */
+        }
+    </style>
+
     <div class="page-content mt-5">
 
         <div class="row">
@@ -47,8 +78,8 @@
                                             <div class="form-group row">
                                                 <label for="remarksx" class="col-sm-4 col-form-label">PO TIN</label>
                                                 <div class="col-sm-5">
-                                                    <input type="text" class="form-control" id="remarksx" name="remarksx"
-                                                        value="{{ $purchaseOrder->remarksx }}">
+                                                    <input type="text" class="form-control" id="remarksx"
+                                                        name="remarksx" value="{{ $purchaseOrder->remarksx }}">
                                                 </div>
                                             </div>
 
@@ -61,7 +92,7 @@
                                                         value="{{ $purchaseOrder->purchase_request_id }}">
                                                     <input type="hidden" class="form-control supplier_id" id="supplier_id"
                                                         name="supplier_id" value="{{ $purchaseOrder->supplier_id }}">
-                                                        
+
                                                     <input type="text" class="form-control supplier_name"
                                                         id="supplier_name" name="supplier_name"
                                                         value="{{ $purchaseOrder->supplier->supplier_name }}">
@@ -192,7 +223,7 @@
 
                                         <hr>
 
-                                        <div class="">
+                                        <div class="table-scrollable">
                                             {{-- <button type="button" class="btn btn-secondary btn-sm mb-2"
                                                 id="add-detail">Add
                                                 Detail</button> --}}
@@ -239,8 +270,8 @@
                                                                     value="{{ $detail->item->unit->unit_code }}" readonly>
                                                             </td>
                                                             <td><input type="text" class="form-control qty"
-                                                                    name="details[{{ $index }}][qty]"               
-                                                                    value="{{ $detail->qty }}" ></td>
+                                                                    name="details[{{ $index }}][qty]"
+                                                                    value="{{ $detail->qty }}"></td>
                                                             <td><input type="text" class="form-control price"
                                                                     name="details[{{ $index }}][price]"
                                                                     value="{{ $detail->price }}"></td>
@@ -952,15 +983,13 @@
 
 
             $(document).on('click', '.remove-detail', function() {
-            // Call calculateTotals() function when remove-detail button is clicked
-            calculateTotals();
-        });
+                // Call calculateTotals() function when remove-detail button is clicked
+                calculateTotals();
+            });
 
 
 
 
         });
-
-       
     </script>
 @endsection

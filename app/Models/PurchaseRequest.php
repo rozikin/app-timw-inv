@@ -4,14 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PurchaseRequest extends Model
 {
     use HasFactory;
 
+    use SoftDeletes;
+
     // protected $guarded = [];
 
-    protected $fillable = ['user_id', 'cbd_id','purchase_request_no','tipe','mo','style','destination','department','applicant','time_line','remark1','status' ,'revision_no'];
+    protected $fillable = ['user_id', 'cbd_id','purchase_request_no','tipe','mo','style','destination','department','applicant','time_line','remark1','status' ,'revision_no','deleted_at','created_at','updated_at'];
 
     public function detailrequest()
     {
